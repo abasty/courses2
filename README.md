@@ -1,6 +1,6 @@
-# courses
+# Stocks
 
-A new Flutter project.
+Une application Flutter pour gérer ses stocks.
 
 ## Getting Started
 
