@@ -13,7 +13,7 @@ import 'package:stocks/main.dart';
 void main() {
   testWidgets('Stocks Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(CoursesApp());
+    await tester.pumpWidget(StocksApp());
 
     expect(find.text('Produits'), findsOneWidget);
     await tester.tap(find.byIcon(Icons.add));

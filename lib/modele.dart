@@ -29,7 +29,7 @@ class Produit {
 }
 
 @JsonSerializable(explicitToJson: true)
-class ModeleCoursesSingleton {
+class ModeleStocksSingleton {
   List<Rayon> rayons = [];
   List<Produit> produits = [];
 
@@ -38,14 +38,14 @@ class ModeleCoursesSingleton {
   @JsonKey(ignore: true)
   List<Produit> listeSelect = [];
 
-  final _storage = LocalStorage('courses.json');
+  final _storage = LocalStorage('stocks.json');
 
-  ModeleCoursesSingleton._privateConstructor();
+  ModeleStocksSingleton._privateConstructor();
 
-  static final ModeleCoursesSingleton _instance =
-      ModeleCoursesSingleton._privateConstructor();
+  static final ModeleStocksSingleton _instance =
+      ModeleStocksSingleton._privateConstructor();
 
-  factory ModeleCoursesSingleton() {
+  factory ModeleStocksSingleton() {
     return _instance;
   }
 
@@ -127,16 +127,16 @@ class ModeleCoursesSingleton {
     listeSelect.addAll(produits.where((e) => e.quantite > 0));
   }
 
-  factory ModeleCoursesSingleton.fromJson(Map<String, dynamic> json) =>
-      _$ModeleCoursesSingletonFromJson(json);
-  Map<String, dynamic> toJson() => _$ModeleCoursesSingletonToJson(this);
+  factory ModeleStocksSingleton.fromJson(Map<String, dynamic> json) =>
+      _$ModeleStocksSingletonFromJson(json);
+  Map<String, dynamic> toJson() => _$ModeleStocksSingletonToJson(this);
 
   Future<void> readFromFile() async {
     String json;
     await _storage.ready;
     json = await _storage.getItem('modele');
     if (json == null) {
-      json = await rootBundle.loadString("assets/courses.json");
+      json = await rootBundle.loadString("assets/stocks.json");
     }
     fromJson(jsonDecode(json));
   }
@@ -147,4 +147,4 @@ class ModeleCoursesSingleton {
   }
 }
 
-var modele = ModeleCoursesSingleton();
+var modele = ModeleStocksSingleton();

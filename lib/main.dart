@@ -6,12 +6,12 @@ import 'package:window_size/window_size.dart';
 
 import 'modele.dart';
 
-class CoursesApp extends StatefulWidget {
+class StocksApp extends StatefulWidget {
   @override
-  CoursesAppState createState() => CoursesAppState();
+  StocksAppState createState() => StocksAppState();
 }
 
-class CoursesAppState extends State<CoursesApp> with TickerProviderStateMixin {
+class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
   TabController _tabController;
   var _actionIcon = Icons.add;
 
@@ -27,7 +27,7 @@ class CoursesAppState extends State<CoursesApp> with TickerProviderStateMixin {
 
     if (!kIsWeb) {
       if (Platform.isLinux) {
-        setWindowTitle('Exemple Courses');
+        setWindowTitle('Exemple Stocks');
         setWindowFrame(Rect.fromLTRB(0, 0, 400, 600));
       }
     }
@@ -53,7 +53,7 @@ class CoursesAppState extends State<CoursesApp> with TickerProviderStateMixin {
   Scaffold _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Courses'),
+        title: Text('Stocks'),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
@@ -245,5 +245,5 @@ class EditProduitFormState extends State<EditProduitForm> {
 }
 
 void main() {
-  runApp(CoursesApp());
+  runApp(StocksApp());
 }
