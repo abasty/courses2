@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'main.dart';
+part of 'modele.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -34,20 +34,22 @@ Map<String, dynamic> _$ProduitToJson(Produit instance) => <String, dynamic>{
       'fait': instance.fait,
     };
 
-ModeleCoursesSingleton _$DBFromJson(Map<String, dynamic> json) {
+ModeleCoursesSingleton _$ModeleCoursesSingletonFromJson(
+    Map<String, dynamic> json) {
   return ModeleCoursesSingleton()
-    ..rayons = (json['rayonTable'] as List)
+    ..rayons = (json['rayons'] as List)
         ?.map(
             (e) => e == null ? null : Rayon.fromJson(e as Map<String, dynamic>))
         ?.toList()
-    ..produits = (json['produitTable'] as List)
+    ..produits = (json['produits'] as List)
         ?.map((e) =>
             e == null ? null : Produit.fromJson(e as Map<String, dynamic>))
         ?.toList();
 }
 
-Map<String, dynamic> _$DBToJson(ModeleCoursesSingleton instance) =>
+Map<String, dynamic> _$ModeleCoursesSingletonToJson(
+        ModeleCoursesSingleton instance) =>
     <String, dynamic>{
-      'rayonTable': instance.rayons?.map((e) => e?.toJson())?.toList(),
-      'produitTable': instance.produits?.map((e) => e?.toJson())?.toList(),
+      'rayons': instance.rayons?.map((e) => e?.toJson())?.toList(),
+      'produits': instance.produits?.map((e) => e?.toJson())?.toList(),
     };
