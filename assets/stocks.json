@@ -1,5 +1,5 @@
 {
-    "rayonTable": [
+    "rayons": [
         {
             "nom": "Divers"
         },
@@ -37,7 +37,7 @@
             "nom": "Boisson"
         }
     ],
-    "produitTable": [
+    "produits": [
         {
             "nom": "Escalope de porc",
             "rayon": {
