@@ -124,7 +124,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
         ?.toList();
     produits = (json['produits'] as List)?.map(produitFromElement)?.toList();
     rayonDivers = rayons?.singleWhere((e) => e.nom == "Divers");
-    listeSelect.addAll(produits?.where((e) => e.quantite > 0));
+    listeSelect?.addAll(produits?.where((e) => e.quantite > 0));
   }
 
   factory ModeleStocksSingleton.fromJson(Map<String, dynamic> json) =>
