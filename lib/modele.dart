@@ -112,19 +112,18 @@ class ModeleStocksSingleton {
     Produit produitFromElement(dynamic e) {
       if (e == null) return null;
       Produit p = Produit.fromJson(e as Map<String, dynamic>);
-      Rayon r = rayons.singleWhere((e) => e.nom == p.rayon.nom);
-      p.rayon = r;
+      Rayon r = rayons?.singleWhere((e) => e.nom == p.rayon.nom);
+      p?.rayon = r;
       return p;
     }
 
-    rayons = (json['rayonTable'] as List)
+    rayons = (json['rayons'] as List)
         ?.map(
             (e) => e == null ? null : Rayon.fromJson(e as Map<String, dynamic>))
         ?.toList();
-    produits =
-        (json['produitTable'] as List)?.map(produitFromElement)?.toList();
-    rayonDivers = rayons.singleWhere((e) => e.nom == "Divers");
-    listeSelect.addAll(produits.where((e) => e.quantite > 0));
+    produits = (json['produits'] as List)?.map(produitFromElement)?.toList();
+    rayonDivers = rayons?.singleWhere((e) => e.nom == "Divers");
+    listeSelect.addAll(produits?.where((e) => e.quantite > 0));
   }
 
   factory ModeleStocksSingleton.fromJson(Map<String, dynamic> json) =>
