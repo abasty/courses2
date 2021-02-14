@@ -56,6 +56,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
       listeSelect.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     }
     p.fait = false;
+    notifyListeners();
     writeToFile();
   }
 
@@ -66,6 +67,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
       listeSelect.remove(p);
     }
     p.fait = false;
+    notifyListeners();
     writeToFile();
   }
 
@@ -74,6 +76,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
     p.quantite = 0;
     listeSelect.remove(p);
     p.fait = false;
+    notifyListeners();
     writeToFile();
   }
 
@@ -83,6 +86,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
 
   void ctrlProduitPrend(Produit p, value) {
     p.fait = value;
+    notifyListeners();
     writeToFile();
   }
 
@@ -95,6 +99,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
       }
       return fait;
     });
+    notifyListeners();
     writeToFile();
   }
 
@@ -106,6 +111,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
       p.rayon = maj.rayon;
     }
     produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
+    notifyListeners();
     writeToFile();
   }
 
