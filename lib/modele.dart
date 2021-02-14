@@ -1,4 +1,5 @@
 import 'dart:convert' show jsonDecode, jsonEncode;
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -29,7 +30,7 @@ class Produit {
 }
 
 @JsonSerializable(explicitToJson: true)
-class ModeleStocksSingleton {
+class ModeleStocksSingleton extends ChangeNotifier {
   List<Rayon> rayons = [];
   List<Produit> produits = [];
 
