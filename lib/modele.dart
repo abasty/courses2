@@ -1,8 +1,7 @@
 import 'dart:convert' show jsonDecode, jsonEncode;
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:localstorage/localstorage.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:stocks/storage.dart';
 
 part 'modele.g.dart';
 
@@ -31,6 +30,8 @@ class Produit {
 
 @JsonSerializable(explicitToJson: true)
 class ModeleStocksSingleton extends ChangeNotifier {
+  final _storage = LocalStorageStocks();
+
   List<Rayon> rayons = [];
   List<Produit> produits = [];
   bool isLoaded = false;
@@ -39,8 +40,6 @@ class ModeleStocksSingleton extends ChangeNotifier {
   Rayon rayonDivers;
   @JsonKey(ignore: true)
   List<Produit> listeSelect = [];
-
-  final _storage = LocalStorage('stocks.json');
 
   ModeleStocksSingleton._privateConstructor();
 
@@ -139,21 +138,13 @@ class ModeleStocksSingleton extends ChangeNotifier {
   Map<String, dynamic> toJson() => _$ModeleStocksSingletonToJson(this);
 
   Future<void> readAll() async {
-    String json;
     isLoaded = false;
-    await _storage.ready;
-    json = await _storage.getItem('modele');
-    if (json == null) {
-      json = await rootBundle.loadString("assets/stocks.json");
-    }
-    fromJson(jsonDecode(json));
-    await Future.delayed(Duration(seconds: 3));
+    fromJson(jsonDecode(await _storage.readAll()));
     isLoaded = true;
   }
 
   Future<void> writeAll() async {
-    await _storage.ready;
-    await _storage.setItem("modele", jsonEncode(toJson()));
+    return await _storage.writeAll(jsonEncode(toJson()));
   }
 }
 
