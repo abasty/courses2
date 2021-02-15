@@ -33,6 +33,7 @@ class Produit {
 class ModeleStocksSingleton extends ChangeNotifier {
   List<Rayon> rayons = [];
   List<Produit> produits = [];
+  bool isLoaded = false;
 
   @JsonKey(ignore: true)
   Rayon rayonDivers;
@@ -57,7 +58,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
     }
     p.fait = false;
     notifyListeners();
-    writeToFile();
+    writeAll();
   }
 
   void ctrlProduitMoins(Produit p) {
@@ -68,7 +69,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
     }
     p.fait = false;
     notifyListeners();
-    writeToFile();
+    writeAll();
   }
 
   void ctrlProduitRaz(Produit p) {
@@ -77,7 +78,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
     listeSelect.remove(p);
     p.fait = false;
     notifyListeners();
-    writeToFile();
+    writeAll();
   }
 
   void ctrlProduitInverse(Produit p) {
@@ -87,7 +88,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
   void ctrlProduitPrend(Produit p, value) {
     p.fait = value;
     notifyListeners();
-    writeToFile();
+    writeAll();
   }
 
   void ctrlValideChariot() {
@@ -100,7 +101,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
       return fait;
     });
     notifyListeners();
-    writeToFile();
+    writeAll();
   }
 
   void ctrlMajProduit(Produit p, Produit maj) {
@@ -112,7 +113,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
     }
     produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     notifyListeners();
-    writeToFile();
+    writeAll();
   }
 
   void fromJson(Map<String, dynamic> json) {
@@ -137,17 +138,20 @@ class ModeleStocksSingleton extends ChangeNotifier {
       _$ModeleStocksSingletonFromJson(json);
   Map<String, dynamic> toJson() => _$ModeleStocksSingletonToJson(this);
 
-  Future<void> readFromFile() async {
+  Future<void> readAll() async {
     String json;
+    isLoaded = false;
     await _storage.ready;
     json = await _storage.getItem('modele');
     if (json == null) {
       json = await rootBundle.loadString("assets/stocks.json");
     }
     fromJson(jsonDecode(json));
+    await Future.delayed(Duration(seconds: 3));
+    isLoaded = true;
   }
 
-  Future<void> writeToFile() async {
+  Future<void> writeAll() async {
     await _storage.ready;
     await _storage.setItem("modele", jsonEncode(toJson()));
   }

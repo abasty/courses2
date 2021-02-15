@@ -32,7 +32,7 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
       }
     }
 
-    modele.readFromFile().then((_) => setState(() {}));
+    modele.readAll().then((_) => setState(() {}));
     _tabController = TabController(vsync: this, length: 2)
       ..addListener(
         () => setState(
@@ -62,13 +62,15 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildTabProduits(),
-          _buildTabListe(),
-        ],
-      ),
+      body: modele.isLoaded
+          ? TabBarView(
+              controller: _tabController,
+              children: [
+                _buildTabProduits(),
+                _buildTabListe(),
+              ],
+            )
+          : Center(child: CircularProgressIndicator()),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(_actionIcon),
