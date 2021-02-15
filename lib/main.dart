@@ -46,7 +46,14 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Builder(builder: (context) => _buildScaffold(context)),
+      home: Builder(
+        builder: (context) => modele.isLoaded
+            ? _buildScaffold(context)
+            : Container(
+                color: Colors.white,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+      ),
     );
   }
 
@@ -62,15 +69,13 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
           ],
         ),
       ),
-      body: modele.isLoaded
-          ? TabBarView(
-              controller: _tabController,
-              children: [
-                _buildTabProduits(),
-                _buildTabListe(),
-              ],
-            )
-          : Center(child: CircularProgressIndicator()),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildTabProduits(),
+          _buildTabListe(),
+        ],
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(_actionIcon),
