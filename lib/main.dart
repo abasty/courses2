@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:window_size/window_size.dart';
 
 import 'modele.dart';
@@ -87,32 +88,39 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
   }
 
   Widget _buildTabProduits() {
-    return ListView.builder(
-      itemCount: modele.produits.length,
-      itemBuilder: (context, index) {
-        Produit p = modele.produits[index];
-        return ListTile(
-          title: Text(p.nom),
-          subtitle: Text(p.rayon.nom),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(Icons.remove_circle),
-                onPressed: () => setState(() => modele.ctrlProduitMoins(p)),
-              ),
-              Text("${p.quantite}"),
-              IconButton(
-                icon: Icon(Icons.add_circle),
-                onPressed: () => setState(() => modele.ctrlProduitPlus(p)),
-              ),
-            ],
-          ),
-          selected: p.quantite > 0,
-          onTap: () => setState(() => modele.ctrlProduitInverse(p)),
-          onLongPress: () => _editeProduit(context, p),
-        );
-      },
+    return ChangeNotifierProvider.value(
+      value: modele,
+      child: ListView.builder(
+        itemCount: modele.produits.length,
+        itemBuilder: (context, index) {
+          Produit p = modele.produits[index];
+          return Consumer<ModeleStocksSingleton>(
+            builder: (context, stocks, child) {
+              return ListTile(
+                title: Text(p.nom),
+                subtitle: Text(p.rayon.nom),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.remove_circle),
+                      onPressed: () => modele.ctrlProduitMoins(p),
+                    ),
+                    Text("${p.quantite}"),
+                    IconButton(
+                      icon: Icon(Icons.add_circle),
+                      onPressed: () => modele.ctrlProduitPlus(p),
+                    ),
+                  ],
+                ),
+                selected: p.quantite > 0,
+                onTap: () => modele.ctrlProduitInverse(p),
+                onLongPress: () => _editeProduit(context, p),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
