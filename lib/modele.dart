@@ -141,6 +141,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
     isLoaded = false;
     fromJson(jsonDecode(await _storage.readAll()));
     isLoaded = true;
+    notifyListeners();
   }
 
   Future<void> writeAll() async {
