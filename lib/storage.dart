@@ -21,7 +21,7 @@ class LocalStorageStocks extends StorageStocks {
     if (json == null) {
       json = await rootBundle.loadString("assets/stocks.json");
     }
-    // await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     return json;
   }
 }

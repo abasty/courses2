@@ -15,6 +15,7 @@ class StocksApp extends StatefulWidget {
 class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
   TabController _tabController;
   var _actionIcon = Icons.add;
+  var _isLoaded = modele.readAll();
 
   @override
   void dispose() {
@@ -33,7 +34,6 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
       }
     }
 
-    modele.readAll().then((_) => setState(() {}));
     _tabController = TabController(vsync: this, length: 2)
       ..addListener(
         () => setState(
@@ -48,12 +48,22 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Builder(
-        builder: (context) => modele.isLoaded
-            ? _buildScaffold(context)
-            : Container(
-                color: Colors.white,
-                child: Center(child: CircularProgressIndicator()),
-              ),
+        builder: (context) => FutureBuilder(
+          future: _isLoaded,
+          builder: (context, snapshot) =>
+              snapshot.connectionState == ConnectionState.done
+                  ? ChangeNotifierProvider.value(
+                      value: modele,
+                      builder: (context, snapshot) {
+                        return _buildScaffold(context);
+                      })
+                  : Container(
+                      color: Colors.white,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+        ),
       ),
     );
   }
@@ -82,59 +92,60 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
         child: Icon(_actionIcon),
         onPressed: () => _tabController.index == 0
             ? _editeProduit(context, null)
-            : setState(() => modele.ctrlValideChariot()),
+            : modele.ctrlValideChariot(),
       ),
     );
   }
 
   Widget _buildTabProduits() {
-    return ChangeNotifierProvider.value(
-      value: modele,
-      child: ListView.builder(
-        itemCount: modele.produits.length,
-        itemBuilder: (context, index) {
-          Produit p = modele.produits[index];
-          return Consumer<ModeleStocksSingleton>(
-            builder: (context, stocks, child) {
-              return ListTile(
-                title: Text(p.nom),
-                subtitle: Text(p.rayon.nom),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.remove_circle),
-                      onPressed: () => modele.ctrlProduitMoins(p),
-                    ),
-                    Text("${p.quantite}"),
-                    IconButton(
-                      icon: Icon(Icons.add_circle),
-                      onPressed: () => modele.ctrlProduitPlus(p),
-                    ),
-                  ],
-                ),
-                selected: p.quantite > 0,
-                onTap: () => modele.ctrlProduitInverse(p),
-                onLongPress: () => _editeProduit(context, p),
-              );
-            },
-          );
-        },
-      ),
+    return ListView.builder(
+      itemCount: modele.produits.length,
+      itemBuilder: (context, index) {
+        Produit p = modele.produits[index];
+        return Consumer<ModeleStocksSingleton>(
+          builder: (context, stocks, child) {
+            return ListTile(
+              title: Text(p.nom),
+              subtitle: Text(p.rayon.nom),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.remove_circle),
+                    onPressed: () => modele.ctrlProduitMoins(p),
+                  ),
+                  Text("${p.quantite}"),
+                  IconButton(
+                    icon: Icon(Icons.add_circle),
+                    onPressed: () => modele.ctrlProduitPlus(p),
+                  ),
+                ],
+              ),
+              selected: p.quantite > 0,
+              onTap: () => modele.ctrlProduitInverse(p),
+              onLongPress: () => _editeProduit(context, p),
+            );
+          },
+        );
+      },
     );
   }
 
   Widget _buildTabListe() {
-    return ListView.builder(
-      itemCount: modele.listeSelect.length,
-      itemBuilder: (context, index) {
-        Produit p = modele.listeSelect[index];
-        return CheckboxListTile(
-          title: Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
-          subtitle: Text(p.rayon.nom),
-          value: p.fait,
-          onChanged: (bool value) =>
-              setState(() => modele.ctrlProduitPrend(p, value)),
+    return Consumer<ModeleStocksSingleton>(
+      builder: (context, stocks, child) {
+        return ListView.builder(
+          itemCount: modele.listeSelect.length,
+          itemBuilder: (context, index) {
+            Produit p = modele.listeSelect[index];
+            return CheckboxListTile(
+              title:
+                  Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
+              subtitle: Text(p.rayon.nom),
+              value: p.fait,
+              onChanged: (bool value) => modele.ctrlProduitPrend(p, value),
+            );
+          },
         );
       },
     );
