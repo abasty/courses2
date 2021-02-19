@@ -87,66 +87,92 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(_actionIcon),
-        onPressed: () => _tabController.index == 0
-            ? _editeProduit(context, null)
-            : modele.ctrlValideChariot(),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(_actionIcon),
+      //   onPressed: () => _tabController.index == 0
+      //       ? _editeProduit(context, null)
+      //       : modele.ctrlValideChariot(),
+      // ),
     );
   }
 
   Widget _buildTabProduits() {
-    return ListView.builder(
-      itemCount: modele.produits.length,
-      itemBuilder: (context, index) {
-        Produit p = modele.produits[index];
-        return Consumer<ModeleStocksSingleton>(
-          builder: (context, stocks, child) {
-            return ListTile(
-              title: Text(p.nom),
-              subtitle: Text(p.rayon.nom),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.remove_circle),
-                    onPressed: () => modele.ctrlProduitMoins(p),
+    return Stack(
+      children: [
+        ListView.builder(
+          itemCount: modele.produits.length,
+          itemBuilder: (context, index) {
+            Produit p = modele.produits[index];
+            return Consumer<ModeleStocksSingleton>(
+              builder: (context, stocks, child) {
+                return ListTile(
+                  title: Text(p.nom),
+                  subtitle: Text(p.rayon.nom),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.remove_circle),
+                        onPressed: () => modele.ctrlProduitMoins(p),
+                      ),
+                      Text("${p.quantite}"),
+                      IconButton(
+                        icon: Icon(Icons.add_circle),
+                        onPressed: () => modele.ctrlProduitPlus(p),
+                      ),
+                    ],
                   ),
-                  Text("${p.quantite}"),
-                  IconButton(
-                    icon: Icon(Icons.add_circle),
-                    onPressed: () => modele.ctrlProduitPlus(p),
-                  ),
-                ],
-              ),
-              selected: p.quantite > 0,
-              onTap: () => modele.ctrlProduitInverse(p),
-              onLongPress: () => _editeProduit(context, p),
+                  selected: p.quantite > 0,
+                  onTap: () => modele.ctrlProduitInverse(p),
+                  onLongPress: () => _editeProduit(context, p),
+                );
+              },
             );
           },
-        );
-      },
+        ),
+        _actionButton(Icons.add, () => _editeProduit(context, null))
+      ],
     );
   }
 
   Widget _buildTabListe() {
     return Consumer<ModeleStocksSingleton>(
       builder: (context, stocks, child) {
-        return ListView.builder(
-          itemCount: modele.listeSelect.length,
-          itemBuilder: (context, index) {
-            Produit p = modele.listeSelect[index];
-            return CheckboxListTile(
-              title:
-                  Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
-              subtitle: Text(p.rayon.nom),
-              value: p.fait,
-              onChanged: (bool value) => modele.ctrlProduitPrend(p, value),
-            );
-          },
+        return Stack(
+          children: [
+            ListView.builder(
+              itemCount: modele.listeSelect.length,
+              itemBuilder: (context, index) {
+                Produit p = modele.listeSelect[index];
+                return CheckboxListTile(
+                  title: Text(
+                      "${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
+                  subtitle: Text(p.rayon.nom),
+                  value: p.fait,
+                  onChanged: (bool value) => modele.ctrlProduitPrend(p, value),
+                );
+              },
+            ),
+            _actionButton(
+                Icons.remove_shopping_cart, () => modele.ctrlValideChariot()),
+          ],
         );
       },
+    );
+  }
+
+  Padding _actionButton(IconData icon, Function action) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Ink(
+            decoration: const ShapeDecoration(
+              color: Colors.lightBlue,
+              shape: CircleBorder(),
+            ),
+            child: FloatingActionButton(child: Icon(icon), onPressed: action),
+          )),
     );
   }
 
