@@ -7,26 +7,9 @@ import 'package:window_size/window_size.dart';
 
 import 'modele.dart';
 
-class ListeScreen extends StatefulWidget {
-  @override
-  ListeScreenState createState() => ListeScreenState();
-}
+var _isLoaded = modele.readAll();
 
-class ListeScreenState extends State<ListeScreen> {
-  var _isLoaded = modele.readAll();
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (!kIsWeb) {
-      if (Platform.isLinux) {
-        setWindowTitle('Exemple Stocks');
-        setWindowFrame(Rect.fromLTRB(0, 0, 400, 600));
-      }
-    }
-  }
-
+class ListeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -108,14 +91,16 @@ class ListeScreenState extends State<ListeScreen> {
             );
           },
         ),
-        _actionButton(
-          Icons.add,
-          () => Navigator.pushNamed(
-            context,
-            ProduitScreen.routeName,
-            arguments: ProduitArgs(null),
+        Builder(
+          builder: (context) => _actionButton(
+            Icons.add,
+            () => Navigator.pushNamed(
+              context,
+              ProduitScreen.routeName,
+              arguments: ProduitArgs(null),
+            ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -278,6 +263,14 @@ class ProduitScreenState extends State<ProduitScreen> {
 }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (!kIsWeb) {
+    if (Platform.isLinux) {
+      setWindowTitle('Exemple Stocks');
+      setWindowFrame(Rect.fromLTRB(0, 0, 400, 600));
+    }
+  }
   runApp(
     MaterialApp(
       initialRoute: '/',
