@@ -73,12 +73,12 @@ class ListeScreenState extends State<ListeScreen> {
   Widget _buildTabProduits() {
     return Stack(
       children: [
-        ListView.builder(
-          itemCount: modele.produits.length,
-          itemBuilder: (context, index) {
-            Produit p = modele.produits[index];
-            return Consumer<ModeleStocksSingleton>(
-              builder: (context, stocks, child) {
+        Consumer<ModeleStocksSingleton>(
+          builder: (context, stocks, child) {
+            return ListView.builder(
+              itemCount: modele.produits.length,
+              itemBuilder: (context, index) {
+                Produit p = modele.produits[index];
                 return ListTile(
                   title: Text(p.nom),
                   subtitle: Text(p.rayon.nom),
@@ -101,7 +101,7 @@ class ListeScreenState extends State<ListeScreen> {
                   onLongPress: () => Navigator.pushNamed(
                     context,
                     ProduitScreen.routeName,
-                    arguments: ProduitArgs(null),
+                    arguments: ProduitArgs(p),
                   ),
                 );
               },
@@ -280,14 +280,14 @@ class ProduitScreenState extends State<ProduitScreen> {
 void main() {
   runApp(
     MaterialApp(
-      onGenerateRoute: (settings) => settings.name == ProduitScreen.routeName
-          ? MaterialPageRoute(
-              builder: (context) => ProduitScreen(settings.arguments))
-          : null,
       initialRoute: '/',
       routes: {
         '/': (context) => ListeScreen(),
       },
+      onGenerateRoute: (settings) => settings.name == ProduitScreen.routeName
+          ? MaterialPageRoute(
+              builder: (context) => ProduitScreen(settings.arguments))
+          : null,
     ),
   );
 }
