@@ -52,11 +52,7 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
           future: _isLoaded,
           builder: (context, snapshot) =>
               snapshot.connectionState == ConnectionState.done
-                  ? ChangeNotifierProvider.value(
-                      value: modele,
-                      builder: (context, snapshot) {
-                        return _buildScaffold(context);
-                      })
+                  ? _buildScaffold(context)
                   : Container(
                       color: Colors.white,
                       child: Center(
@@ -80,12 +76,15 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildTabProduits(),
-          _buildTabListe(),
-        ],
+      body: ChangeNotifierProvider.value(
+        value: modele,
+        builder: (context, snapshot) => TabBarView(
+          controller: _tabController,
+          children: [
+            _buildTabProduits(),
+            _buildTabListe(),
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
