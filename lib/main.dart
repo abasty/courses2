@@ -16,7 +16,7 @@ class ListeScreen extends StatelessWidget {
       future: _isLoaded,
       builder: (context, snapshot) {
         return snapshot.connectionState == ConnectionState.done
-            ? _buildScaffold(context)
+            ? _scaffold()
             : Container(
                 color: Colors.white,
                 child: Center(
@@ -27,7 +27,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildScaffold(BuildContext context) {
+  Widget _scaffold() {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -44,8 +44,8 @@ class ListeScreen extends StatelessWidget {
           value: modele,
           builder: (context, snapshot) => TabBarView(
             children: [
-              _buildTabProduits(),
-              _buildTabListe(),
+              _tabProduits(),
+              _tabListe(),
             ],
           ),
         ),
@@ -53,7 +53,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTabProduits() {
+  Widget _tabProduits() {
     return Stack(
       children: [
         Consumer<ModeleStocksSingleton>(
@@ -83,7 +83,7 @@ class ListeScreen extends StatelessWidget {
                   onTap: () => modele.ctrlProduitInverse(p),
                   onLongPress: () => Navigator.pushNamed(
                     context,
-                    ProduitScreen.routeName,
+                    ProduitScreen.path,
                     arguments: ProduitArgs(p),
                   ),
                 );
@@ -96,7 +96,7 @@ class ListeScreen extends StatelessWidget {
             Icons.add,
             () => Navigator.pushNamed(
               context,
-              ProduitScreen.routeName,
+              ProduitScreen.path,
               arguments: ProduitArgs(null),
             ),
           ),
@@ -105,7 +105,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTabListe() {
+  Widget _tabListe() {
     return Consumer<ModeleStocksSingleton>(
       builder: (context, stocks, child) {
         return Stack(
@@ -154,7 +154,7 @@ class ProduitArgs {
 }
 
 class ProduitScreen extends StatefulWidget {
-  static const routeName = '/produit';
+  static const path = '/produit';
   final Produit _init;
 
   ProduitScreen(ProduitArgs args) : _init = args.p;
@@ -191,7 +191,7 @@ class ProduitScreenState extends State<ProduitScreen> {
         ],
         backgroundColor: Colors.deepPurple,
       ),
-      body: _buildForm(),
+      body: _form(),
     );
   }
 
@@ -206,7 +206,7 @@ class ProduitScreenState extends State<ProduitScreen> {
     }
   }
 
-  Widget _buildRayonButtons() {
+  Widget _rayonButtons() {
     return Expanded(
       child: ListView.builder(
         itemCount: modele.rayons.length,
@@ -225,7 +225,7 @@ class ProduitScreenState extends State<ProduitScreen> {
     );
   }
 
-  Widget _buildProduitNom() {
+  Widget _produitNom() {
     return TextFormField(
       autofocus: true,
       textCapitalization: TextCapitalization.sentences,
@@ -245,7 +245,7 @@ class ProduitScreenState extends State<ProduitScreen> {
     );
   }
 
-  Form _buildForm() {
+  Form _form() {
     return Form(
       key: _formKey,
       child: Column(
@@ -253,9 +253,9 @@ class ProduitScreenState extends State<ProduitScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _buildProduitNom(),
+            child: _produitNom(),
           ),
-          _buildRayonButtons(),
+          _rayonButtons(),
         ],
       ),
     );
@@ -277,7 +277,7 @@ void main() {
       routes: {
         '/': (context) => ListeScreen(),
       },
-      onGenerateRoute: (settings) => settings.name == ProduitScreen.routeName
+      onGenerateRoute: (settings) => settings.name == ProduitScreen.path
           ? MaterialPageRoute(
               builder: (context) => ProduitScreen(settings.arguments))
           : null,
