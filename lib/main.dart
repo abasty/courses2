@@ -12,17 +12,8 @@ class ListeScreen extends StatefulWidget {
   ListeScreenState createState() => ListeScreenState();
 }
 
-class ListeScreenState extends State<ListeScreen>
-    with TickerProviderStateMixin {
-  TabController _tabController;
-  var _actionIcon = Icons.add;
+class ListeScreenState extends State<ListeScreen> {
   var _isLoaded = modele.readAll();
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -34,15 +25,6 @@ class ListeScreenState extends State<ListeScreen>
         setWindowFrame(Rect.fromLTRB(0, 0, 400, 600));
       }
     }
-
-    _tabController = TabController(vsync: this, length: 2)
-      ..addListener(
-        () => setState(
-          () => _tabController.index == 0
-              ? _actionIcon = Icons.add
-              : _actionIcon = Icons.remove_shopping_cart,
-        ),
-      );
   }
 
   @override
@@ -62,35 +44,29 @@ class ListeScreenState extends State<ListeScreen>
     );
   }
 
-  Scaffold _buildScaffold(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Stocks'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(text: "Produits"),
-            Tab(text: "Liste"),
-          ],
+  Widget _buildScaffold(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Stocks'),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: "Produits"),
+              Tab(text: "Liste"),
+            ],
+          ),
+        ),
+        body: ChangeNotifierProvider.value(
+          value: modele,
+          builder: (context, snapshot) => TabBarView(
+            children: [
+              _buildTabProduits(),
+              _buildTabListe(),
+            ],
+          ),
         ),
       ),
-      body: ChangeNotifierProvider.value(
-        value: modele,
-        builder: (context, snapshot) => TabBarView(
-          controller: _tabController,
-          children: [
-            _buildTabProduits(),
-            _buildTabListe(),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      // floatingActionButton: FloatingActionButton(
-      //   child: Icon(_actionIcon),
-      //   onPressed: () => _tabController.index == 0
-      //       ? _editeProduit(context, null)
-      //       : modele.ctrlValideChariot(),
-      // ),
     );
   }
 
@@ -104,32 +80,34 @@ class ListeScreenState extends State<ListeScreen>
             return Consumer<ModeleStocksSingleton>(
               builder: (context, stocks, child) {
                 return ListTile(
-                    title: Text(p.nom),
-                    subtitle: Text(p.rayon.nom),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.remove_circle),
-                          onPressed: () => modele.ctrlProduitMoins(p),
-                        ),
-                        Text("${p.quantite}"),
-                        IconButton(
-                          icon: Icon(Icons.add_circle),
-                          onPressed: () => modele.ctrlProduitPlus(p),
-                        ),
-                      ],
-                    ),
-                    selected: p.quantite > 0,
-                    onTap: () => modele.ctrlProduitInverse(p),
-                    onLongPress: () => Navigator.pushNamed(
-                        context, '/produit') //_editeProduit(context, p),
-                    );
+                  title: Text(p.nom),
+                  subtitle: Text(p.rayon.nom),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.remove_circle),
+                        onPressed: () => modele.ctrlProduitMoins(p),
+                      ),
+                      Text("${p.quantite}"),
+                      IconButton(
+                        icon: Icon(Icons.add_circle),
+                        onPressed: () => modele.ctrlProduitPlus(p),
+                      ),
+                    ],
+                  ),
+                  selected: p.quantite > 0,
+                  onTap: () => modele.ctrlProduitInverse(p),
+                  onLongPress: () => Navigator.pushNamed(context, '/produit'),
+                );
               },
             );
           },
         ),
-        _actionButton(Icons.add, () => Navigator.pushNamed(context, '/produit'))
+        _actionButton(
+          Icons.add,
+          () => Navigator.pushNamed(context, '/produit'),
+        )
       ],
     );
   }
@@ -160,7 +138,7 @@ class ListeScreenState extends State<ListeScreen>
     );
   }
 
-  Padding _actionButton(IconData icon, Function action) {
+  Widget _actionButton(IconData icon, Function action) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Align(
@@ -174,35 +152,23 @@ class ListeScreenState extends State<ListeScreen>
           )),
     );
   }
-
-  void _editeProduit(BuildContext context, Produit p) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProduitScreen(p),
-      ),
-    );
-    setState(() {});
-  }
 }
 
 class ProduitScreen extends StatefulWidget {
-  final Produit _p;
-
-  ProduitScreen(this._p);
+  ProduitScreen();
 
   @override
   ProduitScreenState createState() {
-    return ProduitScreenState(_p);
+    return ProduitScreenState();
   }
 }
 
 class ProduitScreenState extends State<ProduitScreen> {
   final _formKey = GlobalKey<FormState>();
-  final Produit _init;
+  final Produit _init = null;
   Produit _maj;
 
-  ProduitScreenState(this._init) {
+  ProduitScreenState() {
     _init != null
         ? _maj = Produit(_init.nom, _init.rayon)
         : _maj = Produit("", modele.rayonDivers);
@@ -300,7 +266,7 @@ void main() {
       initialRoute: '/',
       routes: {
         '/': (context) => ListeScreen(),
-        '/produit': (context) => ProduitScreen(null),
+        '/produit': (context) => ProduitScreen(),
       },
     ),
   );
