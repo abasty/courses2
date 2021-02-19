@@ -7,12 +7,13 @@ import 'package:window_size/window_size.dart';
 
 import 'modele.dart';
 
-class StocksApp extends StatefulWidget {
+class ListeScreen extends StatefulWidget {
   @override
-  StocksAppState createState() => StocksAppState();
+  ListeScreenState createState() => ListeScreenState();
 }
 
-class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
+class ListeScreenState extends State<ListeScreen>
+    with TickerProviderStateMixin {
   TabController _tabController;
   var _actionIcon = Icons.add;
   var _isLoaded = modele.readAll();
@@ -46,21 +47,18 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Builder(
-        builder: (context) => FutureBuilder(
-          future: _isLoaded,
-          builder: (context, snapshot) =>
-              snapshot.connectionState == ConnectionState.done
-                  ? _buildScaffold(context)
-                  : Container(
-                      color: Colors.white,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-        ),
-      ),
+    return FutureBuilder(
+      future: _isLoaded,
+      builder: (context, snapshot) {
+        return snapshot.connectionState == ConnectionState.done
+            ? _buildScaffold(context)
+            : Container(
+                color: Colors.white,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+      },
     );
   }
 
@@ -106,31 +104,32 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
             return Consumer<ModeleStocksSingleton>(
               builder: (context, stocks, child) {
                 return ListTile(
-                  title: Text(p.nom),
-                  subtitle: Text(p.rayon.nom),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove_circle),
-                        onPressed: () => modele.ctrlProduitMoins(p),
-                      ),
-                      Text("${p.quantite}"),
-                      IconButton(
-                        icon: Icon(Icons.add_circle),
-                        onPressed: () => modele.ctrlProduitPlus(p),
-                      ),
-                    ],
-                  ),
-                  selected: p.quantite > 0,
-                  onTap: () => modele.ctrlProduitInverse(p),
-                  onLongPress: () => _editeProduit(context, p),
-                );
+                    title: Text(p.nom),
+                    subtitle: Text(p.rayon.nom),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.remove_circle),
+                          onPressed: () => modele.ctrlProduitMoins(p),
+                        ),
+                        Text("${p.quantite}"),
+                        IconButton(
+                          icon: Icon(Icons.add_circle),
+                          onPressed: () => modele.ctrlProduitPlus(p),
+                        ),
+                      ],
+                    ),
+                    selected: p.quantite > 0,
+                    onTap: () => modele.ctrlProduitInverse(p),
+                    onLongPress: () => Navigator.pushNamed(
+                        context, '/produit') //_editeProduit(context, p),
+                    );
               },
             );
           },
         ),
-        _actionButton(Icons.add, () => _editeProduit(context, null))
+        _actionButton(Icons.add, () => Navigator.pushNamed(context, '/produit'))
       ],
     );
   }
@@ -180,30 +179,30 @@ class StocksAppState extends State<StocksApp> with TickerProviderStateMixin {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditProduitForm(p),
+        builder: (context) => ProduitScreen(p),
       ),
     );
     setState(() {});
   }
 }
 
-class EditProduitForm extends StatefulWidget {
+class ProduitScreen extends StatefulWidget {
   final Produit _p;
 
-  EditProduitForm(this._p);
+  ProduitScreen(this._p);
 
   @override
-  EditProduitFormState createState() {
-    return EditProduitFormState(_p);
+  ProduitScreenState createState() {
+    return ProduitScreenState(_p);
   }
 }
 
-class EditProduitFormState extends State<EditProduitForm> {
+class ProduitScreenState extends State<ProduitScreen> {
   final _formKey = GlobalKey<FormState>();
   final Produit _init;
   Produit _maj;
 
-  EditProduitFormState(this._init) {
+  ProduitScreenState(this._init) {
     _init != null
         ? _maj = Produit(_init.nom, _init.rayon)
         : _maj = Produit("", modele.rayonDivers);
@@ -296,5 +295,13 @@ class EditProduitFormState extends State<EditProduitForm> {
 }
 
 void main() {
-  runApp(StocksApp());
+  runApp(
+    MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => ListeScreen(),
+        '/produit': (context) => ProduitScreen(null),
+      },
+    ),
+  );
 }
