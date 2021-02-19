@@ -98,7 +98,11 @@ class ListeScreenState extends State<ListeScreen> {
                   ),
                   selected: p.quantite > 0,
                   onTap: () => modele.ctrlProduitInverse(p),
-                  onLongPress: () => Navigator.pushNamed(context, '/produit'),
+                  onLongPress: () => Navigator.pushNamed(
+                    context,
+                    ProduitScreen.routeName,
+                    arguments: ProduitArgs(null),
+                  ),
                 );
               },
             );
@@ -106,7 +110,11 @@ class ListeScreenState extends State<ListeScreen> {
         ),
         _actionButton(
           Icons.add,
-          () => Navigator.pushNamed(context, '/produit'),
+          () => Navigator.pushNamed(
+            context,
+            ProduitScreen.routeName,
+            arguments: ProduitArgs(null),
+          ),
         )
       ],
     );
@@ -154,21 +162,30 @@ class ListeScreenState extends State<ListeScreen> {
   }
 }
 
+class ProduitArgs {
+  final Produit p;
+
+  ProduitArgs(this.p);
+}
+
 class ProduitScreen extends StatefulWidget {
-  ProduitScreen();
+  static const routeName = '/produit';
+  final Produit _init;
+
+  ProduitScreen(ProduitArgs args) : _init = args.p;
 
   @override
   ProduitScreenState createState() {
-    return ProduitScreenState();
+    return ProduitScreenState(_init);
   }
 }
 
 class ProduitScreenState extends State<ProduitScreen> {
   final _formKey = GlobalKey<FormState>();
-  final Produit _init = null;
+  final Produit _init;
   Produit _maj;
 
-  ProduitScreenState() {
+  ProduitScreenState(this._init) {
     _init != null
         ? _maj = Produit(_init.nom, _init.rayon)
         : _maj = Produit("", modele.rayonDivers);
@@ -263,10 +280,13 @@ class ProduitScreenState extends State<ProduitScreen> {
 void main() {
   runApp(
     MaterialApp(
+      onGenerateRoute: (settings) => settings.name == ProduitScreen.routeName
+          ? MaterialPageRoute(
+              builder: (context) => ProduitScreen(settings.arguments))
+          : null,
       initialRoute: '/',
       routes: {
         '/': (context) => ListeScreen(),
-        '/produit': (context) => ProduitScreen(),
       },
     ),
   );
