@@ -121,8 +121,7 @@ class ListeScreen extends StatelessWidget {
                 );
               },
             ),
-            _actionButton(
-                Icons.remove_shopping_cart, () => modele.ctrlValideChariot()),
+            _actionButton(Icons.remove_shopping_cart, modele.ctrlValideChariot),
           ],
         );
       },
