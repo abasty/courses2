@@ -12,16 +12,15 @@ class ListeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: modele.isLoaded,
-      builder: (context, snapshot) {
-        return snapshot.connectionState == ConnectionState.done
-            ? _scaffold()
-            : Container(
-                color: Colors.white,
-                child: Center(
-                  child: CircularProgressIndicator(),
+      builder: (context, snapshot) =>
+          snapshot.connectionState == ConnectionState.done
+              ? _scaffold()
+              : Container(
+                  color: Colors.white,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
-              );
-      },
     );
   }
 
@@ -59,30 +58,10 @@ class ListeScreen extends StatelessWidget {
             return ListView.builder(
               itemCount: modele.produits.length,
               itemBuilder: (context, index) {
-                Produit p = modele.produits[index];
-                return ListTile(
-                  title: Text(p.nom),
-                  subtitle: Text(p.rayon.nom),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove_circle),
-                        onPressed: () => modele.ctrlProduitMoins(p),
-                      ),
-                      Text("${p.quantite}"),
-                      IconButton(
-                        icon: Icon(Icons.add_circle),
-                        onPressed: () => modele.ctrlProduitPlus(p),
-                      ),
-                    ],
-                  ),
-                  selected: p.quantite > 0,
-                  onTap: () => modele.ctrlProduitInverse(p),
-                  onLongPress: () => Navigator.pushNamed(
-                    context,
-                    ProduitScreen.path,
-                    arguments: ProduitArgs(p),
+                return ChangeNotifierProvider.value(
+                  value: modele.produits[index],
+                  child: Consumer<Produit>(
+                    builder: (context, p, child) => _produitTile(p, context),
                   ),
                 );
               },
@@ -100,6 +79,35 @@ class ListeScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  ListTile _produitTile(Produit p, BuildContext context) {
+    print(p.nom);
+    return ListTile(
+      title: Text(p.nom),
+      subtitle: Text(p.rayon.nom),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(Icons.remove_circle),
+            onPressed: () => modele.ctrlProduitMoins(p),
+          ),
+          Text("${p.quantite}"),
+          IconButton(
+            icon: Icon(Icons.add_circle),
+            onPressed: () => modele.ctrlProduitPlus(p),
+          ),
+        ],
+      ),
+      selected: p.quantite > 0,
+      onTap: () => modele.ctrlProduitInverse(p),
+      onLongPress: () => Navigator.pushNamed(
+        context,
+        ProduitScreen.path,
+        arguments: ProduitArgs(p),
+      ),
     );
   }
 

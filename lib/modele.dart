@@ -16,7 +16,7 @@ class Rayon {
 }
 
 @JsonSerializable(explicitToJson: true)
-class Produit {
+class Produit extends ChangeNotifier {
   String nom;
   Rayon rayon;
   int quantite = 0;
@@ -56,7 +56,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
       listeSelect.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     }
     p.fait = false;
-    notifyListeners();
+    p.notifyListeners();
     writeAll();
   }
 
@@ -67,6 +67,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
       listeSelect.remove(p);
     }
     p.fait = false;
+    //p.notifyListeners();
     notifyListeners();
     writeAll();
   }
