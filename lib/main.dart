@@ -7,13 +7,11 @@ import 'package:window_size/window_size.dart';
 
 import 'modele.dart';
 
-var _isLoaded = modele.readAll();
-
 class ListeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _isLoaded,
+      future: modele.isLoaded,
       builder: (context, snapshot) {
         return snapshot.connectionState == ConnectionState.done
             ? _scaffold()
@@ -271,6 +269,7 @@ void main() {
       setWindowFrame(Rect.fromLTRB(0, 0, 400, 600));
     }
   }
+  modele.readAll();
   runApp(
     MaterialApp(
       initialRoute: '/',

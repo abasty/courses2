@@ -34,7 +34,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
 
   List<Rayon> rayons = [];
   List<Produit> produits = [];
-  //bool isLoaded = false;
+  Future<void> isLoaded;
 
   @JsonKey(ignore: true)
   Rayon rayonDivers;
@@ -137,11 +137,12 @@ class ModeleStocksSingleton extends ChangeNotifier {
       _$ModeleStocksSingletonFromJson(json);
   Map<String, dynamic> toJson() => _$ModeleStocksSingletonToJson(this);
 
-  Future<void> readAll() async {
-    //isLoaded = false;
+  Future<void> _readAll() async {
     fromJson(jsonDecode(await _storage.readAll()));
-    //isLoaded = true;
-    //notifyListeners();
+  }
+
+  void readAll() {
+    isLoaded = _readAll();
   }
 
   Future<void> writeAll() async {
