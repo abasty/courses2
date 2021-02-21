@@ -116,14 +116,11 @@ class ListeScreen extends StatelessWidget {
             ListView.builder(
               itemCount: modele.listeSelect.length,
               itemBuilder: (context, index) {
-                Produit p = modele.listeSelect[index];
-                print(p.nom);
-                return CheckboxListTile(
-                  title: Text(
-                      "${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
-                  subtitle: Text(p.rayon.nom),
-                  value: p.fait,
-                  onChanged: (bool value) => modele.ctrlProduitPrend(p, value),
+                return ChangeNotifierProvider.value(
+                  value: modele.produits[index],
+                  child: Consumer<Produit>(
+                    builder: _produitSelTile,
+                  ),
                 );
               },
             ),
@@ -131,6 +128,16 @@ class ListeScreen extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _produitSelTile(BuildContext context, Produit p, Widget child) {
+    print(p.nom);
+    return CheckboxListTile(
+      title: Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
+      subtitle: Text(p.rayon.nom),
+      value: p.fait,
+      onChanged: (bool value) => modele.ctrlProduitPrend(p, value),
     );
   }
 
