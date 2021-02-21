@@ -26,6 +26,11 @@ class Produit extends ChangeNotifier {
   factory Produit.fromJson(Map<String, dynamic> json) =>
       _$ProduitFromJson(json);
   Map<String, dynamic> toJson() => _$ProduitToJson(this);
+
+  @override
+  String toString() {
+    return jsonEncode(toJson());
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -87,18 +92,18 @@ class ModeleStocksSingleton extends ChangeNotifier {
 
   void ctrlProduitPrend(Produit p, value) {
     p.fait = value;
-    notifyListeners();
+    p.notifyListeners();
     writeAll();
   }
 
   void ctrlValideChariot() {
     listeSelect.removeWhere((p) {
-      bool fait = p.fait;
-      if (fait) {
+      if (p.fait) {
         p.quantite = 0;
         p.fait = false;
+        return true;
       }
-      return fait;
+      return false;
     });
     notifyListeners();
     writeAll();
