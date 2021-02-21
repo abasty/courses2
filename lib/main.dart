@@ -54,7 +54,7 @@ class ListeScreen extends StatelessWidget {
     return Stack(
       children: [
         Consumer<ModeleStocksSingleton>(
-          builder: (context, stocks, child) {
+          builder: (context, vm, child) {
             return ListView.builder(
               itemCount: modele.produits.length,
               itemBuilder: (context, index) {
@@ -113,13 +113,14 @@ class ListeScreen extends StatelessWidget {
 
   Widget _tabListe() {
     return Consumer<ModeleStocksSingleton>(
-      builder: (context, stocks, child) {
+      builder: (context, vm, child) {
         return Stack(
           children: [
             ListView.builder(
               itemCount: modele.listeSelect.length,
               itemBuilder: (context, index) {
                 Produit p = modele.listeSelect[index];
+                print(p.nom);
                 return CheckboxListTile(
                   title: Text(
                       "${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),

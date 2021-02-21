@@ -77,7 +77,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
     p.quantite = 0;
     listeSelect.remove(p);
     p.fait = false;
-    notifyListeners();
+    p.notifyListeners();
     writeAll();
   }
 
