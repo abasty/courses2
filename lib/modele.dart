@@ -134,7 +134,8 @@ class ModeleStocksSingleton extends ChangeNotifier {
     listeSelect?.addAll(produits?.where((e) => e.quantite > 0));
   }
 
-  factory ModeleStocksSingleton.fromJson(Map<String, dynamic> json) =>
+  // ignore: unused_element
+  factory ModeleStocksSingleton._fromJson(Map<String, dynamic> json) =>
       _$ModeleStocksSingletonFromJson(json);
   Map<String, dynamic> toJson() => _$ModeleStocksSingletonToJson(this);
 
