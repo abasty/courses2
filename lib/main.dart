@@ -12,7 +12,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
-    if (Platform.isLinux) {
+    if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
       setWindowTitle('Exemple Stocks');
       setWindowFrame(Rect.fromLTRB(0, 0, 400, 600));
     }
