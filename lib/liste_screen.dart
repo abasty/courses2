@@ -80,7 +80,7 @@ class ListeScreen extends StatelessWidget {
   }
 
   ListTile _produitTile(Produit p, BuildContext context) {
-    print(p.nom);
+    print(p);
     return ListTile(
       title: Text(p.nom),
       subtitle: Text(p.rayon.nom),
@@ -117,7 +117,7 @@ class ListeScreen extends StatelessWidget {
               itemCount: modele.listeSelect.length,
               itemBuilder: (context, index) {
                 return ChangeNotifierProvider.value(
-                  value: modele.produits[index],
+                  value: modele.listeSelect[index],
                   child: Consumer<Produit>(
                     builder: _produitSelTile,
                   ),
@@ -132,7 +132,7 @@ class ListeScreen extends StatelessWidget {
   }
 
   Widget _produitSelTile(BuildContext context, Produit p, Widget child) {
-    print(p.nom);
+    print(p);
     return CheckboxListTile(
       title: Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
       subtitle: Text(p.rayon.nom),
