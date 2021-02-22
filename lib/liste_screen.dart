@@ -4,6 +4,21 @@ import 'package:provider/provider.dart';
 import 'modele.dart';
 import 'produit_screen.dart';
 
+class ProduitConsumer extends StatelessWidget {
+  final Produit _p;
+  final Widget Function(BuildContext context, Produit p, Widget child) _builder;
+
+  ProduitConsumer(this._p, this._builder);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<Produit>.value(
+      value: _p,
+      child: Consumer<Produit>(builder: _builder),
+    );
+  }
+}
+
 class ListeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -54,14 +69,8 @@ class ListeScreen extends StatelessWidget {
           builder: (context, vm, child) {
             return ListView.builder(
               itemCount: modele.produits.length,
-              itemBuilder: (context, index) {
-                return ChangeNotifierProvider<Produit>.value(
-                  value: modele.produits[index],
-                  child: Consumer<Produit>(
-                    builder: (context, p, child) => _produitTile(p, context),
-                  ),
-                );
-              },
+              itemBuilder: (context, index) =>
+                  ProduitConsumer(modele.produits[index], _produitListTile),
             );
           },
         ),
@@ -79,7 +88,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  ListTile _produitTile(Produit p, BuildContext context) {
+  ListTile _produitListTile(BuildContext context, Produit p, Widget child) {
     print(p);
     return ListTile(
       title: Text(p.nom),
@@ -115,14 +124,8 @@ class ListeScreen extends StatelessWidget {
           children: [
             ListView.builder(
               itemCount: modele.listeSelect.length,
-              itemBuilder: (context, index) {
-                return ChangeNotifierProvider<Produit>.value(
-                  value: modele.listeSelect[index],
-                  child: Consumer<Produit>(
-                    builder: _produitSelTile,
-                  ),
-                );
-              },
+              itemBuilder: (context, index) =>
+                  ProduitConsumer(modele.listeSelect[index], _produitCheckTile),
             ),
             _actionButton(Icons.remove_shopping_cart, modele.ctrlValideChariot),
           ],
@@ -131,7 +134,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _produitSelTile(BuildContext context, Produit p, Widget child) {
+  Widget _produitCheckTile(BuildContext context, Produit p, Widget child) {
     print(p);
     return CheckboxListTile(
       title: Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
