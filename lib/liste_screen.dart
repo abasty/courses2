@@ -157,14 +157,9 @@ class LocalActionButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Ink(
-            decoration: const ShapeDecoration(
-              color: Colors.lightBlue,
-              shape: CircleBorder(),
-            ),
-            child: FloatingActionButton(child: Icon(_icon), onPressed: _action),
-          )),
+        alignment: Alignment.bottomCenter,
+        child: FloatingActionButton(child: Icon(_icon), onPressed: _action),
+      ),
     );
   }
 }
