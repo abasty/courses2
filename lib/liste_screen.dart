@@ -4,21 +4,6 @@ import 'package:provider/provider.dart';
 import 'modele.dart';
 import 'produit_screen.dart';
 
-class ProduitConsumer extends StatelessWidget {
-  final Produit _p;
-  final Widget Function(BuildContext context, Produit p, Widget child) _builder;
-
-  ProduitConsumer(this._p, this._builder);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<Produit>.value(
-      value: _p,
-      child: Consumer<Produit>(builder: _builder),
-    );
-  }
-}
-
 class ListeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -53,8 +38,8 @@ class ListeScreen extends StatelessWidget {
           value: modele,
           builder: (context, snapshot) => TabBarView(
             children: [
-              _tabProduits(),
-              _tabListe(),
+              _produitListTab(),
+              _produitCheckTab(),
             ],
           ),
         ),
@@ -62,7 +47,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _tabProduits() {
+  Widget _produitListTab() {
     return Stack(
       children: [
         Consumer<ModeleStocksSingleton>(
@@ -75,7 +60,7 @@ class ListeScreen extends StatelessWidget {
           },
         ),
         Builder(
-          builder: (context) => _actionButton(
+          builder: (context) => LocalActionButton(
             Icons.add,
             () => Navigator.pushNamed(
               context,
@@ -88,7 +73,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  ListTile _produitListTile(BuildContext context, Produit p, Widget child) {
+  Widget _produitListTile(BuildContext context, Produit p, Widget child) {
     debugPrint(p.toString());
     return ListTile(
       title: Text(p.nom),
@@ -117,7 +102,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _tabListe() {
+  Widget _produitCheckTab() {
     return Consumer<ModeleStocksSingleton>(
       builder: (context, vm, child) {
         return Stack(
@@ -127,7 +112,8 @@ class ListeScreen extends StatelessWidget {
               itemBuilder: (context, index) =>
                   ProduitConsumer(modele.listeSelect[index], _produitCheckTile),
             ),
-            _actionButton(Icons.remove_shopping_cart, modele.ctrlValideChariot),
+            LocalActionButton(
+                Icons.remove_shopping_cart, modele.ctrlValideChariot)
           ],
         );
       },
@@ -143,8 +129,31 @@ class ListeScreen extends StatelessWidget {
       onChanged: (bool value) => modele.ctrlProduitPrend(p, value),
     );
   }
+}
 
-  Widget _actionButton(IconData icon, Function action) {
+class ProduitConsumer extends StatelessWidget {
+  final Produit _p;
+  final Widget Function(BuildContext context, Produit p, Widget child) _builder;
+
+  const ProduitConsumer(this._p, this._builder);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<Produit>.value(
+      value: _p,
+      child: Consumer<Produit>(builder: _builder),
+    );
+  }
+}
+
+class LocalActionButton extends StatelessWidget {
+  final IconData _icon;
+  final Function _action;
+
+  const LocalActionButton(this._icon, this._action);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Align(
@@ -154,7 +163,7 @@ class ListeScreen extends StatelessWidget {
               color: Colors.lightBlue,
               shape: CircleBorder(),
             ),
-            child: FloatingActionButton(child: Icon(icon), onPressed: action),
+            child: FloatingActionButton(child: Icon(_icon), onPressed: _action),
           )),
     );
   }
