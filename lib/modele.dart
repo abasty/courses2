@@ -37,7 +37,9 @@ class Produit extends ChangeNotifier {
 class ModeleStocksSingleton extends ChangeNotifier {
   final _storage = LocalStorageStocks();
 
-  List<Rayon> rayons = [];
+  List<Rayon> _rayons = [];
+  List<Rayon> get rayons => _rayons;
+
   List<Produit> produits = [];
   Future<void> isLoaded;
 
@@ -125,17 +127,17 @@ class ModeleStocksSingleton extends ChangeNotifier {
     Produit produitFromElement(dynamic e) {
       if (e == null) return null;
       Produit p = Produit.fromJson(e as Map<String, dynamic>);
-      Rayon r = rayons?.singleWhere((e) => e.nom == p.rayon.nom);
+      Rayon r = _rayons?.singleWhere((e) => e.nom == p.rayon.nom);
       p?.rayon = r;
       return p;
     }
 
-    rayons = (json['rayons'] as List)
+    _rayons = (json['rayons'] as List)
         ?.map(
             (e) => e == null ? null : Rayon.fromJson(e as Map<String, dynamic>))
         ?.toList();
     produits = (json['produits'] as List)?.map(produitFromElement)?.toList();
-    rayonDivers = rayons?.singleWhere((e) => e.nom == "Divers");
+    rayonDivers = _rayons?.singleWhere((e) => e.nom == "Divers");
     listeSelect?.addAll(produits?.where((e) => e.quantite > 0));
   }
 
