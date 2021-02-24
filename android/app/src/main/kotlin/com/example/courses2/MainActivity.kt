@@ -1,4 +1,4 @@
-package com.example.stocks
+package com.example.courses2
 
 import io.flutter.embedding.android.FlutterActivity
 

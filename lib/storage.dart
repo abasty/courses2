@@ -1,13 +1,13 @@
 import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 
-abstract class StorageStocks {
+abstract class StorageCourses {
   Future<void> writeAll(String json);
   Future<String> readAll();
 }
 
-class LocalStorageStocks extends StorageStocks {
-  final _storage = LocalStorage('stocks.json');
+class LocalStorageCourses extends StorageCourses {
+  final _storage = LocalStorage('courses.json');
 
   Future<void> writeAll(String json) async {
     await _storage.ready;
@@ -19,7 +19,7 @@ class LocalStorageStocks extends StorageStocks {
     await _storage.ready;
     json = await _storage.getItem('modele');
     if (json == null) {
-      json = await rootBundle.loadString("assets/stocks.json");
+      json = await rootBundle.loadString("assets/courses.json");
     }
     await Future.delayed(Duration(seconds: 2));
     return json;

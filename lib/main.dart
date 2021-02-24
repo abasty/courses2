@@ -13,7 +13,7 @@ void main() {
 
   if (!kIsWeb) {
     if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-      setWindowTitle('Exemple Stocks');
+      setWindowTitle('Exemple Courses II');
       setWindowFrame(Rect.fromLTRB(0, 0, 400, 600));
     }
   }

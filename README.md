@@ -1,6 +1,6 @@
-# Stocks
+# Courses2
 
-Une application Flutter pour gérer ses stocks.
+Une application Flutter pour gérer ses courses2.
 
 ## Getting Started
 

@@ -1,21 +1,21 @@
-name: stocks
+name: courses2
 version: 0.1.0
-summary: Stocks
-description: Une application Flutter pour faire ses stocks.
+summary: Courses2
+description: Une application Flutter pour faire ses courses2.
 
 confinement: strict
 base: core18
 grade: stable
 
 apps:
-  stocks:
-    command: stocks
+  courses2:
+    command: courses2
     extensions: [flutter-dev]
     plugs:
     - network
 
 parts:
-  stocks:
+  courses2:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart

@@ -8,11 +8,11 @@
 // import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-// import 'package:stocks/modele.dart';
-// import 'package:stocks/liste_screen.dart';
+// import 'package:courses2/modele.dart';
+// import 'package:courses2/liste_screen.dart';
 
 void main() {
-  testWidgets('Stocks Test', (WidgetTester tester) async {
+  testWidgets('Courses II Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     //await tester.pumpWidget(ListeScreen());
 

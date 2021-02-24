@@ -1,7 +1,7 @@
 import 'dart:convert' show jsonDecode, jsonEncode;
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:stocks/storage.dart';
+import 'package:courses2/storage.dart';
 
 part 'modele.g.dart';
 
@@ -34,8 +34,8 @@ class Produit extends ChangeNotifier {
 }
 
 @JsonSerializable(explicitToJson: true)
-class ModeleStocksSingleton extends ChangeNotifier {
-  final _storage = LocalStorageStocks();
+class ModeleCoursesSingleton extends ChangeNotifier {
+  final _storage = LocalStorageCourses();
   Future<void> isLoaded;
 
   List<Rayon> _rayons = [];
@@ -52,12 +52,12 @@ class ModeleStocksSingleton extends ChangeNotifier {
   List<Produit> _produitsCheck = [];
   get produitsCheck => _produitsCheck;
 
-  ModeleStocksSingleton._privateConstructor();
+  ModeleCoursesSingleton._privateConstructor();
 
-  static final ModeleStocksSingleton _instance =
-      ModeleStocksSingleton._privateConstructor();
+  static final ModeleCoursesSingleton _instance =
+      ModeleCoursesSingleton._privateConstructor();
 
-  factory ModeleStocksSingleton() {
+  factory ModeleCoursesSingleton() {
     return _instance;
   }
 
@@ -146,9 +146,9 @@ class ModeleStocksSingleton extends ChangeNotifier {
   }
 
   // ignore: unused_element
-  factory ModeleStocksSingleton._fromJson(Map<String, dynamic> json) =>
-      _$ModeleStocksSingletonFromJson(json);
-  Map<String, dynamic> toJson() => _$ModeleStocksSingletonToJson(this);
+  factory ModeleCoursesSingleton._fromJson(Map<String, dynamic> json) =>
+      _$ModeleCoursesSingletonFromJson(json);
+  Map<String, dynamic> toJson() => _$ModeleCoursesSingletonToJson(this);
 
   Future<void> _readAll() async {
     fromJson(jsonDecode(await _storage.readAll()));
@@ -163,4 +163,4 @@ class ModeleStocksSingleton extends ChangeNotifier {
   }
 }
 
-var modele = ModeleStocksSingleton();
+var modele = ModeleCoursesSingleton();
