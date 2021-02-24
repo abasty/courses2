@@ -108,9 +108,9 @@ class ListeScreen extends StatelessWidget {
         return Stack(
           children: [
             ListView.builder(
-              itemCount: modele.listeSelect.length,
-              itemBuilder: (context, index) =>
-                  ProduitConsumer(modele.listeSelect[index], _produitCheckTile),
+              itemCount: modele.produitsCheck.length,
+              itemBuilder: (context, index) => ProduitConsumer(
+                  modele.produitsCheck[index], _produitCheckTile),
             ),
             LocalActionButton(
                 Icons.remove_shopping_cart, modele.ctrlValideChariot)

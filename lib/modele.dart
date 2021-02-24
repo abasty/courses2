@@ -36,17 +36,21 @@ class Produit extends ChangeNotifier {
 @JsonSerializable(explicitToJson: true)
 class ModeleStocksSingleton extends ChangeNotifier {
   final _storage = LocalStorageStocks();
-
-  List<Rayon> _rayons = [];
-  List<Rayon> get rayons => _rayons;
-
-  List<Produit> produits = [];
   Future<void> isLoaded;
 
+  List<Rayon> _rayons = [];
+  get rayons => _rayons;
+
+  List<Produit> _produits = [];
+  get produits => _produits;
+
   @JsonKey(ignore: true)
-  Rayon rayonDivers;
+  Rayon _rayonDivers;
+  get rayonDivers => _rayonDivers;
+
   @JsonKey(ignore: true)
-  List<Produit> listeSelect = [];
+  List<Produit> _produitsCheck = [];
+  get produitsCheck => _produitsCheck;
 
   ModeleStocksSingleton._privateConstructor();
 
@@ -59,8 +63,8 @@ class ModeleStocksSingleton extends ChangeNotifier {
 
   void ctrlProduitPlus(Produit p) {
     if (++p.quantite == 1) {
-      listeSelect.add(p);
-      listeSelect.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
+      _produitsCheck.add(p);
+      _produitsCheck.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     }
     p.fait = false;
     p.notifyListeners();
@@ -71,7 +75,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
     if (p.quantite == 0) return;
 
     if (--p.quantite == 0) {
-      listeSelect.remove(p);
+      _produitsCheck.remove(p);
     }
     p.fait = false;
     //p.notifyListeners();
@@ -82,7 +86,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
   void ctrlProduitRaz(Produit p) {
     if (p.quantite == 0) return;
     p.quantite = 0;
-    listeSelect.remove(p);
+    _produitsCheck.remove(p);
     p.fait = false;
     p.notifyListeners();
     writeAll();
@@ -99,7 +103,7 @@ class ModeleStocksSingleton extends ChangeNotifier {
   }
 
   void ctrlValideChariot() {
-    listeSelect.removeWhere((p) {
+    _produitsCheck.removeWhere((p) {
       if (p.fait) {
         p.quantite = 0;
         p.fait = false;
@@ -113,12 +117,12 @@ class ModeleStocksSingleton extends ChangeNotifier {
 
   void ctrlMajProduit(Produit p, Produit maj) {
     if (p == null)
-      modele.produits.add(maj);
+      modele._produits.add(maj);
     else {
       p.nom = maj.nom;
       p.rayon = maj.rayon;
     }
-    produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
+    _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     notifyListeners();
     writeAll();
   }
@@ -136,9 +140,9 @@ class ModeleStocksSingleton extends ChangeNotifier {
         ?.map(
             (e) => e == null ? null : Rayon.fromJson(e as Map<String, dynamic>))
         ?.toList();
-    produits = (json['produits'] as List)?.map(produitFromElement)?.toList();
-    rayonDivers = _rayons?.singleWhere((e) => e.nom == "Divers");
-    listeSelect?.addAll(produits?.where((e) => e.quantite > 0));
+    _produits = (json['produits'] as List)?.map(produitFromElement)?.toList();
+    _rayonDivers = _rayons?.singleWhere((e) => e.nom == "Divers");
+    _produitsCheck?.addAll(_produits?.where((e) => e.quantite > 0));
   }
 
   // ignore: unused_element
