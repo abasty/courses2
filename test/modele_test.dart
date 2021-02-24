@@ -10,7 +10,7 @@ var mockModele = MockModele();
 
 // Ce qu'il faut mocker c'est pas le modèle, c'est le storage
 // => on passe le storage à la création du singleton. Donc il faut que le
-// constructeur du singleton est en paramètre le storage
+// constructeur du singleton ait en paramètre le storage
 
 void main() {
   test('modele initialization', () async {
