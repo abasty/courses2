@@ -1,3 +1,13 @@
+import 'package:courses2/storage.dart';
+
+class DatasetStorageCourses extends StorageCourses {
+  Future<void> writeAll(String json) async {}
+
+  Future<String> readAll() async {
+    return dataset;
+  }
+}
+
 const dataset = '''
 {
     "rayons": [

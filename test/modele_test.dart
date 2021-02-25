@@ -1,26 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:courses2/modele.dart';
-import 'package:courses2/storage.dart';
 import 'dataset.dart';
-
-class DatasetStorageCourses extends StorageCourses {
-  Future<void> writeAll(String json) async {}
-
-  Future<String> readAll() async {
-    return dataset;
-  }
-}
 
 void main() async {
   modele = ModeleCourses(DatasetStorageCourses());
   modele.readAll();
   await modele.isLoaded;
   test('modele initialization', () {
+    assert(modele.produits.length >= 4);
     assert(modele.produits[0].nom == "Escalope de porc");
+    assert(modele.produits[3].nom == "Pomme de terre");
   });
   test('ctrlProduitPlus / ctrlProduitMoins / produitsCheck', () {
-    Produit p = modele.produits[0];
+    assert(modele.produits.length >= 4);
+    Produit p = modele.produits[4];
     modele.ctrlProduitPlus(p);
     assert(p.quantite == 1);
     assert(modele.produitsCheck.isNotEmpty);
