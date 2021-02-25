@@ -20,26 +20,31 @@ void main() async {
 
   testWidgets('ListeScreen Widget Test', (WidgetTester tester) async {
     await tester.runAsync(() async {
-      // test code here
       await tester.pumpWidget(
-        // Wrap our widget in a MaterialApp for MediaQuery
         MaterialApp(home: ListeScreen()),
       );
 
-      // First frame just display the progress indicator
-      var progress = find.byType(CircularProgressIndicator);
-      print(progress);
+      // La première image n'affiche que le "progress indicator"
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-      // Take a frame for the FutureBuilder to realize
+      // On prend une image pour que le FutureBuilder se réalise
       await tester.pump();
+      // Le "progress indicator" laisse place à la liste des produits
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.text('Produits'), findsOneWidget);
+      // On doit avoir autant d'icones (+) que de produits dans le modèle
+      var icon = find.byIcon(Icons.add_circle);
+      expect(icon, findsNWidgets(modele.produits.length));
+      // On appuie sur le premier (+)
+      await tester.tap(icon.first);
+      // Le modèle a été mis à jour mais pas encore l'UI
+      assert(modele.produits[0].quantite == 1);
+      expect(find.text('1'), findsNothing);
 
-      // The progress indicator went away and the list is displayed
-      progress = find.byType(CircularProgressIndicator);
-      print(progress);
-      final text = find.text('Produits');
-      print(text);
-      final icon = find.byIcon(Icons.add_circle);
-      print(icon);
+      // On prend une autre image
+      await tester.pump();
+      // Le widget doit afficher la nouvelle valeur
+      expect(find.text('1'), findsOneWidget);
     });
   });
 }

@@ -14,7 +14,7 @@ void main() async {
   });
   test('ctrlProduitPlus / ctrlProduitMoins / produitsCheck', () {
     assert(modele.produits.length >= 4);
-    Produit p = modele.produits[4];
+    Produit p = modele.produits[3];
     modele.ctrlProduitPlus(p);
     assert(p.quantite == 1);
     assert(modele.produitsCheck.isNotEmpty);
