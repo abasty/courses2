@@ -7,6 +7,7 @@ import 'package:window_size/window_size.dart';
 import 'modele.dart';
 import 'liste_screen.dart';
 import 'produit_screen.dart';
+import 'storage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,7 @@ void main() {
       setWindowFrame(Rect.fromLTRB(0, 0, 400, 600));
     }
   }
+  modele = ModeleCourses(LocalStorageCourses());
   modele.readAll();
   runApp(
     MaterialApp(

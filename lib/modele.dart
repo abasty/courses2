@@ -33,33 +33,26 @@ class Produit extends ChangeNotifier {
   }
 }
 
-@JsonSerializable(explicitToJson: true)
-class ModeleCoursesSingleton extends ChangeNotifier {
-  final _storage = LocalStorageCourses();
+@JsonSerializable(explicitToJson: true) // create_factory: false
+class ModeleCourses extends ChangeNotifier {
+  final StorageCourses _storage;
   Future<void> isLoaded;
 
   List<Rayon> _rayons = [];
-  get rayons => _rayons;
+  List<Rayon> get rayons => _rayons;
 
   List<Produit> _produits = [];
-  get produits => _produits;
+  List<Produit> get produits => _produits;
 
   @JsonKey(ignore: true)
   Rayon _rayonDivers;
-  get rayonDivers => _rayonDivers;
+  Rayon get rayonDivers => _rayonDivers;
 
   @JsonKey(ignore: true)
   List<Produit> _produitsCheck = [];
-  get produitsCheck => _produitsCheck;
+  List<Produit> get produitsCheck => _produitsCheck;
 
-  ModeleCoursesSingleton._privateConstructor();
-
-  static final ModeleCoursesSingleton _instance =
-      ModeleCoursesSingleton._privateConstructor();
-
-  factory ModeleCoursesSingleton() {
-    return _instance;
-  }
+  ModeleCourses(this._storage);
 
   void ctrlProduitPlus(Produit p) {
     if (++p.quantite == 1) {
@@ -146,9 +139,9 @@ class ModeleCoursesSingleton extends ChangeNotifier {
   }
 
   // ignore: unused_element
-  factory ModeleCoursesSingleton._fromJson(Map<String, dynamic> json) =>
-      _$ModeleCoursesSingletonFromJson(json);
-  Map<String, dynamic> toJson() => _$ModeleCoursesSingletonToJson(this);
+  factory ModeleCourses._fromJson(Map<String, dynamic> json) =>
+      _$ModeleCoursesFromJson(json);
+  Map<String, dynamic> toJson() => _$ModeleCoursesToJson(this);
 
   Future<void> _readAll() async {
     fromJson(jsonDecode(await _storage.readAll()));
@@ -163,4 +156,4 @@ class ModeleCoursesSingleton extends ChangeNotifier {
   }
 }
 
-var modele = ModeleCoursesSingleton();
+ModeleCourses modele;
