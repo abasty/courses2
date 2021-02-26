@@ -10,6 +10,8 @@ import 'produit_screen.dart';
 import 'storage.dart';
 
 void main() {
+  if (!kDebugMode) debugPrint = (String message, {int wrapWidth}) {};
+
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
