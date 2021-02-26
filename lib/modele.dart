@@ -124,7 +124,15 @@ class ModeleCourses extends ChangeNotifier {
     Produit produitFromElement(dynamic e) {
       if (e == null) return null;
       Produit p = Produit.fromJson(e as Map<String, dynamic>);
-      Rayon r = _rayons?.singleWhere((e) => e.nom == p.rayon.nom);
+      Rayon r = _rayons?.singleWhere(
+        (e) => e.nom == p.rayon.nom,
+        orElse: () {
+          var r = Rayon(p.rayon.nom);
+          _rayons.add(r);
+          return r;
+        },
+      );
+
       p?.rayon = r;
       return p;
     }
@@ -134,7 +142,12 @@ class ModeleCourses extends ChangeNotifier {
             (e) => e == null ? null : Rayon.fromJson(e as Map<String, dynamic>))
         ?.toList();
     _produits = (json['produits'] as List)?.map(produitFromElement)?.toList();
-    _rayonDivers = _rayons?.singleWhere((e) => e.nom == "Divers");
+    _rayonDivers = _rayons?.singleWhere((e) => e.nom == "Divers", orElse: () {
+      Rayon r = Rayon("Divers");
+      _rayons.add(r);
+      return r;
+    });
+    _rayons.sort((a, b) => a.nom.compareTo(b.nom));
     _produitsCheck?.addAll(_produits?.where((e) => e.quantite > 0));
   }
 

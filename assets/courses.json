@@ -13,7 +13,7 @@
             "nom": "Fruits"
         },
         {
-            "nom": "Épicerie"
+            "nom": "Epicerie"
         },
         {
             "nom": "Frais"
@@ -89,7 +89,7 @@
         {
             "nom": "Sel",
             "rayon": {
-                "nom": "Épicerie"
+                "nom": "Epicerie"
             },
             "quantite": 0,
             "fait": false

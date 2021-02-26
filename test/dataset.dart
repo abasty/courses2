@@ -24,7 +24,7 @@ const dataset = '''
             "nom": "Fruits"
         },
         {
-            "nom": "Épicerie"
+            "nom": "Epicerie"
         },
         {
             "nom": "Frais"
@@ -100,7 +100,7 @@ const dataset = '''
         {
             "nom": "Sel",
             "rayon": {
-                "nom": "Épicerie"
+                "nom": "Epicerie"
             },
             "quantite": 0,
             "fait": false
