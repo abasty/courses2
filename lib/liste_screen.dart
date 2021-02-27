@@ -29,8 +29,8 @@ class ListeScreen extends StatelessWidget {
           title: Text('Courses II'),
           bottom: TabBar(
             tabs: [
-              Tab(text: "Produits"),
-              Tab(text: "Liste"),
+              Tab(text: 'Produits'),
+              Tab(text: 'Liste'),
             ],
           ),
         ),
@@ -85,7 +85,7 @@ class ListeScreen extends StatelessWidget {
             icon: Icon(Icons.remove_circle),
             onPressed: () => modele.ctrlProduitMoins(p),
           ),
-          Text("${p.quantite}"),
+          Text('${p.quantite}'),
           IconButton(
             icon: Icon(Icons.add_circle),
             onPressed: () => modele.ctrlProduitPlus(p),
@@ -148,7 +148,7 @@ class ProduitConsumer extends StatelessWidget {
 
 class LocalActionButton extends StatelessWidget {
   final IconData _icon;
-  final Function _action;
+  final void Function() _action;
 
   const LocalActionButton(this._icon, this._action);
 

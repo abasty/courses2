@@ -49,7 +49,7 @@ class ModeleCourses extends ChangeNotifier {
   Rayon get rayonDivers => _rayonDivers;
 
   @JsonKey(ignore: true)
-  List<Produit> _produitsCheck = [];
+  final List<Produit> _produitsCheck = [];
   List<Produit> get produitsCheck => _produitsCheck;
 
   ModeleCourses(this._storage);
@@ -89,7 +89,7 @@ class ModeleCourses extends ChangeNotifier {
     p.quantite == 0 ? modele.ctrlProduitPlus(p) : modele.ctrlProduitRaz(p);
   }
 
-  void ctrlProduitPrend(Produit p, value) {
+  void ctrlProduitPrend(Produit p, bool value) {
     p.fait = value;
     p.notifyListeners();
     writeAll();
@@ -109,9 +109,9 @@ class ModeleCourses extends ChangeNotifier {
   }
 
   void ctrlMajProduit(Produit p, Produit maj) {
-    if (p == null)
+    if (p == null) {
       modele._produits.add(maj);
-    else {
+    } else {
       p.nom = maj.nom;
       p.rayon = maj.rayon;
     }
@@ -123,8 +123,8 @@ class ModeleCourses extends ChangeNotifier {
   void fromJson(Map<String, dynamic> json) {
     Produit produitFromElement(dynamic e) {
       if (e == null) return null;
-      Produit p = Produit.fromJson(e as Map<String, dynamic>);
-      Rayon r = _rayons?.singleWhere(
+      var p = Produit.fromJson(e as Map<String, dynamic>);
+      var r = _rayons?.singleWhere(
         (e) => e.nom == p.rayon.nom,
         orElse: () {
           var r = Rayon(p.rayon.nom);
@@ -142,8 +142,8 @@ class ModeleCourses extends ChangeNotifier {
             (e) => e == null ? null : Rayon.fromJson(e as Map<String, dynamic>))
         ?.toList();
     _produits = (json['produits'] as List)?.map(produitFromElement)?.toList();
-    _rayonDivers = _rayons?.singleWhere((e) => e.nom == "Divers", orElse: () {
-      Rayon r = Rayon("Divers");
+    _rayonDivers = _rayons?.singleWhere((e) => e.nom == 'Divers', orElse: () {
+      var r = Rayon('Divers');
       _rayons.add(r);
       return r;
     });
@@ -157,7 +157,7 @@ class ModeleCourses extends ChangeNotifier {
   Map<String, dynamic> toJson() => _$ModeleCoursesToJson(this);
 
   Future<void> _readAll() async {
-    fromJson(jsonDecode(await _storage.readAll()));
+    fromJson(jsonDecode(await _storage.readAll()) as Map<String, dynamic>);
   }
 
   void readAll() {

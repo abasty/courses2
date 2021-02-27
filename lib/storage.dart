@@ -9,18 +9,17 @@ abstract class StorageCourses {
 class LocalStorageCourses extends StorageCourses {
   final _storage = LocalStorage('courses.json');
 
+  @override
   Future<void> writeAll(String json) async {
     await _storage.ready;
-    await _storage.setItem("modele", json);
+    await _storage.setItem('modele', json);
   }
 
+  @override
   Future<String> readAll() async {
-    String json;
     await _storage.ready;
-    json = await _storage.getItem('modele');
-    if (json == null) {
-      json = await rootBundle.loadString("assets/courses.json");
-    }
+    var json = await _storage.getItem('modele') as String;
+    json ??= await rootBundle.loadString('assets/courses.json');
     await Future.delayed(Duration(seconds: 2));
     return json;
   }

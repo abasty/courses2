@@ -9,12 +9,12 @@ void main() async {
   await modele.isLoaded;
   test('modele initialization', () {
     assert(modele.produits.length >= 4);
-    assert(modele.produits[0].nom == "Escalope de porc");
-    assert(modele.produits[3].nom == "Pomme de terre");
+    assert(modele.produits[0].nom == 'Escalope de porc');
+    assert(modele.produits[3].nom == 'Pomme de terre');
   });
   test('ctrlProduitPlus / ctrlProduitMoins / produitsCheck', () {
     assert(modele.produits.length >= 4);
-    Produit p = modele.produits[3];
+    var p = modele.produits[3];
     modele.ctrlProduitPlus(p);
     assert(p.quantite == 1);
     assert(modele.produitsCheck.isNotEmpty);

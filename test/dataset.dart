@@ -1,8 +1,10 @@
 import 'package:courses2/storage.dart';
 
 class DatasetStorageCourses extends StorageCourses {
+  @override
   Future<void> writeAll(String json) async {}
 
+  @override
   Future<String> readAll() async {
     return dataset;
   }

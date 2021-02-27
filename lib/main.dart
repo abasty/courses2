@@ -28,10 +28,14 @@ void main() {
       routes: {
         '/': (context) => ListeScreen(),
       },
-      onGenerateRoute: (settings) => settings.name == ProduitScreen.path
-          ? MaterialPageRoute(
-              builder: (context) => ProduitScreen(settings.arguments))
-          : null,
+      onGenerateRoute: (settings) {
+        if (settings.name == ProduitScreen.path) {
+          final args = settings.arguments as ProduitArgs;
+          return MaterialPageRoute(builder: (context) => ProduitScreen(args));
+        } else {
+          return null;
+        }
+      },
     ),
   );
 }

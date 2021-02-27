@@ -28,7 +28,7 @@ class ProduitScreenState extends State<ProduitScreen> {
   ProduitScreenState(this._init) {
     _init != null
         ? _maj = Produit(_init.nom, _init.rayon)
-        : _maj = Produit("", modele.rayonDivers);
+        : _maj = Produit('', modele.rayonDivers);
   }
 
   @override
@@ -36,7 +36,7 @@ class ProduitScreenState extends State<ProduitScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(icon: Icon(Icons.clear), onPressed: _annulePressed),
-        title: Text(_init == null ? "Création" : "Édition"),
+        title: Text(_init == null ? 'Création' : 'Édition'),
         centerTitle: true,
         actions: [
           IconButton(
