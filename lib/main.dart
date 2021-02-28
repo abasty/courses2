@@ -24,9 +24,9 @@ void main() {
   modele.readAll();
   runApp(
     MaterialApp(
-      initialRoute: '/',
+      initialRoute: ListeScreen.path,
       routes: {
-        '/': (context) => ListeScreen(),
+        ListeScreen.path: (context) => ListeScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == ProduitScreen.path) {
