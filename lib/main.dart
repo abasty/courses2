@@ -24,6 +24,7 @@ void main() {
   modele.readAll();
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: ListeScreen.path,
       routes: {
         ListeScreen.path: (context) => ListeScreen(),
