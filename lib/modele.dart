@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonDecode, jsonEncode;
+import 'dart:convert' show jsonEncode;
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:courses2/storage.dart';
@@ -157,7 +157,7 @@ class ModeleCourses extends ChangeNotifier {
   Map<String, dynamic> toJson() => _$ModeleCoursesToJson(this);
 
   Future<void> _readAll() async {
-    fromJson(jsonDecode(await _storage.readAll()) as Map<String, dynamic>);
+    fromJson(await _storage.readAll());
   }
 
   void readAll() {

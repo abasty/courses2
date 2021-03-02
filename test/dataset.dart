@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:courses2/storage.dart';
 
 class DatasetStorageCourses extends StorageCourses {
@@ -5,8 +7,8 @@ class DatasetStorageCourses extends StorageCourses {
   Future<void> writeAll(String json) async {}
 
   @override
-  Future<String> readAll() async {
-    return dataset;
+  Future<Map<String, dynamic>> readAll() async {
+    return jsonDecode(dataset) as Map<String, dynamic>;
   }
 }
 
