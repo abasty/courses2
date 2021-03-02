@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 
 abstract class StorageCourses {
-  Future<void> writeAll(String json);
+  Future<void> writeAll(Map<String, dynamic> json);
   Future<Map<String, dynamic>> readAll();
 }
 
@@ -12,9 +12,9 @@ class LocalStorageCourses extends StorageCourses {
   final _storage = LocalStorage('courses.json');
 
   @override
-  Future<void> writeAll(String json) async {
+  Future<void> writeAll(Map<String, dynamic> json) async {
     await _storage.ready;
-    await _storage.setItem('modele', json);
+    await _storage.setItem('modele', jsonEncode(json));
   }
 
   @override

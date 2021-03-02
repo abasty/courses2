@@ -154,6 +154,7 @@ class ModeleCourses extends ChangeNotifier {
   // ignore: unused_element
   factory ModeleCourses._fromJson(Map<String, dynamic> json) =>
       _$ModeleCoursesFromJson(json);
+
   Map<String, dynamic> toJson() => _$ModeleCoursesToJson(this);
 
   Future<void> _readAll() async {
@@ -165,7 +166,7 @@ class ModeleCourses extends ChangeNotifier {
   }
 
   Future<void> writeAll() async {
-    return await _storage.writeAll(jsonEncode(toJson()));
+    return await _storage.writeAll(toJson());
   }
 }
 
