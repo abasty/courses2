@@ -61,7 +61,7 @@ class ModeleCourses extends ChangeNotifier {
   List<Produit> _produits = [];
   List<Produit> get produits => _produits;
 
-  Rayon _divers = Rayon('Divers');
+  final Rayon _divers = Rayon('Divers');
   Rayon get divers => _divers;
 
   final List<Produit> _selection = [];
@@ -167,17 +167,11 @@ class ModeleCourses extends ChangeNotifier {
     }
 
     _rayons = (map['rayons'] as List)
-        ?.map(
-            (e) => e == null ? null : Rayon.fromMap(e as Map<String, dynamic>))
-        ?.toList();
-    _produits = (map['produits'] as List)?.map(produitFromElement)?.toList();
-    _divers = _rayons?.singleWhere((e) => e.nom == 'Divers', orElse: () {
-      var r = Rayon('Divers');
-      _rayons.add(r);
-      return r;
-    });
+        .map((e) => Rayon.fromMap(e as Map<String, dynamic>))
+        .toList();
+    _produits = (map['produits'] as List).map(produitFromElement).toList();
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
-    _selection.addAll(_produits?.where((e) => e.quantite > 0));
+    _selection.addAll(_produits.where((e) => e.quantite > 0));
   }
 }
 
