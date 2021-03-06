@@ -7,26 +7,12 @@ class Rayon {
 
   Rayon(this.nom);
 
-  Rayon copyWith({
-    String nom,
-  }) {
-    return Rayon(
-      nom ?? this.nom,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'nom': nom,
-    };
-  }
+  Map<String, dynamic> toMap() => {'nom': nom};
 
   factory Rayon.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
-    return Rayon(
-      map['nom'] as String,
-    );
+    return Rayon(map['nom'] as String);
   }
 
   String toJson() => json.encode(toMap());
@@ -36,16 +22,6 @@ class Rayon {
 
   @override
   String toString() => 'Rayon(nom: $nom)';
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-
-    return o is Rayon && o.nom == nom;
-  }
-
-  @override
-  int get hashCode => nom.hashCode;
 }
 
 class Produit extends ChangeNotifier {
@@ -56,14 +32,8 @@ class Produit extends ChangeNotifier {
 
   Produit(this.nom, this.rayon);
 
-  Map<String, dynamic> toMap() {
-    return {
-      'nom': nom,
-      'rayon': rayon?.toMap(),
-      'quantite': quantite,
-      'fait': fait,
-    };
-  }
+  Map<String, dynamic> toMap() =>
+      {'nom': nom, 'rayon': rayon?.toMap(), 'quantite': quantite, 'fait': fait};
 
   factory Produit.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
@@ -82,22 +52,6 @@ class Produit extends ChangeNotifier {
   @override
   String toString() {
     return 'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
-  }
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-
-    return o is Produit &&
-        o.nom == nom &&
-        o.rayon == rayon &&
-        o.quantite == quantite &&
-        o.fait == fait;
-  }
-
-  @override
-  int get hashCode {
-    return nom.hashCode ^ rayon.hashCode ^ quantite.hashCode ^ fait.hashCode;
   }
 }
 
@@ -185,7 +139,7 @@ class ModeleCourses extends ChangeNotifier {
     writeAll();
   }
 
-  void fromMap(Map<String, dynamic> json) {
+  void fromMap(Map<String, dynamic> map) {
     Produit produitFromElement(dynamic e) {
       if (e == null) return null;
       var p = Produit.fromMap(e as Map<String, dynamic>);
@@ -202,11 +156,11 @@ class ModeleCourses extends ChangeNotifier {
       return p;
     }
 
-    _rayons = (json['rayons'] as List)
+    _rayons = (map['rayons'] as List)
         ?.map(
             (e) => e == null ? null : Rayon.fromMap(e as Map<String, dynamic>))
         ?.toList();
-    _produits = (json['produits'] as List)?.map(produitFromElement)?.toList();
+    _produits = (map['produits'] as List)?.map(produitFromElement)?.toList();
     _rayonDivers = _rayons?.singleWhere((e) => e.nom == 'Divers', orElse: () {
       var r = Rayon('Divers');
       _rayons.add(r);
@@ -221,36 +175,16 @@ class ModeleCourses extends ChangeNotifier {
   void fromJson(String source) =>
       fromMap(json.decode(source) as Map<String, dynamic>);
 
-  Future<void> _readAll() async {
-    fromMap(await _storage.readAll());
-  }
+  Future<void> _readAll() async => fromMap(await _storage.readAll());
 
-  void readAll() {
-    isLoaded = _readAll();
-  }
+  void readAll() => isLoaded = _readAll();
 
-  Future<void> writeAll() async {
-    return await _storage.writeAll(toMap());
-  }
+  Future<void> writeAll() async => await _storage.writeAll(toMap());
 
   Map<String, dynamic> toMap() => {
         'rayons': _rayons?.map((x) => x?.toMap())?.toList(),
         'produits': _produits?.map((x) => x?.toMap())?.toList(),
-    };
-  }
-
-  // factory ModeleCourses.fromMap(Map<String, dynamic> map) {
-  //   if (map == null) return null;
-
-  //   return ModeleCourses(
-  //     StorageCourses.fromMap(map['_storage']),
-  //     Future<void>.fromMap(map['isLoaded']),
-  //     List<Rayon>.from(map['_rayons']?.map((x) => Rayon.fromMap(x))),
-  //     List<Produit>.from(map['_produits']?.map((x) => Produit.fromMap(x))),
-  //     Rayon.fromMap(map['_rayonDivers']),
-  //   );
-  // }
-
+      };
 }
 
 ModeleCourses modele;
