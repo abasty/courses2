@@ -233,10 +233,9 @@ class ModeleCourses extends ChangeNotifier {
     return await _storage.writeAll(toMap());
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      '_rayons': _rayons?.map((x) => x?.toMap())?.toList(),
-      '_produits': _produits?.map((x) => x?.toMap())?.toList(),
+  Map<String, dynamic> toMap() => {
+        'rayons': _rayons?.map((x) => x?.toMap())?.toList(),
+        'produits': _produits?.map((x) => x?.toMap())?.toList(),
     };
   }
 
