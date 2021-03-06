@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'modele.dart';
 
 class ProduitArgs {
-  final Produit p;
+  final Produit? p;
 
-  ProduitArgs(this.p);
+  ProduitArgs([this.p]);
 }
 
 class ProduitScreen extends StatefulWidget {
   static const path = '/produit';
-  final Produit _init;
+  final Produit? _init;
 
   ProduitScreen(ProduitArgs args) : _init = args.p;
 
@@ -22,14 +22,13 @@ class ProduitScreen extends StatefulWidget {
 
 class ProduitScreenState extends State<ProduitScreen> {
   final _formKey = GlobalKey<FormState>();
-  final Produit _init;
-  Produit _maj;
+  final Produit? _init;
+  final Produit _maj;
 
-  ProduitScreenState(this._init) {
-    _init != null
-        ? _maj = Produit(_init.nom, _init.rayon)
-        : _maj = Produit('', modele.divers);
-  }
+  ProduitScreenState([this._init])
+      : _maj = _init != null
+            ? Produit(_init.nom, _init.rayon)
+            : Produit('', modele.divers);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +54,7 @@ class ProduitScreenState extends State<ProduitScreen> {
   }
 
   void _validePressed() {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       modele.ctrlMajProduit(_init, _maj);
       Navigator.pop(context);
     }
@@ -72,7 +71,7 @@ class ProduitScreenState extends State<ProduitScreen> {
               title: Text(modele.rayons[index].nom),
               value: modele.rayons[index],
               groupValue: _maj.rayon,
-              onChanged: (Rayon r) => setState(() => _maj.rayon = r),
+              onChanged: (Rayon? r) => setState(() => _maj.rayon = r!),
             ),
           );
         },
@@ -90,7 +89,7 @@ class ProduitScreenState extends State<ProduitScreen> {
       ),
       initialValue: _maj.nom,
       validator: (nom) {
-        if (nom.length < 2) {
+        if (nom!.length < 2) {
           return 'Le nom doit contenir au moins deux caractères';
         } else {
           _maj.nom = nom;
