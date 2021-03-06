@@ -67,7 +67,7 @@ class ListeScreen extends StatelessWidget {
             () => Navigator.pushNamed(
               context,
               ProduitScreen.path,
-              arguments: ProduitArgs(null),
+              arguments: ProduitArgs(),
             ),
           ),
         ),
@@ -75,7 +75,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _produitListTile(BuildContext context, Produit p, Widget child) {
+  Widget _produitListTile(BuildContext context, Produit p, Widget? child) {
     debugPrint(p.toString());
     return ListTile(
       title: Text(p.nom),
@@ -122,20 +122,24 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _produitCheckTile(BuildContext context, Produit p, Widget child) {
+  Widget _produitCheckTile(BuildContext context, Produit p, Widget? child) {
     debugPrint(p.toString());
     return CheckboxListTile(
       title: Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
       subtitle: Text(p.rayon.nom),
       value: p.fait,
-      onChanged: (bool value) => modele.ctrlProduitPrend(p, value),
+      onChanged: (bool? value) => modele.ctrlProduitPrend(p, value!),
     );
   }
 }
 
 class ProduitConsumer extends StatelessWidget {
   final Produit _p;
-  final Widget Function(BuildContext context, Produit p, Widget child) _builder;
+  final Widget Function(
+    BuildContext context,
+    Produit p,
+    Widget? child,
+  ) _builder;
 
   const ProduitConsumer(this._p, this._builder);
 
