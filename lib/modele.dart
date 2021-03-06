@@ -10,8 +10,6 @@ class Rayon {
   Map<String, dynamic> toMap() => {'nom': nom};
 
   factory Rayon.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return Rayon(map['nom'] as String);
   }
 
@@ -33,11 +31,9 @@ class Produit extends ChangeNotifier {
   Produit(this.nom, this.rayon);
 
   Map<String, dynamic> toMap() =>
-      {'nom': nom, 'rayon': rayon?.toMap(), 'quantite': quantite, 'fait': fait};
+      {'nom': nom, 'rayon': rayon.toMap(), 'quantite': quantite, 'fait': fait};
 
   factory Produit.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return Produit(map['nom'] as String,
         Rayon.fromMap(map['rayon'] as Map<String, dynamic>))
       ..quantite = map['quantite'] as int
@@ -57,7 +53,7 @@ class Produit extends ChangeNotifier {
 
 class ModeleCourses extends ChangeNotifier {
   final StorageCourses _storage;
-  Future<void> isLoaded;
+  Future<void>? isLoaded;
 
   List<Rayon> _rayons = [];
   List<Rayon> get rayons => _rayons;
@@ -65,7 +61,7 @@ class ModeleCourses extends ChangeNotifier {
   List<Produit> _produits = [];
   List<Produit> get produits => _produits;
 
-  Rayon _divers;
+  Rayon _divers = Rayon('Divers');
   Rayon get divers => _divers;
 
   final List<Produit> _selection = [];
@@ -126,7 +122,7 @@ class ModeleCourses extends ChangeNotifier {
     writeAll();
   }
 
-  void ctrlMajProduit(Produit p, Produit maj) {
+  void ctrlMajProduit(Produit? p, Produit maj) {
     if (p == null) {
       modele._produits.add(maj);
     } else {
@@ -150,15 +146,14 @@ class ModeleCourses extends ChangeNotifier {
   Future<void> writeAll() async => await _storage.writeAll(toMap());
 
   Map<String, dynamic> toMap() => {
-        'rayons': _rayons?.map((x) => x?.toMap())?.toList(),
-        'produits': _produits?.map((x) => x?.toMap())?.toList(),
+        'rayons': _rayons.map((x) => x.toMap()).toList(),
+        'produits': _produits.map((x) => x.toMap()).toList(),
       };
 
   void fromMap(Map<String, dynamic> map) {
     Produit produitFromElement(dynamic e) {
-      if (e == null) return null;
       var p = Produit.fromMap(e as Map<String, dynamic>);
-      var r = _rayons?.singleWhere(
+      var r = _rayons.singleWhere(
         (e) => e.nom == p.rayon.nom,
         orElse: () {
           var r = Rayon(p.rayon.nom);
@@ -167,7 +162,7 @@ class ModeleCourses extends ChangeNotifier {
         },
       );
 
-      p?.rayon = r;
+      p.rayon = r;
       return p;
     }
 
@@ -182,8 +177,8 @@ class ModeleCourses extends ChangeNotifier {
       return r;
     });
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
-    _selection?.addAll(_produits?.where((e) => e.quantite > 0));
+    _selection.addAll(_produits?.where((e) => e.quantite > 0));
   }
 }
 
-ModeleCourses modele;
+late ModeleCourses modele;
