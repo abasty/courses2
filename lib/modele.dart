@@ -65,18 +65,18 @@ class ModeleCourses extends ChangeNotifier {
   List<Produit> _produits = [];
   List<Produit> get produits => _produits;
 
-  Rayon _rayonDivers;
-  Rayon get rayonDivers => _rayonDivers;
+  Rayon _divers;
+  Rayon get divers => _divers;
 
-  final List<Produit> _produitsCheck = [];
-  List<Produit> get produitsCheck => _produitsCheck;
+  final List<Produit> _selection = [];
+  List<Produit> get selection => _selection;
 
   ModeleCourses(this._storage);
 
   void ctrlProduitPlus(Produit p) {
     if (++p.quantite == 1) {
-      _produitsCheck.add(p);
-      _produitsCheck.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
+      _selection.add(p);
+      _selection.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     }
     p.fait = false;
     p.notifyListeners();
@@ -87,18 +87,17 @@ class ModeleCourses extends ChangeNotifier {
     if (p.quantite == 0) return;
 
     if (--p.quantite == 0) {
-      _produitsCheck.remove(p);
+      _selection.remove(p);
     }
     p.fait = false;
-    //p.notifyListeners();
-    notifyListeners();
+    p.notifyListeners();
     writeAll();
   }
 
   void ctrlProduitRaz(Produit p) {
     if (p.quantite == 0) return;
     p.quantite = 0;
-    _produitsCheck.remove(p);
+    _selection.remove(p);
     p.fait = false;
     p.notifyListeners();
     writeAll();
@@ -115,7 +114,7 @@ class ModeleCourses extends ChangeNotifier {
   }
 
   void ctrlValideChariot() {
-    _produitsCheck.removeWhere((p) {
+    _selection.removeWhere((p) {
       if (p.fait) {
         p.quantite = 0;
         p.fait = false;
@@ -139,6 +138,22 @@ class ModeleCourses extends ChangeNotifier {
     writeAll();
   }
 
+  String toJson() => json.encode(toMap());
+
+  void fromJson(String source) =>
+      fromMap(json.decode(source) as Map<String, dynamic>);
+
+  Future<void> _readAll() async => fromMap(await _storage.readAll());
+
+  void readAll() => isLoaded = _readAll();
+
+  Future<void> writeAll() async => await _storage.writeAll(toMap());
+
+  Map<String, dynamic> toMap() => {
+        'rayons': _rayons?.map((x) => x?.toMap())?.toList(),
+        'produits': _produits?.map((x) => x?.toMap())?.toList(),
+      };
+
   void fromMap(Map<String, dynamic> map) {
     Produit produitFromElement(dynamic e) {
       if (e == null) return null;
@@ -161,30 +176,14 @@ class ModeleCourses extends ChangeNotifier {
             (e) => e == null ? null : Rayon.fromMap(e as Map<String, dynamic>))
         ?.toList();
     _produits = (map['produits'] as List)?.map(produitFromElement)?.toList();
-    _rayonDivers = _rayons?.singleWhere((e) => e.nom == 'Divers', orElse: () {
+    _divers = _rayons?.singleWhere((e) => e.nom == 'Divers', orElse: () {
       var r = Rayon('Divers');
       _rayons.add(r);
       return r;
     });
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
-    _produitsCheck?.addAll(_produits?.where((e) => e.quantite > 0));
+    _selection?.addAll(_produits?.where((e) => e.quantite > 0));
   }
-
-  String toJson() => json.encode(toMap());
-
-  void fromJson(String source) =>
-      fromMap(json.decode(source) as Map<String, dynamic>);
-
-  Future<void> _readAll() async => fromMap(await _storage.readAll());
-
-  void readAll() => isLoaded = _readAll();
-
-  Future<void> writeAll() async => await _storage.writeAll(toMap());
-
-  Map<String, dynamic> toMap() => {
-        'rayons': _rayons?.map((x) => x?.toMap())?.toList(),
-        'produits': _produits?.map((x) => x?.toMap())?.toList(),
-      };
 }
 
 ModeleCourses modele;

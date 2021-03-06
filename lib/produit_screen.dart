@@ -28,7 +28,7 @@ class ProduitScreenState extends State<ProduitScreen> {
   ProduitScreenState(this._init) {
     _init != null
         ? _maj = Produit(_init.nom, _init.rayon)
-        : _maj = Produit('', modele.rayonDivers);
+        : _maj = Produit('', modele.divers);
   }
 
   @override
