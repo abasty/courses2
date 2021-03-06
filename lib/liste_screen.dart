@@ -160,7 +160,10 @@ class LocalActionButton extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: FloatingActionButton(child: Icon(_icon), onPressed: _action),
+        child: FloatingActionButton(
+          onPressed: _action,
+          child: Icon(_icon),
+        ),
       ),
     );
   }
