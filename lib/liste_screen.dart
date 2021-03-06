@@ -110,9 +110,9 @@ class ListeScreen extends StatelessWidget {
         return Stack(
           children: [
             ListView.builder(
-              itemCount: modele.produitsCheck.length,
-              itemBuilder: (context, index) => ProduitConsumer(
-                  modele.produitsCheck[index], _produitCheckTile),
+              itemCount: modele.selection.length,
+              itemBuilder: (context, index) =>
+                  ProduitConsumer(modele.selection[index], _produitCheckTile),
             ),
             LocalActionButton(
                 Icons.remove_shopping_cart, modele.ctrlValideChariot)
@@ -160,7 +160,10 @@ class LocalActionButton extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: FloatingActionButton(child: Icon(_icon), onPressed: _action),
+        child: FloatingActionButton(
+          onPressed: _action,
+          child: Icon(_icon),
+        ),
       ),
     );
   }

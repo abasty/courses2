@@ -17,13 +17,13 @@ void main() async {
     var p = modele.produits[3];
     modele.ctrlProduitPlus(p);
     assert(p.quantite == 1);
-    assert(modele.produitsCheck.isNotEmpty);
-    assert(modele.produitsCheck[0].nom == p.nom);
+    assert(modele.selection.isNotEmpty);
+    assert(modele.selection[0].nom == p.nom);
     modele.ctrlProduitMoins(p);
     assert(p.quantite == 0);
-    assert(modele.produitsCheck.isEmpty);
+    assert(modele.selection.isEmpty);
     modele.ctrlProduitMoins(p);
     assert(p.quantite == 0);
-    assert(modele.produitsCheck.isEmpty);
+    assert(modele.selection.isEmpty);
   });
 }
