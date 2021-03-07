@@ -89,7 +89,8 @@ class ProduitScreenState extends State<ProduitScreen> {
       ),
       initialValue: _maj.nom,
       validator: (nom) {
-        if (nom!.length < 2) {
+        if (nom == null) return '';
+        if (nom.length < 2) {
           return 'Le nom doit contenir au moins deux caractères';
         } else {
           _maj.nom = nom;
