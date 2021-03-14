@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'modele.dart';
 
 class ProduitArgs {
-  final Produit? p;
+  final Produit? produit;
 
-  ProduitArgs([this.p]);
+  ProduitArgs([this.produit]);
 }
 
 class ProduitScreen extends StatefulWidget {
   static const path = '/produit';
   final Produit? _init;
 
-  ProduitScreen(ProduitArgs args) : _init = args.p;
+  ProduitScreen(this._init);
 
   @override
   ProduitScreenState createState() {

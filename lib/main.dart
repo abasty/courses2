@@ -21,7 +21,8 @@ void main() {
       onGenerateRoute: (settings) {
         if (settings.name == ProduitScreen.path) {
           final args = settings.arguments as ProduitArgs;
-          return MaterialPageRoute(builder: (context) => ProduitScreen(args));
+          return MaterialPageRoute(
+              builder: (context) => ProduitScreen(args.produit));
         } else {
           return null;
         }
