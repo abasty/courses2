@@ -7,7 +7,7 @@ import 'produit_screen.dart';
 import 'storage.dart';
 
 void main() {
-  if (!kDebugMode) debugPrint = (String message, {int wrapWidth}) {};
+  if (!kDebugMode) debugPrint = (String? message, {int? wrapWidth}) {};
 
   modele = ModeleCourses(LocalStorageCourses());
   modele.readAll();

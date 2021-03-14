@@ -12,17 +12,17 @@ class LocalStorageCourses extends StorageCourses {
   final _storage = LocalStorage('courses.json');
 
   @override
-  Future<void> writeAll(Map<String, dynamic> json) async {
+  Future<void> writeAll(Map<String, dynamic> map) async {
     await _storage.ready;
-    await _storage.setItem('modele', jsonEncode(json));
+    await _storage.setItem('modele', json.encode(map));
   }
 
   @override
   Future<Map<String, dynamic>> readAll() async {
     await _storage.ready;
-    var json = await _storage.getItem('modele') as String;
-    json ??= await rootBundle.loadString('assets/courses.json');
+    var map = await _storage.getItem('modele') as String?;
+    map ??= await rootBundle.loadString('assets/courses.json');
     await Future.delayed(Duration(seconds: 2));
-    return jsonDecode(json) as Map<String, dynamic>;
+    return json.decode(map) as Map<String, dynamic>;
   }
 }
