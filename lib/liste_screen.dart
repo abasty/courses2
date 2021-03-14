@@ -5,7 +5,7 @@ import 'modele.dart';
 import 'produit_screen.dart';
 
 class ListeScreen extends StatelessWidget {
-  static const path = '/liste';
+  static const name = '/liste';
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +66,7 @@ class ListeScreen extends StatelessWidget {
             Icons.add,
             () => Navigator.pushNamed(
               context,
-              ProduitScreen.path,
-              arguments: ProduitArgs(),
+              ProduitScreen.name,
             ),
           ),
         ),
@@ -98,8 +97,8 @@ class ListeScreen extends StatelessWidget {
       onTap: () => modele.ctrlProduitInverse(p),
       onLongPress: () => Navigator.pushNamed(
         context,
-        ProduitScreen.path,
-        arguments: ProduitArgs(p),
+        ProduitScreen.name,
+        arguments: p,
       ),
     );
   }

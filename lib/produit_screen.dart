@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'modele.dart';
 
-class ProduitArgs {
-  final Produit? produit;
-
-  ProduitArgs([this.produit]);
-}
-
 class ProduitScreen extends StatefulWidget {
-  static const path = '/produit';
+  static const name = '/produit';
   final Produit? _init;
 
   ProduitScreen(this._init);
@@ -25,7 +19,7 @@ class ProduitScreenState extends State<ProduitScreen> {
   final Produit? _init;
   final Produit _maj;
 
-  ProduitScreenState([this._init])
+  ProduitScreenState(this._init)
       : _maj = _init != null
             ? Produit(_init.nom, _init.rayon)
             : Produit('', modele.divers);

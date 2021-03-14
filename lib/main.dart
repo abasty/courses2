@@ -14,18 +14,16 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: ListeScreen.path,
+      initialRoute: ListeScreen.name,
       routes: {
-        ListeScreen.path: (context) => ListeScreen(),
+        ListeScreen.name: (context) => ListeScreen(),
       },
-      onGenerateRoute: (settings) {
-        if (settings.name == ProduitScreen.path) {
-          final args = settings.arguments as ProduitArgs;
+      onGenerateRoute: (r) {
+        if (r.name == ProduitScreen.name) {
           return MaterialPageRoute(
-              builder: (context) => ProduitScreen(args.produit));
-        } else {
-          return null;
+              builder: (context) => ProduitScreen(r.arguments as Produit?));
         }
+        return null;
       },
     ),
   );
