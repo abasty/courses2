@@ -17,10 +17,11 @@ void main() {
       routes: {
         ListeScreen.name: (context) => ListeScreen(),
       },
-      onGenerateRoute: (RouteSettings r) {
-        if (r.name == ProduitScreen.name) {
+      onGenerateRoute: (RouteSettings settings) {
+        if (settings.name == ProduitScreen.name) {
           return MaterialPageRoute(
-              builder: (context) => ProduitScreen(r.arguments as Produit?));
+            builder: (context) => ProduitScreen(settings.arguments as Produit?),
+          );
         }
         return null;
       },
