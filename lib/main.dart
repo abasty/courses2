@@ -14,17 +14,17 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: ListeScreen.name,
       routes: {
         ListeScreen.name: (context) => ListeScreen(),
       },
-      onGenerateRoute: (r) {
+      onGenerateRoute: (RouteSettings r) {
         if (r.name == ProduitScreen.name) {
           return MaterialPageRoute(
               builder: (context) => ProduitScreen(r.arguments as Produit?));
         }
         return null;
       },
+      initialRoute: ListeScreen.name,
     ),
   );
 }
