@@ -5,7 +5,7 @@ import 'modele.dart';
 import 'produit_screen.dart';
 
 class ListeScreen extends StatelessWidget {
-  static const path = '/';
+  static const path = '/liste';
 
   @override
   Widget build(BuildContext context) {

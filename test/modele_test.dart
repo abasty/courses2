@@ -7,7 +7,7 @@ void main() async {
   modele = ModeleCourses(DatasetStorageCourses());
   modele.readAll();
   await modele.isLoaded;
-  test('modele initialization', () {
+  test('modele init', () {
     assert(modele.produits.length >= 4);
     assert(modele.produits[0].nom == 'Escalope de porc');
     assert(modele.produits[3].nom == 'Pomme de terre');
