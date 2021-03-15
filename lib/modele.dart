@@ -55,14 +55,14 @@ class ModeleCourses extends ChangeNotifier {
   final StorageCourses _storage;
   Future<void>? isLoaded;
 
-  List<Rayon> _rayons = [];
+  final Rayon _divers = Rayon('Divers');
+  Rayon get divers => _divers;
+
+  final List<Rayon> _rayons = [];
   List<Rayon> get rayons => _rayons;
 
   List<Produit> _produits = [];
   List<Produit> get produits => _produits;
-
-  final Rayon _divers = Rayon('Divers');
-  Rayon get divers => _divers;
 
   final List<Produit> _selection = [];
   List<Produit> get selection => _selection;
@@ -134,6 +134,17 @@ class ModeleCourses extends ChangeNotifier {
     writeAll();
   }
 
+  Rayon _addSingleRayon(String nom) {
+    Rayon rayon;
+    try {
+      rayon = _rayons.singleWhere((r) => r.nom == nom);
+    } on StateError {
+      rayon = Rayon(nom);
+      _rayons.add(rayon);
+    }
+    return rayon;
+  }
+
   String toJson() => json.encode(toMap());
 
   void fromJson(String source) =>
@@ -153,23 +164,17 @@ class ModeleCourses extends ChangeNotifier {
   void fromMap(Map<String, dynamic> map) {
     Produit produitFromElement(dynamic e) {
       var p = Produit.fromMap(e as Map<String, dynamic>);
-      var r = _rayons.singleWhere(
-        (e) => e.nom == p.rayon.nom,
-        orElse: () {
-          var r = Rayon(p.rayon.nom);
-          _rayons.add(r);
-          return r;
-        },
-      );
-
+      var r = _addSingleRayon(p.rayon.nom);
       p.rayon = r;
       return p;
     }
 
-    _rayons = (map['rayons'] as List)
-        .map((e) => Rayon.fromMap(e as Map<String, dynamic>))
-        .toList();
+    // Remplit _rayons. TODO: try/catch
+    _rayons.add(_divers);
+    (map['rayons'] as List).forEach((r) => _addSingleRayon(r['nom'] as String));
+    // Remplit _produits. TODO: à refaire comme _rayons (addSingleProduit)
     _produits = (map['produits'] as List).map(produitFromElement).toList();
+    // Tri des deux listes
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
     _selection.addAll(_produits.where((e) => e.quantite > 0));
   }
