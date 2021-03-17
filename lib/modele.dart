@@ -61,7 +61,7 @@ class ModeleCourses extends ChangeNotifier {
   final List<Rayon> _rayons = [];
   List<Rayon> get rayons => _rayons;
 
-  List<Produit> _produits = [];
+  final List<Produit> _produits = [];
   List<Produit> get produits => _produits;
 
   final List<Produit> _selection = [];
@@ -134,6 +134,12 @@ class ModeleCourses extends ChangeNotifier {
     writeAll();
   }
 
+  void readAll() => isLoaded = _readAll();
+
+  Future<void> writeAll() async => await _storage.writeAll(_toMap());
+
+  Future<void> _readAll() async => _fromMap(await _storage.readAll());
+
   Rayon _addSingleRayon(String nom) {
     Rayon rayon;
     try {
@@ -145,36 +151,27 @@ class ModeleCourses extends ChangeNotifier {
     return rayon;
   }
 
-  String toJson() => json.encode(toMap());
+  void _addProduitMap(Map<String, dynamic> map) {
+    var produit = Produit.fromMap(map);
+    var rayon = _addSingleRayon(produit.rayon.nom);
+    produit.rayon = rayon;
+    try {
+      _produits.singleWhere((p) => p.nom == produit.nom);
+    } on StateError {
+      _produits.add(produit);
+    }
+  }
 
-  void fromJson(String source) =>
-      fromMap(json.decode(source) as Map<String, dynamic>);
-
-  Future<void> _readAll() async => fromMap(await _storage.readAll());
-
-  void readAll() => isLoaded = _readAll();
-
-  Future<void> writeAll() async => await _storage.writeAll(toMap());
-
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> _toMap() => {
         'rayons': _rayons.map((x) => x.toMap()).toList(),
         'produits': _produits.map((x) => x.toMap()).toList(),
       };
 
-  void fromMap(Map<String, dynamic> map) {
-    Produit produitFromElement(dynamic e) {
-      var p = Produit.fromMap(e as Map<String, dynamic>);
-      var r = _addSingleRayon(p.rayon.nom);
-      p.rayon = r;
-      return p;
-    }
-
-    // Remplit _rayons. TODO: try/catch
+  void _fromMap(Map<String, dynamic> map) {
     _rayons.add(_divers);
     (map['rayons'] as List).forEach((r) => _addSingleRayon(r['nom'] as String));
-    // Remplit _produits. TODO: à refaire comme _rayons (addSingleProduit)
-    _produits = (map['produits'] as List).map(produitFromElement).toList();
-    // Tri des deux listes
+    (map['produits'] as List)
+        .forEach((p) => _addProduitMap(p as Map<String, dynamic>));
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
     _selection.addAll(_produits.where((e) => e.quantite > 0));
   }
