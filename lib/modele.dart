@@ -16,17 +16,30 @@ class Rayon {
   String toString() => 'Rayon(nom: $nom)';
 }
 
+/// Un produit défini par son [nom] et son [rayon]
 class Produit extends ChangeNotifier {
+  /// Le nom de ce produit
   String nom;
+
+  /// Le rayon de ce produit
   Rayon rayon;
+
+  /// La quantité actuellement sélectionnée
   int quantite = 0;
+
+  /// Indique si ce produit a été placé dans le charriot
   bool fait = false;
 
+  /// Crée un nouveau produit avec son [nom] et son [rayon]
+  ///
+  /// La [quantite] est initialisée à 0 et [fait] à `false`.
   Produit(this.nom, this.rayon);
 
+  /// Transforme ce produit en `Map`
   Map<String, dynamic> toMap() =>
       {'nom': nom, 'rayon': rayon.toMap(), 'quantite': quantite, 'fait': fait};
 
+  /// Crée un nouveau produit depuis une [map]
   factory Produit.fromMap(Map<String, dynamic> map) {
     return Produit(map['nom'] as String,
         Rayon.fromMap(map['rayon'] as Map<String, dynamic>))
@@ -34,6 +47,7 @@ class Produit extends ChangeNotifier {
       ..fait = map['fait'] as bool;
   }
 
+  /// Renvoie une représentation textuelle de ce produit
   @override
   String toString() {
     return 'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
