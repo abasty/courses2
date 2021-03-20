@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'storage.dart';
 
@@ -12,11 +11,6 @@ class Rayon {
   factory Rayon.fromMap(Map<String, dynamic> map) {
     return Rayon(map['nom'] as String);
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory Rayon.fromJson(String source) =>
-      Rayon.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'Rayon(nom: $nom)';
@@ -39,11 +33,6 @@ class Produit extends ChangeNotifier {
       ..quantite = map['quantite'] as int
       ..fait = map['fait'] as bool;
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory Produit.fromJson(String source) =>
-      Produit.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
