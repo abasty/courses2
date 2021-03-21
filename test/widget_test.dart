@@ -7,7 +7,7 @@ import 'package:courses2/liste_screen.dart';
 import 'dataset.dart';
 
 void main() async {
-  modele = ModeleCourses(MemoryMapStrategy(dataset1));
+  modele = Modele(MemoryMapStrategy(dataset1));
   await modele.isLoaded;
 
   testWidgets('ListeScreen Widget Test', (WidgetTester tester) async {

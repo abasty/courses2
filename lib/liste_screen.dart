@@ -36,7 +36,7 @@ class ListeScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: ChangeNotifierProvider<ModeleCourses>.value(
+        body: ChangeNotifierProvider<Modele>.value(
           value: modele,
           builder: (context, snapshot) => TabBarView(
             children: [
@@ -52,7 +52,7 @@ class ListeScreen extends StatelessWidget {
   Widget _produitListTab() {
     return Stack(
       children: [
-        Consumer<ModeleCourses>(
+        Consumer<Modele>(
           builder: (context, vm, child) {
             return ListView.builder(
               itemCount: modele.produits.length,
@@ -104,7 +104,7 @@ class ListeScreen extends StatelessWidget {
   }
 
   Widget _produitCheckTab() {
-    return Consumer<ModeleCourses>(
+    return Consumer<Modele>(
       builder: (context, vm, child) {
         return Stack(
           children: [

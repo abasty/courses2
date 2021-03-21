@@ -57,7 +57,7 @@ class Produit extends ChangeNotifier {
       'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
 }
 
-class ModeleCourses extends ChangeNotifier {
+class Modele extends ChangeNotifier {
   final StorageStrategy _storage;
   Future<void>? isLoaded;
 
@@ -73,7 +73,7 @@ class ModeleCourses extends ChangeNotifier {
   final List<Produit> _selection = [];
   List<Produit> get selection => _selection;
 
-  ModeleCourses(this._storage) {
+  Modele(this._storage) {
     isLoaded = _readAll();
   }
 
@@ -187,4 +187,4 @@ class ModeleCourses extends ChangeNotifier {
   Future<void> _readAll() async => _fromMap(await _storage.readAll());
 }
 
-late ModeleCourses modele;
+late Modele modele;
