@@ -9,12 +9,12 @@ class Rayon {
   /// Crée un nouveau [Rayon] avec son [nom]
   Rayon(this.nom);
 
-  /// Transforme ce [Rayon] en `Map<String, dynamic>`
-  Map<String, dynamic> _toMap() => {'nom': nom};
-
   /// Crée un nouveau [Rayon] depuis une [map]
   factory Rayon._fromMap(Map<String, dynamic> map) =>
       Rayon(map['nom'] as String);
+
+  /// Transforme ce [Rayon] en `Map<String, dynamic>`
+  Map<String, dynamic> _toMap() => {'nom': nom};
 
   /// Renvoie une représentation textuelle de ce [Rayon]
   @override
@@ -23,13 +23,13 @@ class Rayon {
 
 /// Un produit défini par son [nom] et son [rayon]
 class Produit extends ChangeNotifier {
-  /// Le nom de ce produit
+  /// Le [nom] de ce [Produit]
   String nom;
 
-  /// Le rayon de ce produit
+  /// Le [rayon] de ce [Produit]
   Rayon rayon;
 
-  /// La quantité actuellement sélectionnée
+  /// La [quantite] actuellement sélectionnée
   int quantite = 0;
 
   /// Indique si ce [Produit] a été placé dans le charriot
@@ -40,16 +40,16 @@ class Produit extends ChangeNotifier {
   /// La [quantite] est initialisée à 0 et [fait] à `false`.
   Produit(this.nom, this.rayon);
 
-  /// Transforme ce [Produit] en `Map<String, dynamic>`
-  Map<String, dynamic> _toMap() =>
-      {'nom': nom, 'rayon': rayon._toMap(), 'quantite': quantite, 'fait': fait};
-
   /// Crée un nouveau [Produit] depuis une [map]
   factory Produit._fromMap(Map<String, dynamic> map) => Produit(
       map['nom'] as String,
       Rayon._fromMap(map['rayon'] as Map<String, dynamic>))
     ..quantite = map['quantite'] as int
     ..fait = map['fait'] as bool;
+
+  /// Transforme ce [Produit] en `Map<String, dynamic>`
+  Map<String, dynamic> _toMap() =>
+      {'nom': nom, 'rayon': rayon._toMap(), 'quantite': quantite, 'fait': fait};
 
   /// Renvoie une représentation textuelle de ce [Produit]
   @override
@@ -142,10 +142,6 @@ class ModeleCourses extends ChangeNotifier {
     _writeAll();
   }
 
-  Future<void> _writeAll() async => await _storage.writeAll(_toMap());
-
-  Future<void> _readAll() async => _fromMap(await _storage.readAll());
-
   Rayon _addSingleRayon(String nom) {
     Rayon rayon;
     try {
@@ -157,31 +153,38 @@ class ModeleCourses extends ChangeNotifier {
     return rayon;
   }
 
-  void _addProduitMap(Map<String, dynamic> map) {
-    var produit = Produit._fromMap(map);
-    var rayon = _addSingleRayon(produit.rayon.nom);
-    produit.rayon = rayon;
+  void _addSingleProduit(Map<String, dynamic> map) {
+    var nouveau = Produit._fromMap(map);
+    var rayon = _addSingleRayon(nouveau.rayon.nom);
+    nouveau.rayon = rayon;
     try {
-      _produits.singleWhere((p) => p.nom == produit.nom);
+      var existant = _produits.singleWhere((p) => p.nom == nouveau.nom);
+      existant.rayon = nouveau.rayon;
+      existant.quantite = nouveau.quantite;
+      existant.fait = nouveau.fait;
     } on StateError {
-      _produits.add(produit);
+      _produits.add(nouveau);
     }
   }
 
   Map<String, dynamic> _toMap() => {
-        'rayons': _rayons.map((x) => x._toMap()).toList(),
-        'produits': _produits.map((x) => x._toMap()).toList(),
+        'rayons': _rayons.map((rayon) => rayon._toMap()).toList(),
+        'produits': _produits.map((produit) => produit._toMap()).toList(),
       };
 
   void _fromMap(Map<String, dynamic> map) {
     _rayons.add(_divers);
     (map['rayons'] as List).forEach((r) => _addSingleRayon(r['nom'] as String));
     (map['produits'] as List)
-        .forEach((p) => _addProduitMap(p as Map<String, dynamic>));
+        .forEach((p) => _addSingleProduit(p as Map<String, dynamic>));
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     _selection.addAll(_produits.where((e) => e.quantite > 0));
   }
+
+  Future<void> _writeAll() async => await _storage.writeAll(_toMap());
+
+  Future<void> _readAll() async => _fromMap(await _storage.readAll());
 }
 
 late ModeleCourses modele;
