@@ -13,9 +13,8 @@ class Rayon {
   Map<String, dynamic> _toMap() => {'nom': nom};
 
   /// Crée un nouveau [Rayon] depuis une [map]
-  factory Rayon._fromMap(Map<String, dynamic> map) {
-    return Rayon(map['nom'] as String);
-  }
+  factory Rayon._fromMap(Map<String, dynamic> map) =>
+      Rayon(map['nom'] as String);
 
   /// Renvoie une représentation textuelle de ce [Rayon]
   @override
@@ -46,18 +45,16 @@ class Produit extends ChangeNotifier {
       {'nom': nom, 'rayon': rayon._toMap(), 'quantite': quantite, 'fait': fait};
 
   /// Crée un nouveau [Produit] depuis une [map]
-  factory Produit._fromMap(Map<String, dynamic> map) {
-    return Produit(map['nom'] as String,
-        Rayon._fromMap(map['rayon'] as Map<String, dynamic>))
-      ..quantite = map['quantite'] as int
-      ..fait = map['fait'] as bool;
-  }
+  factory Produit._fromMap(Map<String, dynamic> map) => Produit(
+      map['nom'] as String,
+      Rayon._fromMap(map['rayon'] as Map<String, dynamic>))
+    ..quantite = map['quantite'] as int
+    ..fait = map['fait'] as bool;
 
   /// Renvoie une représentation textuelle de ce [Produit]
   @override
-  String toString() {
-    return 'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
-  }
+  String toString() =>
+      'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
 }
 
 class ModeleCourses extends ChangeNotifier {
@@ -182,6 +179,7 @@ class ModeleCourses extends ChangeNotifier {
     (map['produits'] as List)
         .forEach((p) => _addProduitMap(p as Map<String, dynamic>));
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
+    _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     _selection.addAll(_produits.where((e) => e.quantite > 0));
   }
 }
