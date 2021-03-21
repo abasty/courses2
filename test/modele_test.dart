@@ -5,7 +5,6 @@ import 'dataset.dart';
 
 void main() async {
   modele = ModeleCourses(DatasetStorageCourses());
-  modele.readAll();
   await modele.isLoaded;
   test('modele init', () {
     assert(modele.produits.length >= 4);

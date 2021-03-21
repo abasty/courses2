@@ -10,7 +10,6 @@ void main() {
   if (!kDebugMode) debugPrint = (String? message, {int? wrapWidth}) {};
 
   modele = ModeleCourses(LocalStorageCourses());
-  modele.readAll();
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,

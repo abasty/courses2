@@ -6,9 +6,9 @@ class Rayon {
 
   Rayon(this.nom);
 
-  Map<String, dynamic> toMap() => {'nom': nom};
+  Map<String, dynamic> _toMap() => {'nom': nom};
 
-  factory Rayon.fromMap(Map<String, dynamic> map) {
+  factory Rayon._fromMap(Map<String, dynamic> map) {
     return Rayon(map['nom'] as String);
   }
 
@@ -36,13 +36,13 @@ class Produit extends ChangeNotifier {
   Produit(this.nom, this.rayon);
 
   /// Transforme ce produit en `Map`
-  Map<String, dynamic> toMap() =>
-      {'nom': nom, 'rayon': rayon.toMap(), 'quantite': quantite, 'fait': fait};
+  Map<String, dynamic> _toMap() =>
+      {'nom': nom, 'rayon': rayon._toMap(), 'quantite': quantite, 'fait': fait};
 
   /// Crée un nouveau produit depuis une [map]
-  factory Produit.fromMap(Map<String, dynamic> map) {
+  factory Produit._fromMap(Map<String, dynamic> map) {
     return Produit(map['nom'] as String,
-        Rayon.fromMap(map['rayon'] as Map<String, dynamic>))
+        Rayon._fromMap(map['rayon'] as Map<String, dynamic>))
       ..quantite = map['quantite'] as int
       ..fait = map['fait'] as bool;
   }
@@ -70,7 +70,9 @@ class ModeleCourses extends ChangeNotifier {
   final List<Produit> _selection = [];
   List<Produit> get selection => _selection;
 
-  ModeleCourses(this._storage);
+  ModeleCourses(this._storage) {
+    isLoaded = _readAll();
+  }
 
   void ctrlProduitPlus(Produit p) {
     if (++p.quantite == 1) {
@@ -79,7 +81,7 @@ class ModeleCourses extends ChangeNotifier {
     }
     p.fait = false;
     p.notifyListeners();
-    writeAll();
+    _writeAll();
   }
 
   void ctrlProduitMoins(Produit p) {
@@ -90,7 +92,7 @@ class ModeleCourses extends ChangeNotifier {
     }
     p.fait = false;
     p.notifyListeners();
-    writeAll();
+    _writeAll();
   }
 
   void ctrlProduitRaz(Produit p) {
@@ -99,7 +101,7 @@ class ModeleCourses extends ChangeNotifier {
     _selection.remove(p);
     p.fait = false;
     p.notifyListeners();
-    writeAll();
+    _writeAll();
   }
 
   void ctrlProduitInverse(Produit p) {
@@ -109,7 +111,7 @@ class ModeleCourses extends ChangeNotifier {
   void ctrlProduitPrend(Produit p, bool value) {
     p.fait = value;
     p.notifyListeners();
-    writeAll();
+    _writeAll();
   }
 
   void ctrlValideChariot() {
@@ -122,7 +124,7 @@ class ModeleCourses extends ChangeNotifier {
       return false;
     });
     notifyListeners();
-    writeAll();
+    _writeAll();
   }
 
   void ctrlMajProduit(Produit? p, Produit maj) {
@@ -134,12 +136,10 @@ class ModeleCourses extends ChangeNotifier {
     }
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     notifyListeners();
-    writeAll();
+    _writeAll();
   }
 
-  void readAll() => isLoaded = _readAll();
-
-  Future<void> writeAll() async => await _storage.writeAll(_toMap());
+  Future<void> _writeAll() async => await _storage.writeAll(_toMap());
 
   Future<void> _readAll() async => _fromMap(await _storage.readAll());
 
@@ -155,7 +155,7 @@ class ModeleCourses extends ChangeNotifier {
   }
 
   void _addProduitMap(Map<String, dynamic> map) {
-    var produit = Produit.fromMap(map);
+    var produit = Produit._fromMap(map);
     var rayon = _addSingleRayon(produit.rayon.nom);
     produit.rayon = rayon;
     try {
@@ -166,8 +166,8 @@ class ModeleCourses extends ChangeNotifier {
   }
 
   Map<String, dynamic> _toMap() => {
-        'rayons': _rayons.map((x) => x.toMap()).toList(),
-        'produits': _produits.map((x) => x.toMap()).toList(),
+        'rayons': _rayons.map((x) => x._toMap()).toList(),
+        'produits': _produits.map((x) => x._toMap()).toList(),
       };
 
   void _fromMap(Map<String, dynamic> map) {

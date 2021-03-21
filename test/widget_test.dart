@@ -8,7 +8,6 @@ import 'dataset.dart';
 
 void main() async {
   modele = ModeleCourses(DatasetStorageCourses());
-  modele.readAll();
   await modele.isLoaded;
 
   testWidgets('ListeScreen Widget Test', (WidgetTester tester) async {
