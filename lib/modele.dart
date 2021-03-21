@@ -57,26 +57,40 @@ class Produit extends ChangeNotifier {
       'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
 }
 
+/// Le modèle et son contrôleur
 class Modele extends ChangeNotifier {
   final StorageStrategy _storage;
+
+  /// [isLoaded] se réalise quand le _readAll() initial est terminé.
   Future<void>? isLoaded;
 
   final Rayon _divers = Rayon('Divers');
+
+  /// Le [Rayon] 'Divers'.
   Rayon get divers => _divers;
 
   final List<Rayon> _rayons = [];
+
+  /// La liste des rayons.
   List<Rayon> get rayons => _rayons;
 
   final List<Produit> _produits = [];
+
+  /// La liste des produits.
   List<Produit> get produits => _produits;
 
   final List<Produit> _selection = [];
+
+  /// La liste des produits avec des quantités > 0.
   List<Produit> get selection => _selection;
 
+  /// Crée le modèle et lit les données suivant la [StorageStrategy] en
+  /// paramètre.
   Modele(this._storage) {
     isLoaded = _readAll();
   }
 
+  /// Incrémente la [quantite] du [Produit] [p].
   void ctrlProduitPlus(Produit p) {
     if (++p.quantite == 1) {
       _selection.add(p);
@@ -87,6 +101,7 @@ class Modele extends ChangeNotifier {
     _writeAll();
   }
 
+  /// Décrémente la [quantite] du [Produit] [p].
   void ctrlProduitMoins(Produit p) {
     if (p.quantite == 0) return;
 
@@ -98,6 +113,7 @@ class Modele extends ChangeNotifier {
     _writeAll();
   }
 
+  /// Définit la [quantite] du [Produit] [p] à 0.
   void ctrlProduitRaz(Produit p) {
     if (p.quantite == 0) return;
     p.quantite = 0;
@@ -107,16 +123,19 @@ class Modele extends ChangeNotifier {
     _writeAll();
   }
 
+  /// Définit la [quantite] du [Produit] [p] à 0 ou 1.
   void ctrlProduitInverse(Produit p) {
     p.quantite == 0 ? modele.ctrlProduitPlus(p) : modele.ctrlProduitRaz(p);
   }
 
+  /// Marque ou démarque le [Produit] [p].
   void ctrlProduitPrend(Produit p, bool value) {
     p.fait = value;
     p.notifyListeners();
     _writeAll();
   }
 
+  /// Valide le charriot et définit les quantités des produits sélectionnés à 0.
   void ctrlValideChariot() {
     _selection.removeWhere((p) {
       if (p.fait) {
@@ -130,6 +149,7 @@ class Modele extends ChangeNotifier {
     _writeAll();
   }
 
+  /// Met à jour ou ajoute un produit
   void ctrlMajProduit(Produit? p, Produit maj) {
     if (p == null) {
       modele._produits.add(maj);
