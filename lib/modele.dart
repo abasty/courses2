@@ -58,7 +58,7 @@ class Produit extends ChangeNotifier {
 }
 
 class ModeleCourses extends ChangeNotifier {
-  final StorageCourses _storage;
+  final StorageStrategy _storage;
   Future<void>? isLoaded;
 
   final Rayon _divers = Rayon('Divers');

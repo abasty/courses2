@@ -9,7 +9,7 @@ import 'storage.dart';
 void main() {
   if (!kDebugMode) debugPrint = (String? message, {int? wrapWidth}) {};
 
-  modele = ModeleCourses(LocalStorageCourses());
+  modele = ModeleCourses(LocalStorageStrategy());
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,

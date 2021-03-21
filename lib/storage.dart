@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 
-abstract class StorageCourses {
+abstract class StorageStrategy {
   Future<void> writeAll(Map<String, dynamic> json);
   Future<Map<String, dynamic>> readAll();
 }
 
-class LocalStorageCourses extends StorageCourses {
+class LocalStorageStrategy extends StorageStrategy {
   final _storage = LocalStorage('courses.json');
 
   @override

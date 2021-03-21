@@ -4,12 +4,12 @@ import 'package:courses2/modele.dart';
 import 'dataset.dart';
 
 void main() async {
-  modele = ModeleCourses(DatasetStorageCourses());
+  modele = ModeleCourses(MemoryMapStrategy(dataset1));
   await modele.isLoaded;
-  test('modele init', () {
+  test('modele init / sort', () {
     assert(modele.produits.length >= 4);
     assert(modele.produits[0].nom == 'Escalope de porc');
-    assert(modele.produits[3].nom == 'Pomme de terre');
+    assert(modele.produits[3].nom == 'Sel');
   });
   test('ctrlProduitPlus / ctrlProduitMoins / produitsCheck', () {
     assert(modele.produits.length >= 4);
