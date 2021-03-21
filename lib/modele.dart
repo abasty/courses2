@@ -1,17 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'storage.dart';
 
+/// Un rayon défini par son [nom]
 class Rayon {
+  /// Le nom de ce [Rayon]
   String nom;
 
+  /// Crée un nouveau [Rayon] avec son [nom]
   Rayon(this.nom);
 
+  /// Transforme ce [Rayon] en `Map<String, dynamic>`
   Map<String, dynamic> _toMap() => {'nom': nom};
 
+  /// Crée un nouveau [Rayon] depuis une [map]
   factory Rayon._fromMap(Map<String, dynamic> map) {
     return Rayon(map['nom'] as String);
   }
 
+  /// Renvoie une représentation textuelle de ce [Rayon]
   @override
   String toString() => 'Rayon(nom: $nom)';
 }
@@ -27,19 +33,19 @@ class Produit extends ChangeNotifier {
   /// La quantité actuellement sélectionnée
   int quantite = 0;
 
-  /// Indique si ce produit a été placé dans le charriot
+  /// Indique si ce [Produit] a été placé dans le charriot
   bool fait = false;
 
-  /// Crée un nouveau produit avec son [nom] et son [rayon]
+  /// Crée un nouveau Produit avec son [nom] et son [rayon]
   ///
   /// La [quantite] est initialisée à 0 et [fait] à `false`.
   Produit(this.nom, this.rayon);
 
-  /// Transforme ce produit en `Map`
+  /// Transforme ce [Produit] en `Map<String, dynamic>`
   Map<String, dynamic> _toMap() =>
       {'nom': nom, 'rayon': rayon._toMap(), 'quantite': quantite, 'fait': fait};
 
-  /// Crée un nouveau produit depuis une [map]
+  /// Crée un nouveau [Produit] depuis une [map]
   factory Produit._fromMap(Map<String, dynamic> map) {
     return Produit(map['nom'] as String,
         Rayon._fromMap(map['rayon'] as Map<String, dynamic>))
@@ -47,7 +53,7 @@ class Produit extends ChangeNotifier {
       ..fait = map['fait'] as bool;
   }
 
-  /// Renvoie une représentation textuelle de ce produit
+  /// Renvoie une représentation textuelle de ce [Produit]
   @override
   String toString() {
     return 'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
