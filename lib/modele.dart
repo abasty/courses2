@@ -10,11 +10,11 @@ class Rayon {
   Rayon(this.nom);
 
   /// Crée un nouveau [Rayon] depuis une [map]
-  factory Rayon._fromMap(Map<String, dynamic> map) =>
+  factory Rayon.fromMap(Map<String, dynamic> map) =>
       Rayon(map['nom'] as String);
 
   /// Transforme ce [Rayon] en `Map<String, dynamic>`
-  Map<String, dynamic> _toMap() => {'nom': nom};
+  Map<String, dynamic> toMap() => {'nom': nom};
 
   /// Renvoie une représentation textuelle de ce [Rayon]
   @override
@@ -41,15 +41,14 @@ class Produit extends ChangeNotifier {
   Produit(this.nom, this.rayon);
 
   /// Crée un nouveau [Produit] depuis une [map]
-  factory Produit._fromMap(Map<String, dynamic> map) => Produit(
-      map['nom'] as String,
-      Rayon._fromMap(map['rayon'] as Map<String, dynamic>))
+  factory Produit.fromMap(Map<String, dynamic> map) => Produit(
+      map['nom'] as String, Rayon.fromMap(map['rayon'] as Map<String, dynamic>))
     ..quantite = map['quantite'] as int
     ..fait = map['fait'] as bool;
 
   /// Transforme ce [Produit] en `Map<String, dynamic>`
-  Map<String, dynamic> _toMap() =>
-      {'nom': nom, 'rayon': rayon._toMap(), 'quantite': quantite, 'fait': fait};
+  Map<String, dynamic> toMap() =>
+      {'nom': nom, 'rayon': rayon.toMap(), 'quantite': quantite, 'fait': fait};
 
   /// Renvoie une représentation textuelle de ce [Produit]
   @override
@@ -174,7 +173,7 @@ class Modele extends ChangeNotifier {
   }
 
   void _addSingleProduit(Map<String, dynamic> map) {
-    var nouveau = Produit._fromMap(map);
+    var nouveau = Produit.fromMap(map);
     var rayon = _addSingleRayon(nouveau.rayon.nom);
     nouveau.rayon = rayon;
     try {
@@ -187,12 +186,17 @@ class Modele extends ChangeNotifier {
     }
   }
 
-  Map<String, dynamic> _toMap() => {
-        'rayons': _rayons.map((rayon) => rayon._toMap()).toList(),
-        'produits': _produits.map((produit) => produit._toMap()).toList(),
+  /// Transforme ce [Modele] en `Map<String, dynamic>`
+  Map<String, dynamic> toMap() => {
+        'rayons': _rayons.map((rayon) => rayon.toMap()).toList(),
+        'produits': _produits.map((produit) => produit.toMap()).toList(),
       };
 
-  void _fromMap(Map<String, dynamic> map) {
+  /// Importe une liste de [Produit] et une liste de [Rayon] depuis une [map]
+  /// dans ce [Modele]. Les rayons et produits seront uniques par rapport à leur
+  /// nom. Les listes sont triées par ordre alphabétique des noms. La sélection
+  /// est mise à jour.
+  void fromMap(Map<String, dynamic> map) {
     _rayons.add(_divers);
     (map['rayons'] as List).forEach((r) => _addSingleRayon(r['nom'] as String));
     (map['produits'] as List)
@@ -202,9 +206,9 @@ class Modele extends ChangeNotifier {
     _selection.addAll(_produits.where((e) => e.quantite > 0));
   }
 
-  Future<void> _writeAll() async => await _storage.writeAll(_toMap());
+  Future<void> _writeAll() async => await _storage.writeAll(toMap());
 
-  Future<void> _readAll() async => _fromMap(await _storage.readAll());
+  Future<void> _readAll() async => fromMap(await _storage.readAll());
 }
 
 late Modele modele;
