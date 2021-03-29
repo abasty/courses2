@@ -30,21 +30,21 @@ class Produit extends ChangeNotifier {
   Rayon rayon;
 
   /// La [quantite] actuellement sélectionnée
-  int quantite = 0;
+  int quantite;
 
   /// Indique si ce [Produit] a été placé dans le charriot
-  bool fait = false;
+  bool fait;
 
-  /// Crée un nouveau Produit avec son [nom] et son [rayon]
-  ///
-  /// La [quantite] est initialisée à 0 et [fait] à `false`.
-  Produit(this.nom, this.rayon);
+  /// Crée un nouveau Produit avec son [nom] et son [rayon]. Par défaut, la
+  /// [quantite] est initialisée à 0 et [fait] à `false`.
+  Produit(this.nom, this.rayon, [this.quantite = 0, this.fait = false]);
 
   /// Crée un nouveau [Produit] depuis une [map]
   factory Produit.fromMap(Map<String, dynamic> map) => Produit(
-      map['nom'] as String, Rayon.fromMap(map['rayon'] as Map<String, dynamic>))
-    ..quantite = map['quantite'] as int
-    ..fait = map['fait'] as bool;
+      map['nom'] as String,
+      Rayon.fromMap(map['rayon'] as Map<String, dynamic>),
+      map['quantite'] as int,
+      map['fait'] as bool);
 
   /// Transforme ce [Produit] en `Map<String, dynamic>`
   Map<String, dynamic> toMap() =>
