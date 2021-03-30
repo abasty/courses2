@@ -1,17 +1,3 @@
-import 'package:courses2/storage.dart';
-
-class MemoryMapStrategy extends StorageStrategy {
-  Map<String, dynamic> _map;
-
-  MemoryMapStrategy(this._map);
-
-  @override
-  Future<void> writeAll(Map<String, dynamic> map) async => _map = map;
-
-  @override
-  Future<Map<String, dynamic>> readAll() async => _map;
-}
-
 const dataset1 = {
   'rayons': [
     {'nom': 'Divers'},
