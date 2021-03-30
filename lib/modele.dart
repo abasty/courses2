@@ -89,7 +89,7 @@ class Modele extends ChangeNotifier {
     isLoaded = _readAll();
   }
 
-  /// Incrémente la [quantite] du [Produit] [p].
+  /// Incrémente la quantité du [Produit] [p].
   void ctrlProduitPlus(Produit p) {
     if (++p.quantite == 1) {
       _selection.add(p);
@@ -100,7 +100,7 @@ class Modele extends ChangeNotifier {
     _writeAll();
   }
 
-  /// Décrémente la [quantite] du [Produit] [p].
+  /// Décrémente la quantite du [Produit] [p].
   void ctrlProduitMoins(Produit p) {
     if (p.quantite == 0) return;
 
@@ -112,7 +112,7 @@ class Modele extends ChangeNotifier {
     _writeAll();
   }
 
-  /// Définit la [quantite] du [Produit] [p] à 0.
+  /// Définit la quantite du [Produit] [p] à 0.
   void ctrlProduitRaz(Produit p) {
     if (p.quantite == 0) return;
     p.quantite = 0;
@@ -122,7 +122,7 @@ class Modele extends ChangeNotifier {
     _writeAll();
   }
 
-  /// Définit la [quantite] du [Produit] [p] à 0 ou 1.
+  /// Définit la quantite du [Produit] [p] à 0 ou 1.
   void ctrlProduitInverse(Produit p) {
     p.quantite == 0 ? modele.ctrlProduitPlus(p) : modele.ctrlProduitRaz(p);
   }
