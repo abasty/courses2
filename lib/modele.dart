@@ -1,3 +1,7 @@
+/// Cette bibliothèque définit les classes du modèle de données de l'application
+/// courses2 : [Rayon], [Produit] et [Modele]
+library modele;
+
 import 'package:flutter/foundation.dart';
 import 'storage.dart';
 

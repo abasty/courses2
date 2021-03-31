@@ -1,3 +1,6 @@
+/// Le point d'entrée de l'application `courses2`
+library main;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +9,8 @@ import 'liste_screen.dart';
 import 'produit_screen.dart';
 import 'storage.dart';
 
+/// Crée le modèle en lui associant une [StorageStrategy], crée la [MaterialApp]
+/// et définit les routes vers [ListeScreen] et [ProduitScreen].
 void main() {
   if (!kDebugMode) debugPrint = (String? message, {int? wrapWidth}) {};
 

@@ -1,3 +1,10 @@
+/// La classe abstraite [StorageStrategy] de cette bibliothèque définit une
+/// interface de stockage de `Map<String, dynamic>` vers un support quelconque.
+///
+/// [MemoryMapStrategy], [LocalStorageStrategy] et [DelayedStrategy] fournissent
+/// des implémentations de cette classe.
+library storage;
+
 import 'dart:convert';
 
 import 'package:flutter/services.dart';

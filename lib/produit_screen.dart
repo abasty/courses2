@@ -1,3 +1,7 @@
+/// Définit [ProduitScreen], l'écran de création / modification d'un [Produit]
+/// et le [ProduitScreenState] associé.
+library produit_screen;
+
 import 'package:flutter/material.dart';
 
 import 'modele.dart';

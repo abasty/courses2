@@ -1,3 +1,11 @@
+/// Définit [ListeScreen], l'écran principal de l'application.
+///
+/// Définit aussi les _widgets_ suivants :
+/// * [LocalActionButton], un [FloatingActionButton] personnalisé
+/// * [ProduitConsumer] qui embarque un [ChangeNotifierProvider<Produit>] juste
+///   au-dessus d'un [Consumer<Produit>]
+library liste_screen;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
