@@ -90,7 +90,7 @@ class Modele extends ChangeNotifier {
   /// Crée le modèle et lit les données suivant la [StorageStrategy] en
   /// paramètre.
   Modele(this._storage) {
-    isLoaded = _readAll();
+    isLoaded = loadAll();
   }
 
   /// Incrémente la quantité du [Produit] [p].
@@ -101,7 +101,7 @@ class Modele extends ChangeNotifier {
     }
     p.fait = false;
     p.notifyListeners();
-    _writeAll();
+    saveAll();
   }
 
   /// Décrémente la quantite du [Produit] [p].
@@ -113,7 +113,7 @@ class Modele extends ChangeNotifier {
     }
     p.fait = false;
     p.notifyListeners();
-    _writeAll();
+    saveAll();
   }
 
   /// Définit la quantite du [Produit] [p] à 0.
@@ -123,7 +123,7 @@ class Modele extends ChangeNotifier {
     _selection.remove(p);
     p.fait = false;
     p.notifyListeners();
-    _writeAll();
+    saveAll();
   }
 
   /// Définit la quantite du [Produit] [p] à 0 ou 1.
@@ -135,7 +135,7 @@ class Modele extends ChangeNotifier {
   void ctrlProduitPrend(Produit p, bool value) {
     p.fait = value;
     p.notifyListeners();
-    _writeAll();
+    saveAll();
   }
 
   /// Valide le charriot et définit les quantités des produits sélectionnés à 0.
@@ -149,7 +149,7 @@ class Modele extends ChangeNotifier {
       return false;
     });
     notifyListeners();
-    _writeAll();
+    saveAll();
   }
 
   /// Met à jour ou ajoute un produit
@@ -162,7 +162,7 @@ class Modele extends ChangeNotifier {
     }
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     notifyListeners();
-    _writeAll();
+    saveAll();
   }
 
   Rayon _addSingleRayon(String nom) {
@@ -200,7 +200,7 @@ class Modele extends ChangeNotifier {
   /// dans ce [Modele]. Les rayons et produits seront uniques par rapport à leur
   /// nom. Les listes sont triées par ordre alphabétique des noms. La sélection
   /// est mise à jour.
-  void fromMap(Map<String, dynamic> map) {
+  void importFromMap(Map<String, dynamic> map) {
     _rayons.add(_divers);
     (map['rayons'] as List).forEach((r) => _addSingleRayon(r['nom'] as String));
     (map['produits'] as List)
@@ -210,9 +210,11 @@ class Modele extends ChangeNotifier {
     _selection.addAll(_produits.where((e) => e.quantite > 0));
   }
 
-  Future<void> _writeAll() async => await _storage.writeAll(toMap());
+  /// Sauve les données du modèle sur le sockage.
+  Future<void> saveAll() async => await _storage.writeAll(toMap());
 
-  Future<void> _readAll() async => fromMap(await _storage.readAll());
+  /// Charge dans le modèle toutes les données du stockage.
+  Future<void> loadAll() async => importFromMap(await _storage.readAll());
 }
 
 late Modele modele;
