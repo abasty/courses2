@@ -64,8 +64,8 @@ class Produit extends ChangeNotifier {
 class VueModele extends ChangeNotifier {
   final StorageStrategy _storage;
 
-  /// [isLoaded] se réalise quand le _readAll() initial est terminé.
-  Future<void>? isLoaded;
+  /// [isLoaded] se réalise quand loadAll() initial est terminé.
+  late Future<void> isLoaded;
 
   final Rayon _divers = Rayon('Divers');
 
@@ -87,7 +87,7 @@ class VueModele extends ChangeNotifier {
   /// La liste des produits avec des quantités > 0.
   List<Produit> get selection => _selection;
 
-  /// Crée le modèle et lit les données suivant la [StorageStrategy] en
+  /// Crée le modèle et charge les données suivant la [StorageStrategy] en
   /// paramètre.
   VueModele(this._storage) {
     isLoaded = loadAll();
