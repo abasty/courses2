@@ -1,5 +1,5 @@
 /// Cette bibliothèque définit les classes du modèle de données de l'application
-/// courses2 : [Rayon], [Produit] et [Modele]
+/// courses2 : [Rayon], [Produit] et [VueModele]
 library modele;
 
 import 'package:flutter/foundation.dart';
@@ -61,7 +61,7 @@ class Produit extends ChangeNotifier {
 }
 
 /// Le modèle et son contrôleur
-class Modele extends ChangeNotifier {
+class VueModele extends ChangeNotifier {
   final StorageStrategy _storage;
 
   /// [isLoaded] se réalise quand le _readAll() initial est terminé.
@@ -89,7 +89,7 @@ class Modele extends ChangeNotifier {
 
   /// Crée le modèle et lit les données suivant la [StorageStrategy] en
   /// paramètre.
-  Modele(this._storage) {
+  VueModele(this._storage) {
     isLoaded = loadAll();
   }
 
@@ -190,14 +190,14 @@ class Modele extends ChangeNotifier {
     }
   }
 
-  /// Transforme ce [Modele] en `Map<String, dynamic>`
+  /// Transforme ce [VueModele] en `Map<String, dynamic>`
   Map<String, dynamic> toMap() => {
         'rayons': _rayons.map((rayon) => rayon.toMap()).toList(),
         'produits': _produits.map((produit) => produit.toMap()).toList(),
       };
 
   /// Importe une liste de [Produit] et une liste de [Rayon] depuis une [map]
-  /// dans ce [Modele]. Les rayons et produits seront uniques par rapport à leur
+  /// dans ce [VueModele]. Les rayons et produits seront uniques par rapport à leur
   /// nom. Les listes sont triées par ordre alphabétique des noms. La sélection
   /// est mise à jour.
   void importFromMap(Map<String, dynamic> map) {
@@ -217,4 +217,4 @@ class Modele extends ChangeNotifier {
   Future<void> loadAll() async => importFromMap(await _storage.readAll());
 }
 
-late Modele modele;
+late VueModele modele;

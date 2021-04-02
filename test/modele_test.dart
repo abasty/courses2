@@ -6,7 +6,7 @@ import 'package:courses2/storage.dart';
 import 'dataset.dart';
 
 void main() async {
-  modele = Modele(MemoryMapStrategy(dataset1));
+  modele = VueModele(MemoryMapStrategy(dataset1));
   await modele.isLoaded;
   test('modele init / sort', () {
     assert(modele.produits.length >= 4);

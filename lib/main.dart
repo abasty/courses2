@@ -14,7 +14,7 @@ import 'storage.dart';
 void main() {
   if (!kDebugMode) debugPrint = (String? message, {int? wrapWidth}) {};
 
-  modele = Modele(DelayedStrategy(LocalStorageStrategy(), 2));
+  modele = VueModele(DelayedStrategy(LocalStorageStrategy(), 2));
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
