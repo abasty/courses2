@@ -38,14 +38,14 @@ class MemoryMapStrategy implements StorageStrategy {
 class LocalStorageStrategy implements StorageStrategy {
   final _storage = LocalStorage('courses2.json');
 
-  /// Écrit [map] sur le fichier `courses.json  `.
+  /// Écrit [map] sur le fichier `courses2.json`.
   @override
   Future<void> writeAll(Map<String, dynamic> map) async {
     await _storage.ready;
     await _storage.setItem('modele', json.encode(map));
   }
 
-  /// Lit une map depuis le fichier `courses.json`. Si le fichier n'existe pas,
+  /// Lit une map depuis le fichier `courses2.json`. Si le fichier n'existe pas,
   /// lit depuis les _assets_.
   @override
   Future<Map<String, dynamic>> readAll() async {
