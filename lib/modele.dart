@@ -197,9 +197,9 @@ class VueModele extends ChangeNotifier {
       };
 
   /// Importe une liste de [Produit] et une liste de [Rayon] depuis une [map]
-  /// dans ce [VueModele]. Les rayons et produits seront uniques par rapport à leur
-  /// nom. Les listes sont triées par ordre alphabétique des noms. La sélection
-  /// est mise à jour.
+  /// dans ce [VueModele]. Les rayons et produits seront uniques par rapport à
+  /// leur nom. Les listes sont triées par ordre alphabétique des noms. La
+  /// sélection est mise à jour.
   void importFromMap(Map<String, dynamic> map) {
     _rayons.add(_divers);
     (map['rayons'] as List).forEach((r) => _addSingleRayon(r['nom'] as String));
