@@ -156,7 +156,7 @@ class VueModele extends ChangeNotifier {
   /// Met à jour ou ajoute un produit
   void ctrlMajProduit(Produit? p, Produit maj) {
     if (p == null) {
-      modele._produits.add(maj);
+      _addSingleProduit(maj);
     } else {
       p.nom = maj.nom;
       p.rayon = maj.rayon;
@@ -177,17 +177,16 @@ class VueModele extends ChangeNotifier {
     return rayon;
   }
 
-  void _addSingleProduit(Map<String, dynamic> map) {
-    var nouveau = Produit.fromMap(map);
-    var rayon = _addSingleRayon(nouveau.rayon.nom);
-    nouveau.rayon = rayon;
+  void _addSingleProduit(Produit produit) {
+    var rayon = _addSingleRayon(produit.rayon.nom);
+    produit.rayon = rayon;
     try {
-      var existant = _produits.singleWhere((p) => p.nom == nouveau.nom);
-      existant.rayon = nouveau.rayon;
-      existant.quantite = nouveau.quantite;
-      existant.fait = nouveau.fait;
+      var existant = _produits.singleWhere((p) => p.nom == produit.nom);
+      existant.rayon = produit.rayon;
+      existant.quantite = produit.quantite;
+      existant.fait = produit.fait;
     } on StateError {
-      _produits.add(nouveau);
+      _produits.add(produit);
     }
   }
 
@@ -204,8 +203,8 @@ class VueModele extends ChangeNotifier {
   void importFromMap(Map<String, dynamic> map) {
     _rayons.add(_divers);
     (map['rayons'] as List).forEach((r) => _addSingleRayon(r['nom'] as String));
-    (map['produits'] as List)
-        .forEach((p) => _addSingleProduit(p as Map<String, dynamic>));
+    (map['produits'] as List).forEach(
+        (p) => _addSingleProduit(Produit.fromMap(p as Map<String, dynamic>)));
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     _selection.addAll(_produits.where((e) => e.quantite > 0));
