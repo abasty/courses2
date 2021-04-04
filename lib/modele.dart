@@ -211,10 +211,10 @@ class VueModele extends ChangeNotifier {
   }
 
   /// Sauve les données du modèle sur le sockage.
-  Future<void> saveAll() async => await _storage.writeAll(toMap());
+  Future<void> saveAll() async => await _storage.write(toMap());
 
   /// Charge dans le modèle toutes les données du stockage.
-  Future<void> loadAll() async => importFromMap(await _storage.readAll());
+  Future<void> loadAll() async => importFromMap(await _storage.read());
 }
 
 late VueModele modele;

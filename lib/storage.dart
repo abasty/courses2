@@ -14,10 +14,10 @@ import 'package:localstorage/localstorage.dart';
 /// support de stockage.
 abstract class StorageStrategy {
   /// Écrit la map sur le support de stockage.
-  Future<void> writeAll(Map<String, dynamic> map);
+  Future<void> write(Map<String, dynamic> map);
 
   /// Lit et renvoie une map depuis le support de stockage.
-  Future<Map<String, dynamic>> readAll();
+  Future<Map<String, dynamic>> read();
 }
 
 /// Une stratégie de stockage de map en mémoire dans une autre map.
@@ -28,10 +28,10 @@ class MemoryMapStrategy implements StorageStrategy {
   MemoryMapStrategy(this._map);
 
   @override
-  Future<void> writeAll(Map<String, dynamic> map) async => _map = map;
+  Future<void> write(Map<String, dynamic> map) async => _map = map;
 
   @override
-  Future<Map<String, dynamic>> readAll() async => _map;
+  Future<Map<String, dynamic>> read() async => _map;
 }
 
 /// Une stratégie de stockage de map dans un fichier local.
@@ -40,7 +40,7 @@ class LocalStorageStrategy implements StorageStrategy {
 
   /// Écrit [map] sur le fichier `courses2.json`.
   @override
-  Future<void> writeAll(Map<String, dynamic> map) async {
+  Future<void> write(Map<String, dynamic> map) async {
     await _storage.ready;
     await _storage.setItem('modele', json.encode(map));
   }
@@ -48,7 +48,7 @@ class LocalStorageStrategy implements StorageStrategy {
   /// Lit une map depuis le fichier `courses2.json`. Si le fichier n'existe pas,
   /// lit depuis les _assets_.
   @override
-  Future<Map<String, dynamic>> readAll() async {
+  Future<Map<String, dynamic>> read() async {
     await _storage.ready;
     var str = await _storage.getItem('modele') as String?;
     str ??= await rootBundle.loadString('assets/courses.json');
@@ -67,15 +67,15 @@ class DelayedStrategy implements StorageStrategy {
 
   /// Appelle [writeAll()] du [StorageStrategy].
   @override
-  Future<void> writeAll(Map<String, dynamic> map) async {
-    return _storage.writeAll(map);
+  Future<void> write(Map<String, dynamic> map) async {
+    return _storage.write(map);
   }
 
   /// Appelle [readAll()] du [StorageStrategy] et attend de façon asynchrone
   /// [_seconds] secondes avant de renvoyer la map.
   @override
-  Future<Map<String, dynamic>> readAll() async {
-    var map = _storage.readAll();
+  Future<Map<String, dynamic>> read() async {
+    var map = _storage.read();
     await Future.delayed(Duration(seconds: _seconds));
     return map;
   }
