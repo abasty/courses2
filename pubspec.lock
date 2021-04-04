@@ -77,11 +77,9 @@ packages:
   localstorage:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: "710456f97e00f4330cf44126442f2be825988893"
-      url: "git@github.com:tcd93/flutter_localstorage.git"
-    source: git
+      name: localstorage
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "4.0.0+1"
   matcher:
     dependency: transitive
