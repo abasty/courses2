@@ -19,6 +19,7 @@ void main() async {
     });
     // La première image n'affiche que le "progress indicator"
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.text('Produits'), findsNothing);
 
     // On tire une image pour que le FutureBuilder se réalise
     await tester.pump();
