@@ -32,7 +32,10 @@ class ProduitScreenState extends State<ProduitScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.clear), onPressed: _annulePressed),
+        leading: IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(_init == null ? 'Création' : 'Édition'),
         centerTitle: true,
         actions: [
@@ -45,10 +48,6 @@ class ProduitScreenState extends State<ProduitScreen> {
       ),
       body: _form(),
     );
-  }
-
-  void _annulePressed() {
-    Navigator.pop(context);
   }
 
   void _validePressed() {
