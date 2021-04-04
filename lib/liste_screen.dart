@@ -65,7 +65,7 @@ class ListeScreen extends StatelessWidget {
             return ListView.builder(
               itemCount: modele.produits.length,
               itemBuilder: (context, index) =>
-                  ProduitConsumer(modele.produits[index], _produitListTile),
+                  ProduitConsumer(modele.produits[index], _produitsTabTile),
             );
           },
         ),
@@ -82,7 +82,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _produitListTile(BuildContext context, Produit p, Widget? child) {
+  Widget _produitsTabTile(BuildContext context, Produit p, Widget? child) {
     debugPrint(p.toString());
     return ListTile(
       title: Text(p.nom),
@@ -119,7 +119,7 @@ class ListeScreen extends StatelessWidget {
             ListView.builder(
               itemCount: modele.selection.length,
               itemBuilder: (context, index) =>
-                  ProduitConsumer(modele.selection[index], _produitCheckTile),
+                  ProduitConsumer(modele.selection[index], _listeTabTile),
             ),
             LocalActionButton(
                 Icons.remove_shopping_cart, modele.ctrlValideChariot)
@@ -129,7 +129,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _produitCheckTile(BuildContext context, Produit p, Widget? child) {
+  Widget _listeTabTile(BuildContext context, Produit p, Widget? child) {
     debugPrint(p.toString());
     return CheckboxListTile(
       title: Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
@@ -141,19 +141,19 @@ class ListeScreen extends StatelessWidget {
 }
 
 class ProduitConsumer extends StatelessWidget {
-  final Produit _p;
+  final Produit _produit;
   final Widget Function(
     BuildContext context,
     Produit p,
     Widget? child,
   ) _builder;
 
-  const ProduitConsumer(this._p, this._builder);
+  const ProduitConsumer(this._produit, this._builder);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Produit>.value(
-      value: _p,
+      value: _produit,
       child: Consumer<Produit>(builder: _builder),
     );
   }
