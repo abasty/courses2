@@ -153,7 +153,7 @@ class VueModele extends ChangeNotifier {
     saveAll();
   }
 
-  /// Met à jour ou ajoute un produit
+  /// Met à jour ou ajoute un produit.
   void ctrlMajProduit(Produit? p, Produit maj) {
     if (p == null) {
       _addSingleProduit(maj);
