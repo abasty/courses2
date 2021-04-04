@@ -62,16 +62,16 @@ class DelayedStrategy implements StorageStrategy {
   final int _seconds;
 
   /// Crée une [DelayedStrategy] depuis un [StorageStrategy] et ajoute un délai
-  /// de [_seconds] secondes à [readAll()].
+  /// de [_seconds] secondes à [read()].
   DelayedStrategy(this._storage, this._seconds);
 
-  /// Appelle [writeAll()] du [StorageStrategy].
+  /// Appelle [write()] du [StorageStrategy].
   @override
   Future<void> write(Map<String, dynamic> map) async {
     return _storage.write(map);
   }
 
-  /// Appelle [readAll()] du [StorageStrategy] et attend de façon asynchrone
+  /// Appelle [read()] du [StorageStrategy] et attend de façon asynchrone
   /// [_seconds] secondes avant de renvoyer la map.
   @override
   Future<Map<String, dynamic>> read() async {

@@ -60,7 +60,7 @@ class Produit extends ChangeNotifier {
       'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
 }
 
-/// Le modèle et son contrôleur
+/// Le vue modèle et son contrôleur.
 class VueModele extends ChangeNotifier {
   final StorageStrategy _storage;
 
