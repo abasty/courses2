@@ -64,8 +64,9 @@ class Produit extends ChangeNotifier {
 class VueModele extends ChangeNotifier {
   final StorageStrategy _storage;
 
-  /// [isLoaded] se réalise quand loadAll() initial est terminé.
-  late Future<void> isLoaded;
+  /// [_isLoaded] se réalise quand le loadAll() initial est terminé.
+  late Future<void> _isLoaded;
+  Future<void> get isLoaded => _isLoaded;
 
   final Rayon _divers = Rayon('Divers');
 
@@ -90,7 +91,7 @@ class VueModele extends ChangeNotifier {
   /// Crée le modèle et charge les données suivant la [StorageStrategy] en
   /// paramètre.
   VueModele(this._storage) {
-    isLoaded = loadAll();
+    _isLoaded = loadAll();
   }
 
   /// Incrémente la quantité du [Produit] [p].
