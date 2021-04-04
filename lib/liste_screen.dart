@@ -48,8 +48,8 @@ class ListeScreen extends StatelessWidget {
           value: modele,
           builder: (context, snapshot) => TabBarView(
             children: [
-              _produitListTab(),
-              _produitCheckTab(),
+              _produitsTab(),
+              _listeTab(),
             ],
           ),
         ),
@@ -57,7 +57,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _produitListTab() {
+  Widget _produitsTab() {
     return Stack(
       children: [
         Consumer<VueModele>(
@@ -111,7 +111,7 @@ class ListeScreen extends StatelessWidget {
     );
   }
 
-  Widget _produitCheckTab() {
+  Widget _listeTab() {
     return Consumer<VueModele>(
       builder: (context, vm, child) {
         return Stack(
