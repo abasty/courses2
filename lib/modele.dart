@@ -217,8 +217,7 @@ class VueModele extends ChangeNotifier {
   /// Charge dans le modèle toutes les données du stockage.
   Future<void> loadAll() async {
     try {
-      var map = await _storage.read();
-      importFromMap(map);
+      importFromMap(await _storage.read());
     } on Error {
       debugPrint('Erreur de lecture. Fallback sur les données intégrées.');
       importFromMap(await readFromAsset('courses'));
