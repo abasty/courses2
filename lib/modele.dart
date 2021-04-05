@@ -18,10 +18,11 @@ class Rayon {
       Rayon(map['nom'] as String);
 
   /// Transforme ce [Rayon] en `Map<String, dynamic>`.
-  Map<String, dynamic> toMap() => {'nom': nom};
+  /// pedantic: always_declare_return_types
+  toMap() => {'nom': nom};
 
   /// Renvoie une représentation textuelle de ce [Rayon].
-  @override
+  /// pedantic: annotate_overrides
   String toString() => 'Rayon(nom: $nom)';
 }
 
@@ -172,14 +173,14 @@ class VueModele extends ChangeNotifier {
     try {
       rayon = _rayons.singleWhere((r) => r.nom == nom);
     } on StateError {
-      rayon = Rayon(nom);
+      rayon = new Rayon(nom);
       _rayons.add(rayon);
     }
     return rayon;
   }
 
   void _addSingleProduit(Produit produit) {
-    var rayon = _addSingleRayon(produit.rayon.nom);
+    Rayon rayon = _addSingleRayon(produit.rayon.nom);
     produit.rayon = rayon;
     try {
       var existant = _produits.singleWhere((p) => p.nom == produit.nom);
@@ -219,9 +220,23 @@ class VueModele extends ChangeNotifier {
     try {
       importFromMap(await _storage.read());
     } on Error {
-      debugPrint('Erreur de lecture. Fallback sur les données intégrées.');
+      debugPrint("Erreur de lecture. Fallback sur les données intégrées.");
       importFromMap(await readFromAsset('courses'));
     }
+  }
+
+  int _pedantic0() {
+    return 3;
+  }
+
+  /// dart: unused-element
+  Future<int> _pedantic() async {
+    /// pedantic: await_only_futures
+    await _pedantic0();
+
+    /// pedantic: unwaited_futures
+    saveAll();
+    return 3;
   }
 }
 
