@@ -20,6 +20,12 @@ abstract class StorageStrategy {
   Future<Map<String, dynamic>> read();
 }
 
+/// Reads dataset [name] from assets. This function MUST NOT fail.
+Future<Map<String, dynamic>> readFromAsset(String name) async {
+  return json.decode(await rootBundle.loadString('assets/$name.json'))
+      as Map<String, dynamic>;
+}
+
 /// Une stratégie de stockage de map en mémoire dans une autre map.
 class MemoryMapStrategy implements StorageStrategy {
   Map<String, dynamic> _map;
@@ -50,9 +56,14 @@ class LocalStorageStrategy implements StorageStrategy {
   @override
   Future<Map<String, dynamic>> read() async {
     await _storage.ready;
-    var str = await _storage.getItem('modele') as String?;
-    str ??= await rootBundle.loadString('assets/courses.json');
-    return json.decode(str) as Map<String, dynamic>;
+    dynamic str = await _storage.getItem('modele');
+    Map<String, dynamic> map;
+    try {
+      map = json.decode(str as String) as Map<String, dynamic>;
+    } on Error {
+      map = {};
+    }
+    return map;
   }
 }
 
