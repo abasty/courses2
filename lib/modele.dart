@@ -40,7 +40,7 @@ class Produit extends ChangeNotifier {
   bool fait;
 
   /// Crée un nouveau Produit avec son [nom] et son [rayon]. Par défaut, la
-  /// [quantite] est initialisée à 0 et [fait] à `false`.
+  /// [quantite] est initialisée à `0` et [fait] à `false`.
   Produit(this.nom, this.rayon, [this.quantite = 0, this.fait = false]);
 
   /// Crée un nouveau [Produit] depuis une [map].
