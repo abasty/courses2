@@ -1,60 +1,60 @@
 /// Cette bibliothèque définit les classes du modèle de données de l'application
-/// courses2 : [Rayon], [Produit] et [VueModele]
+/// courses2 : [Rayon], [Produit] et [VueModele].
 library modele;
 
 import 'package:flutter/foundation.dart';
 import 'storage.dart';
 
-/// Un rayon défini par son [nom]
+/// Un rayon défini par son [nom].
 class Rayon {
-  /// Le nom de ce [Rayon]
+  /// Le nom de ce [Rayon].
   String nom;
 
-  /// Crée un nouveau [Rayon] avec son [nom]
+  /// Crée un nouveau [Rayon] avec son [nom].
   Rayon(this.nom);
 
-  /// Crée un nouveau [Rayon] depuis une [map]
+  /// Crée un nouveau [Rayon] depuis une [map].
   factory Rayon.fromMap(Map<String, dynamic> map) =>
       Rayon(map['nom'] as String);
 
-  /// Transforme ce [Rayon] en `Map<String, dynamic>`
+  /// Transforme ce [Rayon] en `Map<String, dynamic>`.
   Map<String, dynamic> toMap() => {'nom': nom};
 
-  /// Renvoie une représentation textuelle de ce [Rayon]
+  /// Renvoie une représentation textuelle de ce [Rayon].
   @override
   String toString() => 'Rayon(nom: $nom)';
 }
 
-/// Un produit défini par son [nom] et son [rayon]
+/// Un produit défini par son [nom] et son [rayon].
 class Produit extends ChangeNotifier {
-  /// Le [nom] de ce [Produit]
+  /// Le [nom] de ce [Produit].
   String nom;
 
-  /// Le [rayon] de ce [Produit]
+  /// Le [rayon] de ce [Produit].
   Rayon rayon;
 
-  /// La [quantite] actuellement sélectionnée
+  /// La [quantite] actuellement sélectionnée.
   int quantite;
 
-  /// Indique si ce [Produit] a été placé dans le charriot
+  /// Indique si ce [Produit] a été placé dans le charriot.
   bool fait;
 
   /// Crée un nouveau Produit avec son [nom] et son [rayon]. Par défaut, la
   /// [quantite] est initialisée à 0 et [fait] à `false`.
   Produit(this.nom, this.rayon, [this.quantite = 0, this.fait = false]);
 
-  /// Crée un nouveau [Produit] depuis une [map]
+  /// Crée un nouveau [Produit] depuis une [map].
   factory Produit.fromMap(Map<String, dynamic> map) => Produit(
       map['nom'] as String,
       Rayon.fromMap(map['rayon'] as Map<String, dynamic>),
       map['quantite'] as int,
       map['fait'] as bool);
 
-  /// Transforme ce [Produit] en `Map<String, dynamic>`
+  /// Transforme ce [Produit] en `Map<String, dynamic>`.
   Map<String, dynamic> toMap() =>
       {'nom': nom, 'rayon': rayon.toMap(), 'quantite': quantite, 'fait': fait};
 
-  /// Renvoie une représentation textuelle de ce [Produit]
+  /// Renvoie une représentation textuelle de ce [Produit].
   @override
   String toString() =>
       'Produit(nom: $nom, rayon: $rayon, quantite: $quantite, fait: $fait)';
@@ -64,8 +64,9 @@ class Produit extends ChangeNotifier {
 class VueModele extends ChangeNotifier {
   final StorageStrategy _storage;
 
-  /// [_isLoaded] se réalise quand le loadAll() initial est terminé.
   late Future<void> _isLoaded;
+
+  /// [isLoaded] se réalise quand le [loadAll()] initial est terminé.
   Future<void> get isLoaded => _isLoaded;
 
   final Rayon _divers = Rayon('Divers');

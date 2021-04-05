@@ -140,6 +140,10 @@ class ListeScreen extends StatelessWidget {
   }
 }
 
+/// Un [Widget] qui encapsule un [ChangeNotifierProvider] et un [Consumer].
+///
+/// Il est utilisé dans les listes pour reconstruire uniquement un [Produit] qui
+/// notifie son changement d'état avec [notifyListeners()].
 class ProduitConsumer extends StatelessWidget {
   final Produit _produit;
   final Widget Function(
@@ -159,6 +163,10 @@ class ProduitConsumer extends StatelessWidget {
   }
 }
 
+/// Un [FloatingActionButton] non global à une page et qui apparait centré en
+/// bas.
+///
+/// Il est utilisé dans les [TabBarView] 'Produits' et 'Liste'.
 class LocalActionButton extends StatelessWidget {
   final IconData _icon;
   final void Function() _action;
