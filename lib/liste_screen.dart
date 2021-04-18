@@ -42,9 +42,12 @@ class ListeScreen extends StatelessWidget {
               builder: (context, vm, child) {
                 return Row(
                   children: [
-                    Text('Courses II'),
+                    Text('Courses III'),
                     Spacer(),
-                    Text('${modele.isConnected}'),
+                    if (modele.isConnected)
+                      Icon(Icons.cloud)
+                    else
+                      Icon(Icons.cloud_off, color: Colors.red)
                   ],
                 );
               },
