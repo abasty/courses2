@@ -34,19 +34,29 @@ class ListeScreen extends StatelessWidget {
   Widget _scaffold() {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Courses II'),
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'Produits'),
-              Tab(text: 'Liste'),
-            ],
+      child: ChangeNotifierProvider<VueModele>.value(
+        value: modele,
+        builder: (context, snapshot) => Scaffold(
+          appBar: AppBar(
+            title: Consumer<VueModele>(
+              builder: (context, vm, child) {
+                return Row(
+                  children: [
+                    Text('Courses II'),
+                    Spacer(),
+                    Text('${modele.isConnected}'),
+                  ],
+                );
+              },
+            ),
+            bottom: TabBar(
+              tabs: [
+                Tab(text: 'Produits'),
+                Tab(text: 'Liste'),
+              ],
+            ),
           ),
-        ),
-        body: ChangeNotifierProvider<VueModele>.value(
-          value: modele,
-          builder: (context, snapshot) => TabBarView(
+          body: TabBarView(
             children: [
               _produitsTab(),
               _listeTab(),
@@ -180,7 +190,6 @@ class LocalActionButton extends StatelessWidget {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: FloatingActionButton(
-          backgroundColor: modele.isConnected ? Colors.blue : Colors.red,
           onPressed: _action,
           child: Icon(_icon),
         ),
