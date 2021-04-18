@@ -69,6 +69,9 @@ class VueModele extends ChangeNotifier {
   /// [isLoaded] se réalise quand le [loadAll()] initial est terminé.
   Future<void> get isLoaded => _isLoaded;
 
+  /// [isConnected] est [true] si le _storage_ est connecté
+  bool get isConnected => _storage.isConnected;
+
   final Rayon _divers = Rayon('Divers');
 
   /// Le [Rayon] 'Divers'.

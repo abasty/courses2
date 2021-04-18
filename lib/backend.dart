@@ -6,13 +6,15 @@ import 'storage.dart';
 class BackendStrategy implements StorageStrategy {
   final _storage = LocalStorageStrategy();
   final String _host;
+  @override
+  bool isConnected = false;
 
   BackendStrategy(this._host);
 
   @override
   Future<Map<String, dynamic>> read() async {
     var map = await fetchData('courses/all');
-    if (map != null) return map as Map<String, dynamic>;
+    if (map != null && map is Map<String, dynamic>) return map;
     return _storage.read();
   }
 
@@ -27,13 +29,17 @@ class BackendStrategy implements StorageStrategy {
     try {
       var response = await http.get(Uri.http(_host, path));
       if (response.statusCode == 200) {
+        isConnected = true;
         return json.decode(response.body) as Object;
       } else {
+        isConnected = false;
         return null;
       }
     } on Error {
+      isConnected = false;
       return null;
     } on Exception {
+      isConnected = false;
       return null;
     }
   }

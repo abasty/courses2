@@ -180,6 +180,7 @@ class LocalActionButton extends StatelessWidget {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: FloatingActionButton(
+          backgroundColor: modele.isConnected ? Colors.blue : Colors.red,
           onPressed: _action,
           child: Icon(_icon),
         ),
