@@ -191,13 +191,16 @@ class VueModele extends ChangeNotifier {
   Produit _addSingleProduit(Produit produit) {
     var rayon = _addSingleRayon(produit.rayon.nom);
     produit.rayon = rayon;
-    try {
-      var existant = _produits.singleWhere((p) => p.nom == produit.nom);
+    var existant = _produits.singleWhere(
+      (p) => p.nom == produit.nom,
+      orElse: () => produit,
+    );
+    if (existant != produit) {
       existant.rayon = produit.rayon;
       existant.quantite = produit.quantite;
       existant.fait = produit.fait;
       return existant;
-    } on StateError {
+    } else {
       _produits.add(produit);
       return produit;
     }
@@ -206,11 +209,13 @@ class VueModele extends ChangeNotifier {
   // Callback de push SSE
   void _pushCallback(Map<String, dynamic> map) {
     var nouveau = Produit.fromMap(map);
+    var existant = _produits.singleWhere((p) => p.nom == nouveau.nom,
+        orElse: () => nouveau);
+    var sel_change = nouveau.quantite != existant.quantite &&
+        (nouveau.quantite == 0 || existant.quantite == 0);
     var produit = _addSingleProduit(nouveau);
-    // Si le produit existe, on ne notifie que le produit
-    if (produit == nouveau ||
-        nouveau.quantite != produit.quantite &&
-            (nouveau.quantite == 0 || produit.quantite == 0)) {
+    // Si le produit n'existe pas ou sa selection a changé
+    if (produit == nouveau || sel_change) {
       notifyListeners();
     } else {
       produit.notifyListeners();
