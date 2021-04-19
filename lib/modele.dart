@@ -108,6 +108,14 @@ class VueModele extends ChangeNotifier {
     }
   }
 
+  void _changeProduit(Produit p) {
+    p.notifyListeners();
+    saveAll();
+    if (isConnected) {
+      (_storage as BackendStrategy).push(p.toMap());
+    }
+  }
+
   /// Incrémente la quantité du [Produit] [p].
   void ctrlProduitPlus(Produit p) {
     if (++p.quantite == 1) {
@@ -115,11 +123,7 @@ class VueModele extends ChangeNotifier {
       _selection.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
     }
     p.fait = false;
-    p.notifyListeners();
-    saveAll();
-    if (isConnected) {
-      (_storage as BackendStrategy).push(p.toMap());
-    }
+    _changeProduit(p);
   }
 
   /// Décrémente la quantite du [Produit] [p].
@@ -130,8 +134,7 @@ class VueModele extends ChangeNotifier {
       _selection.remove(p);
     }
     p.fait = false;
-    p.notifyListeners();
-    saveAll();
+    _changeProduit(p);
   }
 
   /// Définit la quantite du [Produit] [p] à 0.
@@ -140,8 +143,7 @@ class VueModele extends ChangeNotifier {
     p.quantite = 0;
     _selection.remove(p);
     p.fait = false;
-    p.notifyListeners();
-    saveAll();
+    _changeProduit(p);
   }
 
   /// Définit la quantite du [Produit] [p] à 0 ou 1.
@@ -152,8 +154,7 @@ class VueModele extends ChangeNotifier {
   /// Marque ou démarque le [Produit] [p].
   void ctrlProduitPrend(Produit p, bool value) {
     p.fait = value;
-    p.notifyListeners();
-    saveAll();
+    _changeProduit(p);
   }
 
   /// Valide le charriot et définit les quantités des produits sélectionnés à 0.
@@ -162,6 +163,9 @@ class VueModele extends ChangeNotifier {
       if (p.fait) {
         p.quantite = 0;
         p.fait = false;
+        if (isConnected) {
+          (_storage as BackendStrategy).push(p.toMap());
+        }
         return true;
       }
       return false;
@@ -173,14 +177,14 @@ class VueModele extends ChangeNotifier {
   /// Met à jour ou ajoute un produit.
   void ctrlMajProduit(Produit? p, Produit maj) {
     if (p == null) {
-      _addSingleProduit(maj);
+      p = _addSingleProduit(maj);
     } else {
       p.nom = maj.nom;
       p.rayon = maj.rayon;
     }
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
+    _changeProduit(p);
     notifyListeners();
-    saveAll();
   }
 
   Rayon _addSingleRayon(String nom) {
@@ -213,7 +217,11 @@ class VueModele extends ChangeNotifier {
   void _pushProduit(Map<String, dynamic> map) {
     var p = Produit.fromMap(map);
     var p2 = _addSingleProduit(p);
+    // _selection.clear();
+    // _selection.addAll(_produits.where((e) => e.quantite > 0));
+    //print(p2);
     // Si le produit existe, on ne notifie que le produit
+    print(p2);
     if (p != p2) {
       p2.notifyListeners();
     } else {
