@@ -2,6 +2,7 @@
 /// courses2 : [Rayon], [Produit] et [VueModele].
 library modele;
 
+import 'package:courses2/backend.dart';
 import 'package:flutter/foundation.dart';
 import 'storage.dart';
 
@@ -70,7 +71,13 @@ class VueModele extends ChangeNotifier {
   Future<void> get isLoaded => _isLoaded;
 
   /// [isConnected] est [true] si le _storage_ est connecté
-  bool get isConnected => _storage.isConnected;
+  bool get isConnected {
+    if (_storage is BackendStrategy) {
+      return (_storage as BackendStrategy).isConnected;
+    } else {
+      return false;
+    }
+  }
 
   final Rayon _divers = Rayon('Divers');
 
@@ -107,6 +114,9 @@ class VueModele extends ChangeNotifier {
     p.fait = false;
     p.notifyListeners();
     saveAll();
+    if (isConnected) {
+      (_storage as BackendStrategy).push(p.toMap());
+    }
   }
 
   /// Décrémente la quantite du [Produit] [p].

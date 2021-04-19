@@ -13,8 +13,6 @@ import 'package:localstorage/localstorage.dart';
 /// La classe abstraite pour lire et écrire une Map<String, dynamic> sur un
 /// support de stockage.
 abstract class StorageStrategy {
-  bool isConnected = false;
-
   /// Écrit la map sur le support de stockage.
   Future<void> write(Map<String, dynamic> map);
 
@@ -40,9 +38,6 @@ class MemoryMapStrategy implements StorageStrategy {
 
   @override
   Future<Map<String, dynamic>> read() async => _map;
-
-  @override
-  bool isConnected = false;
 }
 
 /// Une stratégie de stockage de map dans un fichier local.
@@ -70,9 +65,6 @@ class LocalStorageStrategy implements StorageStrategy {
     }
     return map;
   }
-
-  @override
-  bool isConnected = false;
 }
 
 /// Un _wrapper_ de stratégie de stockage qui simule un délai en lecture.
@@ -82,9 +74,7 @@ class DelayedStrategy implements StorageStrategy {
 
   /// Crée une [DelayedStrategy] depuis un [StorageStrategy] et ajoute un délai
   /// de [_seconds] secondes à [read()].
-  DelayedStrategy(this._storage, this._seconds) {
-    isConnected = _storage.isConnected;
-  }
+  DelayedStrategy(this._storage, this._seconds);
 
   /// Appelle [write()] du [StorageStrategy].
   @override
@@ -100,7 +90,4 @@ class DelayedStrategy implements StorageStrategy {
     await Future.delayed(Duration(seconds: _seconds));
     return map;
   }
-
-  @override
-  bool isConnected = false;
 }

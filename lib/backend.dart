@@ -10,7 +10,6 @@ class BackendStrategy implements StorageStrategy {
   final data = <String>[];
   late SseClient client;
 
-  @override
   bool isConnected = false;
 
   BackendStrategy(this._host) {
@@ -45,7 +44,13 @@ class BackendStrategy implements StorageStrategy {
     return _storage.write(map);
   }
 
-  Future<void> push() async {}
+  Future<void> push(Map<String, dynamic> map) async {
+    // ignore: unawaited_futures
+    http.post(
+      Uri.http(_host, 'courses/produit'),
+      body: json.encode(map),
+    );
+  }
 
   Future<Object?> fetchData(String path) async {
     try {
