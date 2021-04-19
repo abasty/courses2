@@ -96,7 +96,6 @@ class ListeScreen extends StatelessWidget {
   }
 
   Widget _produitsTabTile(BuildContext context, Produit p, Widget? child) {
-    debugPrint(p.toString());
     return ListTile(
       title: Text(p.nom),
       subtitle: Text(p.rayon.nom),
@@ -143,7 +142,6 @@ class ListeScreen extends StatelessWidget {
   }
 
   Widget _listeTabTile(BuildContext context, Produit p, Widget? child) {
-    debugPrint(p.toString());
     return CheckboxListTile(
       title: Text("${p.nom} ${p.quantite > 1 ? '(${p.quantite})' : ''}"),
       subtitle: Text(p.rayon.nom),

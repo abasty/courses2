@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:stream_channel/stream_channel.dart';
 
 String randomSseClientId() {
-  return Random().nextInt(1 << 31 + 1).toString();
+  var r = Random().nextInt(1 << 31) + 1;
+  return r.toString();
 }
 
 class SseClient extends StreamChannelMixin<String> {
