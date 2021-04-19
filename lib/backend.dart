@@ -9,15 +9,20 @@ class BackendStrategy implements StorageStrategy {
   final String _host;
   final data = <String>[];
   late SseClient client;
+  Function? pushEvent;
 
   bool isConnected = false;
 
   BackendStrategy(this._host) {
     client = SseClient('http://$_host/sync')
       ..stream.listen(
-        (event) {
-          print(event);
-          data.add(event);
+        (str) {
+          data.add(str);
+          if (str.startsWith('data: ')) {
+            var produit_ret = json.decode(
+                str.substring(7, str.length - 1).replaceAll('\\"', '"'));
+            if (pushEvent != null) pushEvent!(produit_ret);
+          }
         },
         onDone: () {
           print('done');

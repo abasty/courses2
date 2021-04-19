@@ -103,6 +103,9 @@ class VueModele extends ChangeNotifier {
   /// paramètre.
   VueModele(this._storage) {
     _isLoaded = loadAll();
+    if (_storage is BackendStrategy) {
+      (_storage as BackendStrategy).pushEvent = _pushProduit;
+    }
   }
 
   /// Incrémente la quantité du [Produit] [p].
@@ -191,7 +194,7 @@ class VueModele extends ChangeNotifier {
     return rayon;
   }
 
-  void _addSingleProduit(Produit produit) {
+  Produit _addSingleProduit(Produit produit) {
     var rayon = _addSingleRayon(produit.rayon.nom);
     produit.rayon = rayon;
     try {
@@ -199,8 +202,22 @@ class VueModele extends ChangeNotifier {
       existant.rayon = produit.rayon;
       existant.quantite = produit.quantite;
       existant.fait = produit.fait;
+      return existant;
     } on StateError {
       _produits.add(produit);
+      return produit;
+    }
+  }
+
+  // Callback de push SSE
+  void _pushProduit(Map<String, dynamic> map) {
+    var p = Produit.fromMap(map);
+    var p2 = _addSingleProduit(p);
+    // Si le produit existe, on ne notifie que le produit
+    if (p != p2) {
+      p2.notifyListeners();
+    } else {
+      notifyListeners();
     }
   }
 
