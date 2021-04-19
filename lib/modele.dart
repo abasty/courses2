@@ -94,17 +94,16 @@ class VueModele extends ChangeNotifier {
   /// La liste des produits.
   List<Produit> get produits => _produits;
 
-  final List<Produit> _selection = [];
-
   /// La liste des produits avec des quantités > 0.
-  List<Produit> get selection => _selection;
+  List<Produit> get selection =>
+      _produits.where((p) => p.quantite > 0).toList();
 
   /// Crée le modèle et charge les données suivant la [StorageStrategy] en
   /// paramètre.
   VueModele(this._storage) {
     _isLoaded = loadAll();
     if (_storage is BackendStrategy) {
-      (_storage as BackendStrategy).pushEvent = _pushProduit;
+      (_storage as BackendStrategy).pushEvent = _pushCallback;
     }
   }
 
@@ -118,10 +117,7 @@ class VueModele extends ChangeNotifier {
 
   /// Incrémente la quantité du [Produit] [p].
   void ctrlProduitPlus(Produit p) {
-    if (++p.quantite == 1) {
-      _selection.add(p);
-      _selection.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
-    }
+    p.quantite++;
     p.fait = false;
     _changeProduit(p);
   }
@@ -129,10 +125,7 @@ class VueModele extends ChangeNotifier {
   /// Décrémente la quantite du [Produit] [p].
   void ctrlProduitMoins(Produit p) {
     if (p.quantite == 0) return;
-
-    if (--p.quantite == 0) {
-      _selection.remove(p);
-    }
+    p.quantite--;
     p.fait = false;
     _changeProduit(p);
   }
@@ -141,7 +134,6 @@ class VueModele extends ChangeNotifier {
   void ctrlProduitRaz(Produit p) {
     if (p.quantite == 0) return;
     p.quantite = 0;
-    _selection.remove(p);
     p.fait = false;
     _changeProduit(p);
   }
@@ -159,16 +151,14 @@ class VueModele extends ChangeNotifier {
 
   /// Valide le charriot et définit les quantités des produits sélectionnés à 0.
   void ctrlValideChariot() {
-    _selection.removeWhere((p) {
+    _produits.forEach((p) {
       if (p.fait) {
         p.quantite = 0;
         p.fait = false;
         if (isConnected) {
           (_storage as BackendStrategy).push(p.toMap());
         }
-        return true;
       }
-      return false;
     });
     notifyListeners();
     saveAll();
@@ -214,18 +204,16 @@ class VueModele extends ChangeNotifier {
   }
 
   // Callback de push SSE
-  void _pushProduit(Map<String, dynamic> map) {
-    var p = Produit.fromMap(map);
-    var p2 = _addSingleProduit(p);
-    // _selection.clear();
-    // _selection.addAll(_produits.where((e) => e.quantite > 0));
-    //print(p2);
+  void _pushCallback(Map<String, dynamic> map) {
+    var nouveau = Produit.fromMap(map);
+    var produit = _addSingleProduit(nouveau);
     // Si le produit existe, on ne notifie que le produit
-    print(p2);
-    if (p != p2) {
-      p2.notifyListeners();
-    } else {
+    if (produit == nouveau ||
+        nouveau.quantite != produit.quantite &&
+            (nouveau.quantite == 0 || produit.quantite == 0)) {
       notifyListeners();
+    } else {
+      produit.notifyListeners();
     }
   }
 
@@ -246,7 +234,6 @@ class VueModele extends ChangeNotifier {
         (p) => _addSingleProduit(Produit.fromMap(p as Map<String, dynamic>)));
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
-    _selection.addAll(_produits.where((e) => e.quantite > 0));
   }
 
   /// Sauve les données du modèle sur le sockage.
