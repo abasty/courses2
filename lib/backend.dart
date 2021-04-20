@@ -7,18 +7,15 @@ import 'storage.dart';
 class BackendStrategy implements StorageStrategy {
   final _storage = LocalStorageStrategy();
   final String _host;
-  final data = <String>[];
   late SseClient client;
   Function? pushEvent;
 
   bool isConnected = false;
 
   BackendStrategy(this._host) {
-    // client = SseClient.getInstance('http://$_host/sync');
-    /* client = SseClient('http://$_host/sync')
+    client = SseClient.getInstance('http://$_host/sync')
       ..stream.listen(
         (str) {
-          data.add(str);
           if (str.startsWith('data: ')) {
             var produit_ret = json.decode(
                 str.substring(7, str.length - 1).replaceAll('\\"', '"'));
@@ -32,17 +29,18 @@ class BackendStrategy implements StorageStrategy {
           print('error');
         },
         cancelOnError: true,
-      );*/
+      );
   }
 
   @override
   Future<Map<String, dynamic>> read() async {
     var map = await fetchData('courses/all');
     if (map != null && map is Map<String, dynamic>) {
-      // await avec un timer ou le finir en erreur
-      // await client.onConnected;
+      // TODO: await avec un timer ou le finir en erreur
+      await client.onConnected;
       return map;
     }
+    isConnected = false;
     return _storage.read();
   }
 
