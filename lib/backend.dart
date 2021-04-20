@@ -14,7 +14,8 @@ class BackendStrategy implements StorageStrategy {
   bool isConnected = false;
 
   BackendStrategy(this._host) {
-    client = SseClient('http://$_host/sync')
+    // client = SseClient.getInstance('http://$_host/sync');
+    /* client = SseClient('http://$_host/sync')
       ..stream.listen(
         (str) {
           data.add(str);
@@ -31,7 +32,7 @@ class BackendStrategy implements StorageStrategy {
           print('error');
         },
         cancelOnError: true,
-      );
+      );*/
   }
 
   @override
