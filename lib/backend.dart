@@ -39,7 +39,8 @@ class BackendStrategy implements StorageStrategy {
   Future<Map<String, dynamic>> read() async {
     var map = await fetchData('courses/all');
     if (map != null && map is Map<String, dynamic>) {
-      await client.onConnected;
+      // await avec un timer ou le finir en erreur
+      // await client.onConnected;
       return map;
     }
     return _storage.read();
