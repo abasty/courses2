@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
-import 'dart:math';
 
 import 'package:logging/logging.dart';
 import 'package:stream_channel/stream_channel.dart';
@@ -13,11 +12,6 @@ import 'package:stream_channel/stream_channel.dart';
 import '../courses_sse_client.dart';
 
 SseClient getSseClient(String serverUrl) => SseClientHtml(serverUrl);
-
-String randomSseClientId() {
-  var r = Random().nextInt(1 << 31) + 1;
-  return r.toString();
-}
 
 /// A client for bi-directional sse communcation.
 ///

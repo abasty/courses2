@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math' show Random;
 
 import 'package:http/http.dart' as http;
 import 'package:stream_channel/stream_channel.dart';
@@ -8,11 +7,6 @@ import 'package:stream_channel/stream_channel.dart';
 import '../courses_sse_client.dart';
 
 SseClient getSseClient(String serverUrl) => SseClientIo(serverUrl);
-
-String randomSseClientId() {
-  var r = Random().nextInt(1 << 31) + 1;
-  return r.toString();
-}
 
 class SseClientIo extends StreamChannelMixin<String> implements SseClient {
   @override
