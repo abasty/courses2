@@ -1,21 +1,21 @@
-name: courses2
+name: courses3
 version: 0.1.0
-summary: Courses2
-description: Une application Flutter pour faire ses courses2.
+summary: courses3
+description: Une application Flutter pour faire ses courses.
 
 confinement: strict
 base: core18
 grade: stable
 
 apps:
-  courses2:
-    command: courses2
+  courses3:
+    command: courses3
     extensions: [flutter-dev]
     plugs:
     - network
 
 parts:
-  courses2:
+  courses3:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart

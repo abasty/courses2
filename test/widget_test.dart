@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:courses2/liste_screen.dart';
-import 'package:courses2/modele.dart';
-import 'package:courses2/storage.dart';
+import 'package:courses3/liste_screen.dart';
+import 'package:courses3/modele.dart';
+import 'package:courses3/storage.dart';
 
 import 'dataset.dart';
 

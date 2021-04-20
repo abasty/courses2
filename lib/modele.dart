@@ -1,8 +1,8 @@
 /// Cette bibliothèque définit les classes du modèle de données de l'application
-/// courses2 : [Rayon], [Produit] et [VueModele].
+/// courses3 : [Rayon], [Produit] et [VueModele].
 library modele;
 
-import 'package:courses2/backend.dart';
+import 'package:courses3/backend.dart';
 import 'package:flutter/foundation.dart';
 import 'storage.dart';
 

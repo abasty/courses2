@@ -1,4 +1,4 @@
-/// Le point d'entrée de l'application `courses2`
+/// Le point d'entrée de l'application `courses3`
 library main;
 
 import 'package:flutter/foundation.dart';
