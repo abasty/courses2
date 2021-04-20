@@ -25,7 +25,7 @@ class BackendStrategy implements StorageStrategy {
           } on Exception {
             map = {};
           }
-          print(map);
+          // print(map);
           // TODO: test si c'est une Map<String, dynamic>
           if (pushEvent != null) pushEvent!(map);
         },
