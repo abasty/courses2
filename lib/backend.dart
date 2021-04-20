@@ -16,11 +16,21 @@ class BackendStrategy implements StorageStrategy {
     client = SseClient.getInstance('http://$_host/sync')
       ..stream.listen(
         (str) {
+          if (str.isEmpty) return;
           if (str.startsWith('data: ')) {
-            var produit_ret = json.decode(
-                str.substring(7, str.length - 1).replaceAll('\\"', '"'));
-            if (pushEvent != null) pushEvent!(produit_ret);
+            str = str.substring(7, str.length - 1).replaceAll('\\"', '"');
           }
+          var map;
+          try {
+            map = json.decode(str);
+          } on Error {
+            map = {};
+          } on Exception {
+            map = {};
+          }
+          print(map);
+          // TODO: test si c'est une Map<String, dynamic>
+          if (pushEvent != null) pushEvent!(map);
         },
         onDone: () {
           print('done');
