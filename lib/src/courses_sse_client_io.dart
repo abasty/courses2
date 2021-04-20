@@ -50,8 +50,11 @@ class SseClientIo extends StreamChannelMixin<String> implements SseClient {
               response.stream
                   .transform(utf8.decoder)
                   .transform(LineSplitter())
-                  .listen((line) {
-                _incomingController.sink.add(line);
+                  .listen((str) {
+                if (str.startsWith('data: ')) {
+                  str = str.substring(7, str.length - 1).replaceAll('\\"', '"');
+                  _incomingController.sink.add(str);
+                }
               });
             } else {
               _incomingController

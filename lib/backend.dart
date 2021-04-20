@@ -17,9 +17,6 @@ class BackendStrategy implements StorageStrategy {
       ..stream.listen(
         (str) {
           if (str.isEmpty) return;
-          if (str.startsWith('data: ')) {
-            str = str.substring(7, str.length - 1).replaceAll('\\"', '"');
-          }
           var map;
           try {
             map = json.decode(str);
