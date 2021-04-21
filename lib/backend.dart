@@ -57,10 +57,9 @@ class BackendStrategy implements StorageStrategy {
   }
 
   Future<void> push(Map<String, dynamic> map) async {
-    map['sseClientId'] = client.clientId;
     // ignore: unawaited_futures
     http.post(
-      Uri.http(_host, 'courses/produit'),
+      Uri.http(_host, 'courses/produit', {'sseClientId': client.clientId}),
       body: json.encode(map),
     );
   }
