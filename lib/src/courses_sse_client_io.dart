@@ -32,10 +32,10 @@ class SseClientIo extends StreamChannelMixin<String> implements SseClient {
   // int _lastMessageId = -1;
   late String _serverUrl;
   final _client = http.Client();
+  final _clientId = randomSseClientId();
 
   SseClientIo(String serverUrl) {
-    var clientId = randomSseClientId();
-    _serverUrl = '$serverUrl?sseClientId=$clientId';
+    _serverUrl = '$serverUrl?sseClientId=$_clientId';
 
     _incomingController = StreamController<String>.broadcast(
       onListen: () {
@@ -80,4 +80,7 @@ class SseClientIo extends StreamChannelMixin<String> implements SseClient {
     _incomingController.close();
     _outgoingController.close();
   }
+
+  @override
+  String get clientId => _clientId;
 }

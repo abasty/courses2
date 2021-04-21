@@ -34,13 +34,14 @@ class SseClientHtml extends StreamChannelMixin<String> implements SseClient {
 
   Timer? _errorTimer;
 
+  final _clientId = randomSseClientId();
+
   /// [serverUrl] is the URL under which the server is listening for
   /// incoming bi-directional SSE connections.
   SseClientHtml(String serverUrl) {
-    var clientId = randomSseClientId();
     _eventSource =
-        EventSource('$serverUrl?sseClientId=$clientId', withCredentials: true);
-    _serverUrl = '$serverUrl?sseClientId=$clientId';
+        EventSource('$serverUrl?sseClientId=$_clientId', withCredentials: true);
+    _serverUrl = '$serverUrl?sseClientId=$_clientId';
     _eventSource.onOpen.first.whenComplete(() {
       _onConnected.complete();
       _outgoingController.stream
@@ -133,4 +134,7 @@ class SseClientHtml extends StreamChannelMixin<String> implements SseClient {
       close();
     }
   }
+
+  @override
+  String get clientId => _clientId;
 }
