@@ -60,11 +60,17 @@ class BackendStrategy implements StorageStrategy {
 
   @override
   Future<void> push(Map<String, dynamic> map) async {
-    // ignore: unawaited_futures
-    http.post(
-      Uri.http(_host, 'courses/produit', {'sseClientId': client.clientId}),
-      body: json.encode(map),
-    );
+    try {
+      var response = await http.post(
+        Uri.http(_host, 'courses/produit', {'sseClientId': client.clientId}),
+        body: json.encode(map),
+      );
+      isConnected = response.statusCode == 200;
+    } on Exception {
+      isConnected = false;
+    } on Error {
+      isConnected = false;
+    }
   }
 
   Future<Object?> fetchData(String path) async {
@@ -81,7 +87,6 @@ class BackendStrategy implements StorageStrategy {
       isConnected = false;
       return null;
     } on Exception {
-      print('Exception ici si connection refused');
       isConnected = false;
       return null;
     }

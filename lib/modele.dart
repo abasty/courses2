@@ -100,12 +100,18 @@ class VueModele extends ChangeNotifier {
     if (_storage is BackendStrategy) _storage.pushEvent = _pushCallback;
   }
 
-  /// Notifie la vue, sauve en local et envoie le produit si le _storage_ est
-  /// connecté
+  /// Notifie la vue, sauve en local et pousse le produit sur le serveur
   void _changeProduit(Produit p) {
     p.notifyListeners();
     saveAll();
-    if (isConnected) _storage.push(p.toMap());
+    _push(p);
+  }
+
+  void _push(Produit p) async {
+    if (isConnected) {
+      await _storage.push(p.toMap());
+      if (!isConnected) notifyListeners();
+    }
   }
 
   /// Incrémente la quantité du [Produit] [p].
