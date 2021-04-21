@@ -71,13 +71,7 @@ class VueModele extends ChangeNotifier {
   Future<void> get isLoaded => _isLoaded;
 
   /// [isConnected] est [true] si le _storage_ est connecté
-  bool get isConnected {
-    if (_storage is BackendStrategy) {
-      return (_storage as BackendStrategy).isConnected;
-    } else {
-      return false;
-    }
-  }
+  bool get isConnected => _storage.isConnected;
 
   final Rayon _divers = Rayon('Divers');
 
@@ -102,17 +96,16 @@ class VueModele extends ChangeNotifier {
   /// paramètre.
   VueModele(this._storage) {
     _isLoaded = loadAll();
-    if (_storage is BackendStrategy) {
-      (_storage as BackendStrategy).pushEvent = _pushCallback;
-    }
+    var _storage = this._storage;
+    if (_storage is BackendStrategy) _storage.pushEvent = _pushCallback;
   }
 
+  /// Notifie la vue, sauve en local et envoie le produit si le _storage_ est
+  /// connecté
   void _changeProduit(Produit p) {
     p.notifyListeners();
     saveAll();
-    if (isConnected) {
-      (_storage as BackendStrategy).push(p.toMap());
-    }
+    if (isConnected) _storage.push(p.toMap());
   }
 
   /// Incrémente la quantité du [Produit] [p].

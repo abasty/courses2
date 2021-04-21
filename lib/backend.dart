@@ -1,7 +1,8 @@
 import 'dart:convert';
+
+import 'package:courses_sse_client/courses_sse_client.dart';
 import 'package:http/http.dart' as http;
 
-import 'courses_sse_client.dart';
 import 'storage.dart';
 
 class BackendStrategy implements StorageStrategy {
@@ -10,6 +11,7 @@ class BackendStrategy implements StorageStrategy {
   late SseClient client;
   Function? pushEvent;
 
+  @override
   bool isConnected = false;
 
   BackendStrategy(this._host) {
@@ -56,6 +58,7 @@ class BackendStrategy implements StorageStrategy {
     return _storage.write(map);
   }
 
+  @override
   Future<void> push(Map<String, dynamic> map) async {
     // ignore: unawaited_futures
     http.post(
