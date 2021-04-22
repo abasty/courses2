@@ -59,10 +59,13 @@ class BackendStrategy implements StorageStrategy {
   }
 
   @override
-  Future<void> push(Map<String, dynamic> map) async {
+  Future<void> advertise(Map<String, dynamic> map,
+      [Map<String, String>? options]) async {
     try {
+      var _options = {'sseClientId': client.clientId};
+      if (options != null) _options.addAll(options);
       var response = await http.post(
-        Uri.http(_host, 'courses/produit', {'sseClientId': client.clientId}),
+        Uri.http(_host, 'courses/produit', _options),
         body: json.encode(map),
       );
       isConnected = response.statusCode == 200;

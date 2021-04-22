@@ -101,15 +101,15 @@ class VueModele extends ChangeNotifier {
   }
 
   /// Notifie la vue, sauve en local et pousse le produit sur le serveur
-  void _changeProduit(Produit p) {
+  void _changeProduit(Produit p, [Map<String, String>? options]) {
     p.notifyListeners();
     saveAll();
-    _push(p);
+    _push(p, options);
   }
 
-  void _push(Produit p) async {
+  void _push(Produit p, [Map<String, String>? options]) async {
     if (isConnected) {
-      await _storage.push(p.toMap());
+      await _storage.advertise(p.toMap(), options);
       if (!isConnected) notifyListeners();
     }
   }
@@ -155,7 +155,7 @@ class VueModele extends ChangeNotifier {
         p.quantite = 0;
         p.fait = false;
         if (isConnected) {
-          (_storage as BackendStrategy).push(p.toMap());
+          (_storage as BackendStrategy).advertise(p.toMap());
         }
       }
     });
@@ -165,6 +165,7 @@ class VueModele extends ChangeNotifier {
 
   /// Met à jour ou ajoute un produit.
   void ctrlMajProduit(Produit? p, Produit maj) {
+    var replace = p == null ? '' : p.nom;
     if (p == null) {
       p = _addSingleProduit(maj);
     } else {
@@ -172,7 +173,7 @@ class VueModele extends ChangeNotifier {
       p.rayon = maj.rayon;
     }
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
-    _changeProduit(p);
+    _changeProduit(p, {'update': replace});
     notifyListeners();
   }
 
@@ -207,13 +208,16 @@ class VueModele extends ChangeNotifier {
 
   // Callback de push SSE
   void _pushCallback(Map<String, dynamic> map) {
+    var produitNom = map['update'] ?? map['nom'];
+    if (produitNom == null) return;
     var nouveau = Produit.fromMap(map);
-    var existant = _produits.singleWhere((p) => p.nom == nouveau.nom,
+    var existant = _produits.singleWhere((p) => p.nom == produitNom,
         orElse: () => nouveau);
+    existant.nom = nouveau.nom;
     var sel_change = nouveau.quantite != existant.quantite &&
         (nouveau.quantite == 0 || existant.quantite == 0);
     var produit = _addSingleProduit(nouveau);
-    // Si le produit n'existe pas ou sa selection a changé
+    // Si le produit n'existait pas ou sa selection a changé
     if (produit == nouveau || sel_change) {
       notifyListeners();
     } else {
