@@ -20,8 +20,7 @@ abstract class StorageStrategy {
   Future<void> write(Map<String, dynamic> map);
 
   /// Écrit un seul élément
-  Future<void> advertise(Map<String, dynamic> map,
-      [Map<String, String>? options]);
+  Future<void> advertise(String path, Map<String, dynamic> map);
 
   /// Lit et renvoie une map depuis le support de stockage.
   Future<Map<String, dynamic>> read();
@@ -50,8 +49,7 @@ class MemoryMapStrategy implements StorageStrategy {
   bool isConnected = false;
 
   @override
-  Future<void> advertise(Map<String, dynamic> map,
-      [Map<String, String>? options]) async {}
+  Future<void> advertise(String path, Map<String, dynamic> map) async {}
 }
 
 /// Une stratégie de stockage de map dans un fichier local.
@@ -84,8 +82,7 @@ class LocalStorageStrategy implements StorageStrategy {
   bool isConnected = false;
 
   @override
-  Future<void> advertise(Map<String, dynamic> map,
-      [Map<String, String>? options]) async {}
+  Future<void> advertise(String path, Map<String, dynamic> map) async {}
 }
 
 /// Un _wrapper_ de stratégie de stockage qui simule un délai en lecture.
@@ -116,6 +113,5 @@ class DelayedStrategy implements StorageStrategy {
   bool isConnected = false;
 
   @override
-  Future<void> advertise(Map<String, dynamic> map,
-      [Map<String, String>? options]) async {}
+  Future<void> advertise(String path, Map<String, dynamic> map) async {}
 }

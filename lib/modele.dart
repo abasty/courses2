@@ -101,15 +101,17 @@ class VueModele extends ChangeNotifier {
   }
 
   /// Notifie la vue, sauve en local et pousse le produit sur le serveur
-  void _changeProduit(Produit p, [Map<String, String>? options]) {
+  void _changeProduit(Produit p, [Map<String, String>? aux]) {
     p.notifyListeners();
     saveAll();
-    _push(p, options);
+    _advertise(p, aux);
   }
 
-  void _push(Produit p, [Map<String, String>? options]) async {
+  void _advertise(Produit p, [Map<String, String>? aux]) async {
     if (isConnected) {
-      await _storage.advertise(p.toMap(), options);
+      var map = p.toMap();
+      if (aux != null) map.addAll(aux);
+      await _storage.advertise('courses/produit', map);
       if (!isConnected) notifyListeners();
     }
   }
@@ -155,7 +157,7 @@ class VueModele extends ChangeNotifier {
         p.quantite = 0;
         p.fait = false;
         if (isConnected) {
-          (_storage as BackendStrategy).advertise(p.toMap());
+          (_storage as BackendStrategy).advertise('courses/produit', p.toMap());
         }
       }
     });
@@ -165,15 +167,16 @@ class VueModele extends ChangeNotifier {
 
   /// Met à jour ou ajoute un produit.
   void ctrlMajProduit(Produit? p, Produit maj) {
-    var replace = p == null ? '' : p.nom;
+    Map<String, String>? replace;
     if (p == null) {
       p = _addSingleProduit(maj);
     } else {
+      replace = {'update': p.nom};
       p.nom = maj.nom;
       p.rayon = maj.rayon;
     }
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
-    _changeProduit(p, {'update': replace});
+    _changeProduit(p, replace);
     notifyListeners();
   }
 
