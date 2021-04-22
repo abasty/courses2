@@ -15,7 +15,7 @@ class BackendStrategy implements StorageStrategy {
   bool isConnected = false;
 
   BackendStrategy(this._host) {
-    client = SseClient.getInstance('http://$_host/sync')
+    client = SseClient.fromUrl('http://$_host/sync')
       ..stream.listen(
         (str) {
           if (str.isEmpty) return;
@@ -90,5 +90,11 @@ class BackendStrategy implements StorageStrategy {
       isConnected = false;
       return null;
     }
+  }
+
+  @override
+  void disconnect() {
+    client.close();
+    isConnected = false;
   }
 }

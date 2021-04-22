@@ -180,6 +180,12 @@ class VueModele extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Déconnexion du storage
+  void ctrlDeconnexion() {
+    _storage.disconnect();
+    notifyListeners();
+  }
+
   Rayon _addSingleRayon(String nom) {
     Rayon rayon;
     try {

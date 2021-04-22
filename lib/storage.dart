@@ -24,6 +24,9 @@ abstract class StorageStrategy {
 
   /// Lit et renvoie une map depuis le support de stockage.
   Future<Map<String, dynamic>> read();
+
+  /// Déconnecte le storage
+  void disconnect();
 }
 
 /// Reads dataset [name] from assets. This function MUST NOT fail.
@@ -50,6 +53,9 @@ class MemoryMapStrategy implements StorageStrategy {
 
   @override
   Future<void> advertise(String path, Map<String, dynamic> map) async {}
+
+  @override
+  void disconnect() {}
 }
 
 /// Une stratégie de stockage de map dans un fichier local.
@@ -83,6 +89,9 @@ class LocalStorageStrategy implements StorageStrategy {
 
   @override
   Future<void> advertise(String path, Map<String, dynamic> map) async {}
+
+  @override
+  void disconnect() {}
 }
 
 /// Un _wrapper_ de stratégie de stockage qui simule un délai en lecture.
@@ -114,4 +123,7 @@ class DelayedStrategy implements StorageStrategy {
 
   @override
   Future<void> advertise(String path, Map<String, dynamic> map) async {}
+
+  @override
+  void disconnect() {}
 }

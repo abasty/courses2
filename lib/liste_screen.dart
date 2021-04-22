@@ -45,9 +45,16 @@ class ListeScreen extends StatelessWidget {
                     Text('Courses III'),
                     Spacer(),
                     if (modele.isConnected)
-                      Icon(Icons.cloud)
+                      IconButton(
+                        icon: Icon(Icons.cloud),
+                        onPressed: () => modele.ctrlDeconnexion(),
+                      )
                     else
-                      Icon(Icons.cloud_off, color: Colors.red)
+                      IconButton(
+                        icon: Icon(Icons.cloud_off, color: Colors.red),
+                        // connecter et demande commit ou discard
+                        onPressed: null,
+                      )
                   ],
                 );
               },
