@@ -257,14 +257,8 @@ class VueModele extends ChangeNotifier {
 
   void _pushCallback(Map<String, dynamic> map) {
     var nouveau = Produit.fromMap(map);
-    var ancien_nom = map['update'] as String?;
-    if (ancien_nom != null) {
-      if (!_majNomPossible(nouveau.nom)) return;
-      var existant = _produits.singleWhere((p) => p.nom == ancien_nom,
-          orElse: () => nouveau);
-      if (existant == nouveau) return;
-      existant.nom = nouveau.nom;
-    }
+    var ancien_nom = (map['update'] as String?) ?? '';
+    _produits.removeWhere((p) => p.nom == ancien_nom || p.nom == nouveau.nom);
     _addSingleProduit(nouveau);
     _sort();
     notifyListeners();
