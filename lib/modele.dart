@@ -81,7 +81,7 @@ class VueModele extends ChangeNotifier {
   VueModele(this._storage) {
     _isLoaded = loadAll();
     var _storage = this._storage;
-    if (_storage is BackendStrategy) _storage.pushEvent = _pushCallback;
+    if (_storage is BackendStrategy) _storage.pushEvent = _recoitPublication;
   }
 
   /// Le [Rayon] 'Divers'.
@@ -113,14 +113,14 @@ class VueModele extends ChangeNotifier {
   void ctrlMajProduit(Produit? p, Produit maj) {
     Map<String, String>? replace;
     if (p == null) {
-      p = _addSingleProduit(maj);
+      p = _importeProduit(maj);
     } else {
       if (p.nom != maj.nom && !_majNomPossible(maj.nom)) return;
       replace = {'update': p.nom};
       p.nom = maj.nom;
       p.rayon = maj.rayon;
     }
-    _sort();
+    _trie();
     _changeProduit(p, replace);
     notifyListeners();
   }
@@ -180,10 +180,10 @@ class VueModele extends ChangeNotifier {
   /// sélection est mise à jour.
   void importFromMap(Map<String, dynamic> map) {
     _rayons.add(_divers);
-    (map['rayons'] as List).forEach((r) => _addSingleRayon(r['nom'] as String));
+    (map['rayons'] as List).forEach((r) => _importeRayon(r['nom'] as String));
     (map['produits'] as List).forEach(
-        (p) => _addSingleProduit(Produit.fromMap(p as Map<String, dynamic>)));
-    _sort();
+        (p) => _importeProduit(Produit.fromMap(p as Map<String, dynamic>)));
+    _trie();
   }
 
   /// Charge dans le modèle toutes les données du stockage.
@@ -205,8 +205,15 @@ class VueModele extends ChangeNotifier {
         'produits': _produits.map((produit) => produit.toMap()).toList(),
       };
 
-  Produit _addSingleProduit(Produit produit) {
-    var rayon = _addSingleRayon(produit.rayon.nom);
+  /// Notifie la vue, sauve en local et publie le produit sur le serveur
+  void _changeProduit(Produit p, [Map<String, String>? aux]) {
+    p.notifyListeners();
+    saveAll();
+    _publieProduit(p, aux);
+  }
+
+  Produit _importeProduit(Produit produit) {
+    var rayon = _importeRayon(produit.rayon.nom);
     produit.rayon = rayon;
     var existant = _produits.singleWhere(
       (p) => p.nom == produit.nom,
@@ -223,7 +230,8 @@ class VueModele extends ChangeNotifier {
     }
   }
 
-  Rayon _addSingleRayon(String nom) {
+  // Callback de push SSE
+  Rayon _importeRayon(String nom) {
     Rayon rayon;
     try {
       rayon = _rayons.singleWhere((r) => r.nom == nom);
@@ -234,8 +242,11 @@ class VueModele extends ChangeNotifier {
     return rayon;
   }
 
-  // Callback de push SSE
-  void _advertise(Produit p, [Map<String, String>? aux]) async {
+  bool _majNomPossible(String nom) {
+    return _produits.where((p) => p.nom == nom).isEmpty;
+  }
+
+  void _publieProduit(Produit p, [Map<String, String>? aux]) async {
     if (isConnected) {
       var map = p.toMap();
       if (aux != null) map.addAll(aux);
@@ -244,27 +255,16 @@ class VueModele extends ChangeNotifier {
     }
   }
 
-  /// Notifie la vue, sauve en local et pousse le produit sur le serveur
-  void _changeProduit(Produit p, [Map<String, String>? aux]) {
-    p.notifyListeners();
-    saveAll();
-    _advertise(p, aux);
-  }
-
-  bool _majNomPossible(String nom) {
-    return _produits.where((p) => p.nom == nom).isEmpty;
-  }
-
-  void _pushCallback(Map<String, dynamic> map) {
+  void _recoitPublication(Map<String, dynamic> map) {
     var nouveau = Produit.fromMap(map);
     var ancien_nom = (map['update'] as String?) ?? '';
     _produits.removeWhere((p) => p.nom == ancien_nom || p.nom == nouveau.nom);
-    _addSingleProduit(nouveau);
-    _sort();
+    _importeProduit(nouveau);
+    _trie();
     notifyListeners();
   }
 
-  void _sort() {
+  void _trie() {
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
     _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
   }
