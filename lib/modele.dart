@@ -266,6 +266,12 @@ class VueModele extends ChangeNotifier {
 
   void _trie() {
     _rayons.sort((a, b) => a.nom.compareTo(b.nom));
-    _produits.sort((a, b) => a.rayon.nom.compareTo(b.rayon.nom));
+    _produits.sort((a, b) {
+      var cmp = a.rayon.nom.compareTo(b.rayon.nom);
+      if (cmp == 0) {
+        cmp = a.nom.compareTo(b.nom);
+      }
+      return cmp;
+    });
   }
 }
