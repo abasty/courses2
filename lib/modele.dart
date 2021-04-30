@@ -256,6 +256,11 @@ class VueModele extends ChangeNotifier {
   }
 
   void _recoitPublication(Map<String, dynamic> map) {
+    if (map.isEmpty) {
+      /// L'état de la connexion a changé
+      notifyListeners();
+      return;
+    }
     var nouveau = Produit.fromMap(map);
     var ancien_nom = (map['update'] as String?) ?? '';
     _produits.removeWhere((p) => p.nom == ancien_nom || p.nom == nouveau.nom);

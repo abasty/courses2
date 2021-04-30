@@ -48,10 +48,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "405c3c0d8cb9e96e3d15560c2cb204e603a379bf"
+      resolved-ref: b4b2363fbbf1e33abefe834ca6a4b3088168b614
       url: "git@github.com:abasty/courses_sse_client.git"
     source: git
-    version: "1.0.0"
+    version: "1.2.0"
   fake_async:
     dependency: transitive
     description:
@@ -89,7 +89,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.1"
+    version: "0.13.2"
   http_parser:
     dependency: transitive
     description:
@@ -173,7 +173,7 @@ packages:
       name: path_provider_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   pedantic:
     dependency: "direct dev"
     description:

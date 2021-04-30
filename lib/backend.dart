@@ -32,10 +32,8 @@ class BackendStrategy implements StorageStrategy {
           if (pushEvent != null) pushEvent!(map);
         },
         onDone: () {
-          print('done');
-        },
-        onError: (Object err) {
-          print('error');
+          isConnected = false;
+          if (pushEvent != null) pushEvent!(<String, dynamic>{});
         },
         cancelOnError: true,
       );
