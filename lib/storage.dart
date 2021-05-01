@@ -73,7 +73,9 @@ class MemoryMapStrategy implements StorageStrategy {
 
 /// Une stratégie de stockage de map dans un fichier local.
 class LocalStorageStrategy implements StorageStrategy {
-  final _storage = LocalStorage('courses3.json');
+  final _storage;
+
+  LocalStorageStrategy(String _filename) : _storage = LocalStorage(_filename);
 
   /// Écrit [map] sur le fichier `courses3.json`.
   @override

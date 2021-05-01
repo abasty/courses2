@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'storage.dart';
 
 class BackendStrategy implements StorageStrategy {
-  final _storage = LocalStorageStrategy();
+  final _storage = LocalStorageStrategy('courses3.json');
   late SseClient client;
   Function? pushEvent;
 
@@ -24,7 +24,6 @@ class BackendStrategy implements StorageStrategy {
   Future<Map<String, dynamic>> read() async {
     var map = await fetchData('courses/all');
     if (map != null && map is Map<String, dynamic>) {
-      // TODO: await avec un timer ou le finir en erreur
       await client.onConnected;
       return map;
     }

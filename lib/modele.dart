@@ -67,6 +67,8 @@ class Rayon {
 /// Le vue modèle et son contrôleur.
 class VueModele extends ChangeNotifier {
   final StorageStrategy _storage;
+  final LocalStorageStrategy _prefs =
+      LocalStorageStrategy('courses3_pref.json');
   late Future<void> _isLoaded;
   final Rayon _divers = Rayon('Divers');
   final List<Rayon> _rayons = [];
@@ -83,9 +85,8 @@ class VueModele extends ChangeNotifier {
   /// Le [Rayon] 'Divers'.
   Rayon get divers => _divers;
 
+  /// Le nom du serveur
   String get hostname => _storage.hostname;
-
-  set hostname(String _hostname) => _storage.hostname = _hostname;
 
   /// [isConnected] est [true] si le _storage_ est connecté
   bool get isConnected => _storage.isConnected;
@@ -109,6 +110,12 @@ class VueModele extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Change le nom du serveur
+  void ctrlHostname(String _hostname) {
+    _storage.hostname = _hostname;
+    _prefs.write({'hostname': hostname});
+  }
+
   /// Définit la quantite du [Produit] [p] à 0 ou 1.
   void ctrlProduitInverse(Produit p) {
     p.quantite == 0 ? modele.ctrlProduitPlus(p) : modele.ctrlProduitRaz(p);
@@ -127,15 +134,6 @@ class VueModele extends ChangeNotifier {
     }
     _trie();
     _changeProduit(p, replace);
-    notifyListeners();
-  }
-
-  /// Supprime unproduit
-  void ctrlProduitSupprime(Produit produit) {
-    var deleted = {'deleted': 'true'};
-    _produits.removeWhere((p) => p.nom == produit.nom);
-    saveAll();
-    _publieProduit(produit, deleted);
     notifyListeners();
   }
 
@@ -166,6 +164,15 @@ class VueModele extends ChangeNotifier {
     p.quantite = 0;
     p.fait = false;
     _changeProduit(p);
+  }
+
+  /// Supprime unproduit
+  void ctrlProduitSupprime(Produit produit) {
+    var deleted = {'deleted': 'true'};
+    _produits.removeWhere((p) => p.nom == produit.nom);
+    saveAll();
+    _publieProduit(produit, deleted);
+    notifyListeners();
   }
 
   /// Synchronise les données avec le backend
@@ -205,6 +212,10 @@ class VueModele extends ChangeNotifier {
 
   /// Charge dans le modèle toutes les données du stockage.
   Future<void> loadAll() async {
+    var prefs = await _prefs.read();
+    if (prefs['hostname'] != null) {
+      _storage.hostname = prefs['hostname'] as String;
+    }
     try {
       importFromMap(await _storage.read());
     } on Error {
@@ -215,7 +226,9 @@ class VueModele extends ChangeNotifier {
   }
 
   /// Sauve les données du modèle sur le sockage.
-  Future<void> saveAll() async => await _storage.write(toMap());
+  Future<void> saveAll() async {
+    await _storage.write(toMap());
+  }
 
   /// Transforme ce [VueModele] en `Map<String, dynamic>`
   Map<String, dynamic> toMap() => {
