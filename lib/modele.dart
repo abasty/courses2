@@ -130,6 +130,15 @@ class VueModele extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Supprime unproduit
+  void ctrlProduitSupprime(Produit produit) {
+    var deleted = {'deleted': 'true'};
+    _produits.removeWhere((p) => p.nom == produit.nom);
+    saveAll();
+    _publieProduit(produit, deleted);
+    notifyListeners();
+  }
+
   /// Décrémente la quantite du [Produit] [p].
   void ctrlProduitMoins(Produit p) {
     if (p.quantite == 0) return;
@@ -278,8 +287,10 @@ class VueModele extends ChangeNotifier {
     var nouveau = Produit.fromMap(map);
     var ancien_nom = (map['update'] as String?) ?? '';
     _produits.removeWhere((p) => p.nom == ancien_nom || p.nom == nouveau.nom);
-    _importeProduit(nouveau);
-    _trie();
+    if (map['deleted'] == null) {
+      _importeProduit(nouveau);
+      _trie();
+    }
     notifyListeners();
   }
 

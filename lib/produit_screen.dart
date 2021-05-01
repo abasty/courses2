@@ -116,7 +116,10 @@ class ProduitScreenState extends State<ProduitScreen> {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    modele.ctrlProduitSupprime(_init!);
+                    Navigator.pop(context);
+                  },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red, // background
                     onPrimary: Colors.white, // foreground
