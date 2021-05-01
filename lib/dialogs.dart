@@ -10,8 +10,11 @@ class ConnectDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text('Connexion au serveur'),
+      title: Text('Connexion'),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
       children: [
+        Divider(),
         SimpleDialogItem(
           icon: Icons.cloud_download,
           color: Colors.green,
@@ -30,6 +33,7 @@ class ConnectDialog extends StatelessWidget {
             modele.ctrlSync('export');
           },
         ),
+        Divider(),
         SimpleDialogItem(
           icon: Icons.cloud_off,
           color: Colors.red,
