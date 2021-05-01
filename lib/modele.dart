@@ -173,9 +173,10 @@ class VueModele extends ChangeNotifier {
   }
 
   /// Synchronise les données avec le backend
-  void ctrlSync(String verb) {
-    _storage.connect();
-    if (verb == 'export') _exportProduits();
+  void ctrlSync(String verb) async {
+    await _storage.connect();
+    if (!isConnected) return;
+    if (verb == 'export') await _exportProduits();
     _isLoaded = loadAll();
   }
 
@@ -262,11 +263,8 @@ class VueModele extends ChangeNotifier {
   }
 
   Future _exportProduits() async {
-    await _storage.connect();
-    if (!_storage.isConnected) return;
-    for (var p in _produits) {
-      _publieProduit(p);
-    }
+    if (!isConnected) return;
+    _produits.forEach((p) => _publieProduit(p));
   }
 
   void _recoitPublication(Map<String, dynamic> map) {

@@ -80,7 +80,6 @@ class BackendStrategy implements StorageStrategy {
   @override
   Future connect() async {
     if (isConnected) return;
-
     client = SseClient.fromUrl('http://$hostname/sync')
       ..stream.listen(
         (str) {
