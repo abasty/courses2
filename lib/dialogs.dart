@@ -18,16 +18,16 @@ class ConnectDialog extends StatelessWidget {
         SimpleDialogItem(
           icon: Icons.cloud_download,
           color: Colors.green,
-          text: 'Importer les données',
+          text: 'Télécharger les produits',
           onPressed: () {
             Navigator.pop(context);
             modele.ctrlSync('import');
           },
         ),
         SimpleDialogItem(
-          icon: Icons.cloud_upload,
-          color: Colors.red,
-          text: 'Exporter les données',
+          icon: Icons.cloud_done,
+          color: Colors.blue,
+          text: 'Synchroniser les produits',
           onPressed: () {
             Navigator.pop(context);
             modele.ctrlSync('export');

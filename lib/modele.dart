@@ -177,15 +177,8 @@ class VueModele extends ChangeNotifier {
   /// Synchronise les données avec le backend
   void ctrlSync(String verb) {
     _storage.connect();
-    switch (verb) {
-      case 'import':
-        _isLoaded = loadAll();
-        break;
-      case 'export':
-        _exportProduits();
-        break;
-      default:
-    }
+    if (verb == 'export') _exportProduits();
+    _isLoaded = loadAll();
   }
 
   /// Importe une liste de [Produit] et une liste de [Rayon] depuis une [map]
