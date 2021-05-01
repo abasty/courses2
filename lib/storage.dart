@@ -17,6 +17,9 @@ abstract class StorageStrategy {
   /// À vrai si le_storage_ est connectable **et** connecté
   bool isConnected = false;
 
+  /// Si le _storage_ est connectable [hostname] est le nom du serveur
+  String hostname = '';
+
   /// Écrit la map sur le support de stockage.
   Future<void> write(Map<String, dynamic> map);
 
@@ -44,7 +47,7 @@ class MemoryMapStrategy implements StorageStrategy {
   Map<String, dynamic> _map;
 
   /// Crée la map de stockage depuis la [_map].
-  MemoryMapStrategy(this._map);
+  MemoryMapStrategy(this._map) : hostname = '';
 
   @override
   Future<void> write(Map<String, dynamic> map) async => _map = map;
@@ -63,6 +66,9 @@ class MemoryMapStrategy implements StorageStrategy {
 
   @override
   Future connect() async {}
+
+  @override
+  String hostname;
 }
 
 /// Une stratégie de stockage de map dans un fichier local.
@@ -102,6 +108,9 @@ class LocalStorageStrategy implements StorageStrategy {
 
   @override
   Future connect() async {}
+
+  @override
+  String hostname = '';
 }
 
 /// Un _wrapper_ de stratégie de stockage qui simule un délai en lecture.
@@ -148,4 +157,10 @@ class DelayedStrategy implements StorageStrategy {
   set isConnected(bool _isConnected) {
     _storage.isConnected = _isConnected;
   }
+
+  @override
+  String get hostname => _storage.hostname;
+
+  @override
+  set hostname(String _hostname) => _storage.hostname = _hostname;
 }

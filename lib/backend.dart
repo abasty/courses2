@@ -7,14 +7,16 @@ import 'storage.dart';
 
 class BackendStrategy implements StorageStrategy {
   final _storage = LocalStorageStrategy();
-  final String _host;
   late SseClient client;
   Function? pushEvent;
 
   @override
   bool isConnected = false;
 
-  BackendStrategy(this._host) {
+  @override
+  String hostname;
+
+  BackendStrategy(this.hostname) {
     connect();
   }
 
@@ -39,32 +41,32 @@ class BackendStrategy implements StorageStrategy {
   Future<void> advertise(String path, Map<String, dynamic> map) async {
     try {
       var response = await http.post(
-        Uri.http(_host, path, {'sseClientId': client.clientId}),
+        Uri.http(hostname, path, {'sseClientId': client.clientId}),
         body: json.encode(map),
       );
       isConnected = response.statusCode == 200;
     } on Exception {
-      isConnected = false;
+      disconnect();
     } on Error {
-      isConnected = false;
+      disconnect();
     }
   }
 
   Future<Object?> fetchData(String path) async {
     try {
-      var response = await http.get(Uri.http(_host, path));
+      var response = await http.get(Uri.http(hostname, path));
       if (response.statusCode == 200) {
         isConnected = true;
         return json.decode(response.body) as Object;
       } else {
-        isConnected = false;
+        disconnect();
         return null;
       }
     } on Error {
-      isConnected = false;
+      disconnect();
       return null;
     } on Exception {
-      isConnected = false;
+      disconnect();
       return null;
     }
   }
@@ -79,25 +81,21 @@ class BackendStrategy implements StorageStrategy {
   Future connect() async {
     if (isConnected) return;
 
-    client = SseClient.fromUrl('http://$_host/sync')
+    client = SseClient.fromUrl('http://$hostname/sync')
       ..stream.listen(
         (str) {
           if (str.isEmpty) return;
           var map;
           try {
-            map = json.decode(str);
-          } on Error {
-            map = {};
-          } on Exception {
+            map = json.decode(str) as Map<String, dynamic>;
+          } catch (e) {
             map = {};
           }
-          // print(map);
-          // TODO: test si c'est une Map<String, dynamic>
           if (pushEvent != null) pushEvent!(map);
         },
         onDone: () {
-          isConnected = false;
           if (pushEvent != null) pushEvent!(<String, dynamic>{});
+          disconnect();
         },
         cancelOnError: true,
       );
@@ -105,7 +103,7 @@ class BackendStrategy implements StorageStrategy {
       await client.onConnected;
       isConnected = true;
     } catch (e) {
-      isConnected = false;
+      disconnect();
     }
   }
 }

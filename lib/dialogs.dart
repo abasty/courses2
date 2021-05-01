@@ -10,27 +10,34 @@ class ConnectDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text('Connexion'),
+      title: Center(child: Text('Connexion')),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       children: [
-        Divider(),
-        SimpleDialogItem(
-          icon: Icons.cloud_download,
-          color: Colors.green,
-          text: 'Télécharger les produits',
-          onPressed: () {
-            Navigator.pop(context);
-            modele.ctrlSync('import');
-          },
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextFormField(
+            onChanged: (value) => modele.hostname = value,
+            decoration: InputDecoration(hintText: 'URL'),
+            initialValue: modele.hostname,
+          ),
         ),
         SimpleDialogItem(
           icon: Icons.cloud_done,
-          color: Colors.blue,
+          color: Colors.green,
           text: 'Synchroniser les produits',
           onPressed: () {
             Navigator.pop(context);
             modele.ctrlSync('export');
+          },
+        ),
+        SimpleDialogItem(
+          icon: Icons.cloud_download,
+          color: Colors.blue,
+          text: 'Télécharger les produits',
+          onPressed: () {
+            Navigator.pop(context);
+            modele.ctrlSync('import');
           },
         ),
         Divider(),

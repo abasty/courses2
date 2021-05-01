@@ -67,14 +67,12 @@ class Rayon {
 /// Le vue modèle et son contrôleur.
 class VueModele extends ChangeNotifier {
   final StorageStrategy _storage;
-
   late Future<void> _isLoaded;
-
   final Rayon _divers = Rayon('Divers');
-
   final List<Rayon> _rayons = [];
-
   final List<Produit> _produits = [];
+  String get hostname => _storage.hostname;
+  set hostname(String _hostname) => _storage.hostname = _hostname;
 
   /// Crée le modèle et charge les données suivant la [StorageStrategy] en
   /// paramètre.
