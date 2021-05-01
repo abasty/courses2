@@ -9,6 +9,7 @@ library liste_screen;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'dialogs.dart';
 import 'modele.dart';
 import 'produit_screen.dart';
 
@@ -151,6 +152,7 @@ class ConnectedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dialog = ConnectDialog();
     return Consumer<VueModele>(
       builder: (context, vm, child) {
         if (modele.isConnected) {
@@ -162,7 +164,9 @@ class ConnectedButton extends StatelessWidget {
           return IconButton(
             icon: Icon(Icons.cloud_off, color: Colors.red),
             // connecter et demande commit ou discard
-            onPressed: null,
+            onPressed: () {
+              showDialog(context: context, builder: (context) => dialog);
+            },
           );
         }
       },
