@@ -1,39 +1,6 @@
 import 'package:flutter/material.dart';
 
-/*void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-    );
-  }
-}*/
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final dialog = ConnectDialog();
-
-    return Scaffold(
-      body: Center(
-        // ignore: deprecated_member_use
-        child: FlatButton(
-          textColor: Color(0xFF6200EE),
-          highlightColor: Colors.transparent,
-          onPressed: () {
-            var r = showDialog(context: context, builder: (context) => dialog);
-            print(r);
-          },
-          child: Text('SHOW DIALOG'),
-        ),
-      ),
-    );
-  }
-}
+import 'modele.dart';
 
 class ConnectDialog extends StatelessWidget {
   const ConnectDialog({
@@ -50,7 +17,8 @@ class ConnectDialog extends StatelessWidget {
           color: Colors.green,
           text: 'Importer les données',
           onPressed: () {
-            Navigator.pop(context, 'import');
+            Navigator.pop(context);
+            modele.ctrlSync('import');
           },
         ),
         SimpleDialogItem(
@@ -58,7 +26,8 @@ class ConnectDialog extends StatelessWidget {
           color: Colors.red,
           text: 'Exporter les données',
           onPressed: () {
-            Navigator.pop(context, 'export');
+            Navigator.pop(context);
+            modele.ctrlSync('export');
           },
         ),
         SimpleDialogItem(
@@ -66,7 +35,7 @@ class ConnectDialog extends StatelessWidget {
           color: Colors.red,
           text: 'Rester déconnecté',
           onPressed: () {
-            Navigator.pop(context, 'disconnect');
+            Navigator.pop(context);
           },
         ),
       ],
@@ -75,14 +44,14 @@ class ConnectDialog extends StatelessWidget {
 }
 
 class SimpleDialogItem extends StatelessWidget {
-  const SimpleDialogItem(
-      {Key? key, this.icon, this.color, this.text, this.onPressed})
-      : super(key: key);
-
   final IconData? icon;
+
   final Color? color;
   final String? text;
   final VoidCallback? onPressed;
+  const SimpleDialogItem(
+      {Key? key, this.icon, this.color, this.text, this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

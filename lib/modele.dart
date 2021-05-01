@@ -174,12 +174,22 @@ class VueModele extends ChangeNotifier {
     saveAll();
   }
 
+  /// Synchronise les données avec le backend
+  void ctrlSync(String verb) {
+    switch (verb) {
+      case 'import':
+        _isLoaded = loadAll();
+        break;
+      default:
+    }
+  }
+
   /// Importe une liste de [Produit] et une liste de [Rayon] depuis une [map]
   /// dans ce [VueModele]. Les rayons et produits seront uniques par rapport à
   /// leur nom. Les listes sont triées par ordre alphabétique des noms. La
   /// sélection est mise à jour.
   void importFromMap(Map<String, dynamic> map) {
-    _rayons.add(_divers);
+    _importeRayon('Divers');
     (map['rayons'] as List).forEach((r) => _importeRayon(r['nom'] as String));
     (map['produits'] as List).forEach(
         (p) => _importeProduit(Produit.fromMap(p as Map<String, dynamic>)));
@@ -194,6 +204,7 @@ class VueModele extends ChangeNotifier {
       debugPrint('Erreur de lecture. Fallback sur les données intégrées.');
       importFromMap(await readFromAsset('courses'));
     }
+    notifyListeners();
   }
 
   /// Sauve les données du modèle sur le sockage.
