@@ -38,26 +38,12 @@ class ListeScreen extends StatelessWidget {
         value: modele,
         builder: (context, snapshot) => Scaffold(
           appBar: AppBar(
-            title: Consumer<VueModele>(
-              builder: (context, vm, child) {
-                return Row(
-                  children: [
-                    Text('Courses III'),
-                    Spacer(),
-                    if (modele.isConnected)
-                      IconButton(
-                        icon: Icon(Icons.cloud),
-                        onPressed: () => modele.ctrlDeconnexion(),
-                      )
-                    else
-                      IconButton(
-                        icon: Icon(Icons.cloud_off, color: Colors.red),
-                        // connecter et demande commit ou discard
-                        onPressed: null,
-                      )
-                  ],
-                );
-              },
+            title: Row(
+              children: [
+                Text('Courses III'),
+                Spacer(),
+                ConnectedButton(),
+              ],
             ),
             bottom: TabBar(
               tabs: [
@@ -154,6 +140,32 @@ class ListeScreen extends StatelessWidget {
       subtitle: Text(p.rayon.nom),
       value: p.fait,
       onChanged: (bool? value) => modele.ctrlProduitPrend(p, value!),
+    );
+  }
+}
+
+class ConnectedButton extends StatelessWidget {
+  const ConnectedButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<VueModele>(
+      builder: (context, vm, child) {
+        if (modele.isConnected) {
+          return IconButton(
+            icon: Icon(Icons.cloud),
+            onPressed: () => modele.ctrlDeconnexion(),
+          );
+        } else {
+          return IconButton(
+            icon: Icon(Icons.cloud_off, color: Colors.red),
+            // connecter et demande commit ou discard
+            onPressed: null,
+          );
+        }
+      },
     );
   }
 }
