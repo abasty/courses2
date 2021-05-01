@@ -59,19 +59,23 @@ class ProduitScreenState extends State<ProduitScreen> {
 
   Widget _rayonButtons() {
     return Expanded(
-      child: ListView.builder(
-        itemCount: modele.rayons.length,
-        itemBuilder: (context, index) {
-          return Container(
-            height: 32,
-            child: RadioListTile<Rayon>(
-              title: Text(modele.rayons[index].nom),
-              value: modele.rayons[index],
-              groupValue: _maj.rayon,
-              onChanged: (Rayon? r) => setState(() => _maj.rayon = r!),
-            ),
-          );
-        },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: Scrollbar(
+          isAlwaysShown: true,
+          child: ListView.builder(
+            itemCount: modele.rayons.length,
+            itemBuilder: (context, index) {
+              return RadioListTile<Rayon>(
+                title: Text(modele.rayons[index].nom),
+                dense: true,
+                value: modele.rayons[index],
+                groupValue: _maj.rayon,
+                onChanged: (Rayon? r) => setState(() => _maj.rayon = r!),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -100,15 +104,28 @@ class ProduitScreenState extends State<ProduitScreen> {
   Form _form() {
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _produitNom(),
-          ),
-          _rayonButtons(),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _produitNom(),
+            _rayonButtons(),
+            if (_init != null)
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text('Supprimer'),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
