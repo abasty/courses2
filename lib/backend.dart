@@ -15,28 +15,7 @@ class BackendStrategy implements StorageStrategy {
   bool isConnected = false;
 
   BackendStrategy(this._host) {
-    client = SseClient.fromUrl('http://$_host/sync')
-      ..stream.listen(
-        (str) {
-          if (str.isEmpty) return;
-          var map;
-          try {
-            map = json.decode(str);
-          } on Error {
-            map = {};
-          } on Exception {
-            map = {};
-          }
-          // print(map);
-          // TODO: test si c'est une Map<String, dynamic>
-          if (pushEvent != null) pushEvent!(map);
-        },
-        onDone: () {
-          isConnected = false;
-          if (pushEvent != null) pushEvent!(<String, dynamic>{});
-        },
-        cancelOnError: true,
-      );
+    connect();
   }
 
   @override
@@ -94,5 +73,39 @@ class BackendStrategy implements StorageStrategy {
   void disconnect() {
     client.close();
     isConnected = false;
+  }
+
+  @override
+  Future connect() async {
+    if (isConnected) return;
+
+    client = SseClient.fromUrl('http://$_host/sync')
+      ..stream.listen(
+        (str) {
+          if (str.isEmpty) return;
+          var map;
+          try {
+            map = json.decode(str);
+          } on Error {
+            map = {};
+          } on Exception {
+            map = {};
+          }
+          // print(map);
+          // TODO: test si c'est une Map<String, dynamic>
+          if (pushEvent != null) pushEvent!(map);
+        },
+        onDone: () {
+          isConnected = false;
+          if (pushEvent != null) pushEvent!(<String, dynamic>{});
+        },
+        cancelOnError: true,
+      );
+    try {
+      await client.onConnected;
+      isConnected = true;
+    } catch (e) {
+      isConnected = false;
+    }
   }
 }

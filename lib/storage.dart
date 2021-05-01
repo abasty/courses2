@@ -9,6 +9,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:pedantic/pedantic.dart';
 
 /// La classe abstraite pour lire et écrire une Map<String, dynamic> sur un
 /// support de stockage.
@@ -27,6 +28,9 @@ abstract class StorageStrategy {
 
   /// Déconnecte le storage
   void disconnect();
+
+  /// Connecte le storage
+  Future connect();
 }
 
 /// Reads dataset [name] from assets. This function MUST NOT fail.
@@ -56,6 +60,9 @@ class MemoryMapStrategy implements StorageStrategy {
 
   @override
   void disconnect() {}
+
+  @override
+  Future connect() async {}
 }
 
 /// Une stratégie de stockage de map dans un fichier local.
@@ -92,6 +99,9 @@ class LocalStorageStrategy implements StorageStrategy {
 
   @override
   void disconnect() {}
+
+  @override
+  Future connect() async {}
 }
 
 /// Un _wrapper_ de stratégie de stockage qui simule un délai en lecture.
@@ -119,11 +129,23 @@ class DelayedStrategy implements StorageStrategy {
   }
 
   @override
-  bool isConnected = false;
-
-  @override
   Future<void> advertise(String path, Map<String, dynamic> map) async {}
 
   @override
-  void disconnect() {}
+  void disconnect() {
+    _storage.disconnect();
+  }
+
+  @override
+  Future connect() async {
+    unawaited(_storage.connect());
+  }
+
+  @override
+  bool get isConnected => _storage.isConnected;
+
+  @override
+  set isConnected(bool _isConnected) {
+    _storage.isConnected = _isConnected;
+  }
 }

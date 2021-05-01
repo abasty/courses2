@@ -176,9 +176,13 @@ class VueModele extends ChangeNotifier {
 
   /// Synchronise les données avec le backend
   void ctrlSync(String verb) {
+    _storage.connect();
     switch (verb) {
       case 'import':
         _isLoaded = loadAll();
+        break;
+      case 'export':
+        _exportProduits();
         break;
       default:
     }
@@ -263,6 +267,14 @@ class VueModele extends ChangeNotifier {
       if (aux != null) map.addAll(aux);
       await _storage.advertise('courses/produit', map);
       if (!isConnected) notifyListeners();
+    }
+  }
+
+  Future _exportProduits() async {
+    await _storage.connect();
+    if (!_storage.isConnected) return;
+    for (var p in _produits) {
+      _publieProduit(p);
     }
   }
 
