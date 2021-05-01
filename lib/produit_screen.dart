@@ -52,7 +52,7 @@ class ProduitScreenState extends State<ProduitScreen> {
 
   void _validePressed() {
     if (_formKey.currentState!.validate()) {
-      modele.ctrlMajProduit(_init, _maj);
+      modele.ctrlProduitMaj(_init, _maj);
       Navigator.pop(context);
     }
   }

@@ -71,8 +71,6 @@ class VueModele extends ChangeNotifier {
   final Rayon _divers = Rayon('Divers');
   final List<Rayon> _rayons = [];
   final List<Produit> _produits = [];
-  String get hostname => _storage.hostname;
-  set hostname(String _hostname) => _storage.hostname = _hostname;
 
   /// Crée le modèle et charge les données suivant la [StorageStrategy] en
   /// paramètre.
@@ -84,6 +82,10 @@ class VueModele extends ChangeNotifier {
 
   /// Le [Rayon] 'Divers'.
   Rayon get divers => _divers;
+
+  String get hostname => _storage.hostname;
+
+  set hostname(String _hostname) => _storage.hostname = _hostname;
 
   /// [isConnected] est [true] si le _storage_ est connecté
   bool get isConnected => _storage.isConnected;
@@ -107,8 +109,13 @@ class VueModele extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Définit la quantite du [Produit] [p] à 0 ou 1.
+  void ctrlProduitInverse(Produit p) {
+    p.quantite == 0 ? modele.ctrlProduitPlus(p) : modele.ctrlProduitRaz(p);
+  }
+
   /// Met à jour ou ajoute un produit.
-  void ctrlMajProduit(Produit? p, Produit maj) {
+  void ctrlProduitMaj(Produit? p, Produit maj) {
     Map<String, String>? replace;
     if (p == null) {
       p = _importeProduit(maj);
@@ -121,11 +128,6 @@ class VueModele extends ChangeNotifier {
     _trie();
     _changeProduit(p, replace);
     notifyListeners();
-  }
-
-  /// Définit la quantite du [Produit] [p] à 0 ou 1.
-  void ctrlProduitInverse(Produit p) {
-    p.quantite == 0 ? modele.ctrlProduitPlus(p) : modele.ctrlProduitRaz(p);
   }
 
   /// Décrémente la quantite du [Produit] [p].
@@ -157,6 +159,14 @@ class VueModele extends ChangeNotifier {
     _changeProduit(p);
   }
 
+  /// Synchronise les données avec le backend
+  void ctrlSync(String verb) async {
+    await _storage.connect();
+    if (!isConnected) return;
+    if (verb == 'export') await _exportProduits();
+    _isLoaded = loadAll();
+  }
+
   /// Valide le charriot et définit les quantités des produits sélectionnés à 0.
   void ctrlValideChariot() {
     _produits.forEach((p) {
@@ -170,14 +180,6 @@ class VueModele extends ChangeNotifier {
     });
     notifyListeners();
     saveAll();
-  }
-
-  /// Synchronise les données avec le backend
-  void ctrlSync(String verb) async {
-    await _storage.connect();
-    if (!isConnected) return;
-    if (verb == 'export') await _exportProduits();
-    _isLoaded = loadAll();
   }
 
   /// Importe une liste de [Produit] et une liste de [Rayon] depuis une [map]
@@ -219,6 +221,12 @@ class VueModele extends ChangeNotifier {
     _publieProduit(p, aux);
   }
 
+  Future _exportProduits() async {
+    if (!isConnected) return;
+    _produits.forEach((p) => _publieProduit(p));
+  }
+
+  // Callback de push SSE
   Produit _importeProduit(Produit produit) {
     var rayon = _importeRayon(produit.rayon.nom);
     produit.rayon = rayon;
@@ -237,7 +245,6 @@ class VueModele extends ChangeNotifier {
     }
   }
 
-  // Callback de push SSE
   Rayon _importeRayon(String nom) {
     Rayon rayon;
     try {
@@ -260,11 +267,6 @@ class VueModele extends ChangeNotifier {
       await _storage.advertise('courses/produit', map);
       if (!isConnected) notifyListeners();
     }
-  }
-
-  Future _exportProduits() async {
-    if (!isConnected) return;
-    _produits.forEach((p) => _publieProduit(p));
   }
 
   void _recoitPublication(Map<String, dynamic> map) {
