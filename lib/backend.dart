@@ -7,7 +7,7 @@ import 'storage.dart';
 
 class BackendStrategy implements StorageStrategy {
   final _storage = LocalStorageStrategy('courses3.json');
-  late SseClient client;
+  late SseClient _sse_client;
   Function? pushEvent;
 
   @override
@@ -24,7 +24,7 @@ class BackendStrategy implements StorageStrategy {
   Future<Map<String, dynamic>> read() async {
     var map = await fetchData('courses/all');
     if (map != null && map is Map<String, dynamic>) {
-      await client.onConnected;
+      // await _sse_client.onConnected;
       return map;
     }
     isConnected = false;
@@ -40,13 +40,11 @@ class BackendStrategy implements StorageStrategy {
   Future<void> advertise(String path, Map<String, dynamic> map) async {
     try {
       var response = await http.post(
-        Uri.http(hostname, path, {'sseClientId': client.clientId}),
+        Uri.http(hostname, path, {'sseClientId': _sse_client.clientId}),
         body: json.encode(map),
       );
       isConnected = response.statusCode == 200;
-    } on Exception {
-      disconnect();
-    } on Error {
+    } catch (e) {
       disconnect();
     }
   }
@@ -58,13 +56,9 @@ class BackendStrategy implements StorageStrategy {
         isConnected = true;
         return json.decode(response.body) as Object;
       } else {
-        disconnect();
-        return null;
+        throw 'Fetch error';
       }
-    } on Error {
-      disconnect();
-      return null;
-    } on Exception {
+    } catch (e) {
       disconnect();
       return null;
     }
@@ -72,15 +66,18 @@ class BackendStrategy implements StorageStrategy {
 
   @override
   void disconnect() {
-    client.close();
+    _sse_client.close();
     isConnected = false;
   }
 
   @override
   Future connect() async {
     if (isConnected) return;
-    client = SseClient.fromUrl('http://$hostname/sync')
-      ..stream.listen(
+    _sse_client = SseClient.fromUrl('http://$hostname/sync');
+    try {
+      await _sse_client.onConnected;
+      isConnected = true;
+      _sse_client.stream.listen(
         (str) {
           if (str.isEmpty) return;
           var map;
@@ -97,9 +94,6 @@ class BackendStrategy implements StorageStrategy {
         },
         cancelOnError: true,
       );
-    try {
-      await client.onConnected;
-      isConnected = true;
     } catch (e) {
       disconnect();
     }

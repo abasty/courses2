@@ -218,7 +218,7 @@ class VueModele extends ChangeNotifier {
     }
     try {
       importFromMap(await _storage.read());
-    } on Error {
+    } catch (e) {
       debugPrint('Erreur de lecture. Fallback sur les données intégrées.');
       importFromMap(await readFromAsset('courses'));
     }
