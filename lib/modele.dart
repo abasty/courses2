@@ -166,7 +166,7 @@ class VueModele extends ChangeNotifier {
     _changeProduit(p);
   }
 
-  /// Supprime unproduit
+  /// Supprime un produit
   void ctrlProduitSupprime(Produit produit) {
     var deleted = {'deleted': 'true'};
     _produits.removeWhere((p) => p.nom == produit.nom);
@@ -248,7 +248,6 @@ class VueModele extends ChangeNotifier {
     _produits.forEach((p) => _publieProduit(p));
   }
 
-  // Callback de push SSE
   Produit _importeProduit(Produit produit) {
     var rayon = _importeRayon(produit.rayon.nom);
     produit.rayon = rayon;
@@ -291,6 +290,7 @@ class VueModele extends ChangeNotifier {
     }
   }
 
+  // Callback de push SSE
   void _recoitPublication(Map<String, dynamic> map) {
     if (map.isEmpty) {
       /// L'état de la connexion a changé
