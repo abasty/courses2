@@ -216,7 +216,6 @@ class VueModele extends ChangeNotifier {
     if (prefs['hostname'] != null) {
       _storage.hostname = prefs['hostname'] as String;
     }
-    await _storage.connect();
     try {
       importFromMap(await _storage.read());
     } catch (e) {
