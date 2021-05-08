@@ -17,7 +17,7 @@ class BackendStrategy implements StorageStrategy {
   String hostname;
 
   BackendStrategy(this.hostname) {
-    connect();
+    sseConnect();
   }
 
   @override
@@ -53,7 +53,7 @@ class BackendStrategy implements StorageStrategy {
     try {
       var response = await http.get(Uri.http(hostname, path));
       if (response.statusCode == 200) {
-        isConnected = true;
+        await sseConnect();
         return json.decode(response.body) as Object;
       } else {
         throw 'Fetch error';
@@ -71,7 +71,7 @@ class BackendStrategy implements StorageStrategy {
   }
 
   @override
-  Future connect() async {
+  Future sseConnect() async {
     if (isConnected) return;
     _sse_client = SseClient.fromUrl('http://$hostname/sync');
     try {

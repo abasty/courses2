@@ -33,7 +33,7 @@ abstract class StorageStrategy {
   void disconnect();
 
   /// Connecte le storage
-  Future connect();
+  Future sseConnect();
 }
 
 /// Reads dataset [name] from assets. This function MUST NOT fail.
@@ -65,7 +65,7 @@ class MemoryMapStrategy implements StorageStrategy {
   void disconnect() {}
 
   @override
-  Future connect() async {}
+  Future sseConnect() async {}
 
   @override
   String hostname;
@@ -109,7 +109,7 @@ class LocalStorageStrategy implements StorageStrategy {
   void disconnect() {}
 
   @override
-  Future connect() async {}
+  Future sseConnect() async {}
 
   @override
   String hostname = '';
@@ -148,8 +148,8 @@ class DelayedStrategy implements StorageStrategy {
   }
 
   @override
-  Future connect() async {
-    unawaited(_storage.connect());
+  Future sseConnect() async {
+    unawaited(_storage.sseConnect());
   }
 
   @override
