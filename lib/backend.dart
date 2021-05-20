@@ -16,9 +16,7 @@ class BackendStrategy implements StorageStrategy {
   @override
   String hostname;
 
-  BackendStrategy(this.hostname) {
-    sseConnect();
-  }
+  BackendStrategy(this.hostname);
 
   @override
   Future<Map<String, dynamic>> read() async {
