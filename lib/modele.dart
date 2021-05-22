@@ -177,7 +177,7 @@ class VueModele extends ChangeNotifier {
 
   /// Synchronise les données avec le backend
   void ctrlSync(String verb) async {
-    await _storage.sseConnect();
+    await _storage.connect();
     if (!isConnected) return;
     if (verb == 'export') await _exportProduits();
     _isLoaded = loadAll();

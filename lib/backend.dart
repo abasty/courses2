@@ -7,7 +7,7 @@ import 'storage.dart';
 
 class BackendStrategy implements StorageStrategy {
   final _storage = LocalStorageStrategy('courses3.json');
-  late SseClient _sse_client;
+  SseClient? _sse_client;
   Function? pushEvent;
 
   @override
@@ -21,10 +21,7 @@ class BackendStrategy implements StorageStrategy {
   @override
   Future<Map<String, dynamic>> read() async {
     var map = await fetchData('courses/all');
-    if (map != null && map is Map<String, dynamic>) {
-      // await _sse_client.onConnected;
-      return map;
-    }
+    if (map != null && map is Map<String, dynamic>) return map;
     isConnected = false;
     return _storage.read();
   }
@@ -36,9 +33,10 @@ class BackendStrategy implements StorageStrategy {
 
   @override
   Future<void> advertise(String path, Map<String, dynamic> map) async {
+    if (_sse_client == null) return;
     try {
       var response = await http.post(
-        Uri.http(hostname, path, {'sseClientId': _sse_client.clientId}),
+        Uri.http(hostname, path, {'sseClientId': _sse_client!.clientId}),
         body: json.encode(map),
       );
       isConnected = response.statusCode == 200;
@@ -51,7 +49,7 @@ class BackendStrategy implements StorageStrategy {
     try {
       var response = await http.get(Uri.http(hostname, path));
       if (response.statusCode == 200) {
-        await sseConnect();
+        await connect();
         return json.decode(response.body) as Object;
       } else {
         throw 'Fetch error';
@@ -64,18 +62,18 @@ class BackendStrategy implements StorageStrategy {
 
   @override
   void disconnect() {
-    _sse_client.close();
+    _sse_client?.close();
     isConnected = false;
   }
 
   @override
-  Future sseConnect() async {
+  Future connect() async {
     if (isConnected) return;
     _sse_client = SseClient.fromUrl('http://$hostname/sync');
     try {
-      await _sse_client.onConnected;
+      await _sse_client!.onConnected;
       isConnected = true;
-      _sse_client.stream.listen(
+      _sse_client!.stream.listen(
         (str) {
           if (str.isEmpty) return;
           var map;
