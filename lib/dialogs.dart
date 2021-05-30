@@ -17,7 +17,7 @@ class ConnectDialog extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: TextFormField(
-            onChanged: (name) => modele.ctrlHostname(name),
+            onChanged: (name) => modele.ctrlHostname('$name.eu.ngrok.io'),
             decoration: InputDecoration(hintText: 'URL'),
             initialValue: modele.hostname,
           ),
