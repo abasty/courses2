@@ -19,7 +19,9 @@ class ConnectDialog extends StatelessWidget {
           child: TextFormField(
             onChanged: (name) => modele.ctrlHostname('$name.eu.ngrok.io'),
             decoration: InputDecoration(hintText: 'URL'),
-            initialValue: modele.hostname,
+            initialValue: modele.hostname.contains('.eu.ngrok.io')
+                ? modele.hostname.substring(0, modele.hostname.indexOf('.'))
+                : modele.hostname,
           ),
         ),
         SimpleDialogItem(

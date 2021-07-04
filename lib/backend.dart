@@ -88,6 +88,9 @@ class BackendStrategy implements StorageStrategy {
           if (pushEvent != null) pushEvent!(<String, dynamic>{});
           disconnect();
         },
+        onError: (e) {
+          print('error closed');
+        },
         cancelOnError: true,
       );
     } catch (e) {
