@@ -14,11 +14,6 @@ class BackendStrategy implements StorageStrategy {
   bool isConnected = false;
 
   @override
-  String hostname;
-
-  BackendStrategy(this.hostname);
-
-  @override
   Future<Map<String, dynamic>> read() async {
     var map = await fetchData('courses/all');
     if (map != null && map is Map<String, dynamic>) return map;
@@ -38,7 +33,13 @@ class BackendStrategy implements StorageStrategy {
     //    scheme: 'https', userInfo: 'root:toor', host: '', path: 'courses/all');
     try {
       var response = await http.post(
-        Uri.https(hostname, path, {'sseClientId': _sse_client!.clientId}),
+        Uri(
+          scheme: uri?.scheme,
+          host: uri?.host,
+          port: uri?.port,
+          userInfo: uri?.userInfo,
+          queryParameters: {'sseClientId': _sse_client!.clientId},
+        ),
         body: json.encode(map),
       );
       isConnected = response.statusCode == 200;
@@ -49,7 +50,12 @@ class BackendStrategy implements StorageStrategy {
 
   Future<Object?> fetchData(String path) async {
     try {
-      var response = await http.get(Uri.https(hostname, path));
+      var response = await http.get(Uri(
+        scheme: uri?.scheme,
+        host: uri?.host,
+        port: uri?.port,
+        userInfo: uri?.userInfo,
+      ));
       if (response.statusCode == 200) {
         await connect();
         return json.decode(response.body) as Object;
@@ -70,8 +76,8 @@ class BackendStrategy implements StorageStrategy {
 
   @override
   Future connect() async {
-    if (isConnected) return;
-    _sse_client = SseClient.fromUrl('https://$hostname/sync');
+    if (isConnected || uri == null) return;
+    _sse_client = SseClient.fromUrl('https://${uri!.host}/sync');
     try {
       await _sse_client!.onConnected;
       isConnected = true;
@@ -99,4 +105,7 @@ class BackendStrategy implements StorageStrategy {
       disconnect();
     }
   }
+
+  @override
+  Uri? uri;
 }

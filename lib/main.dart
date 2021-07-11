@@ -14,7 +14,7 @@ import 'produit_screen.dart';
 void main() {
   if (!kDebugMode) debugPrint = (String? message, {int? wrapWidth}) {};
 
-  modele = VueModele(BackendStrategy('localhost:8067'));
+  modele = VueModele(BackendStrategy());
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,

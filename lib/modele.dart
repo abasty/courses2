@@ -86,7 +86,7 @@ class VueModele extends ChangeNotifier {
   Rayon get divers => _divers;
 
   /// Le nom du serveur
-  String get hostname => _storage.hostname;
+  Uri? get uri => _storage.uri;
 
   /// [isConnected] est [true] si le _storage_ est connecté
   bool get isConnected => _storage.isConnected;
@@ -110,10 +110,14 @@ class VueModele extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Change le nom du serveur
-  void ctrlHostname(String _hostname) {
-    _storage.hostname = _hostname;
-    _prefs.write({'hostname': hostname});
+  // Définit l'URI du backend
+  void ctrlUri(Uri uri) {
+    _storage.uri = uri;
+    _prefs.write({
+      'host': uri.host,
+      'scheme': uri.scheme,
+      'userInfo': uri.userInfo,
+    });
   }
 
   /// Définit la quantite du [Produit] [p] à 0 ou 1.
@@ -213,9 +217,11 @@ class VueModele extends ChangeNotifier {
   /// Charge dans le modèle toutes les données du stockage.
   Future<void> loadAll() async {
     var prefs = await _prefs.read();
-    if (prefs['hostname'] != null) {
-      _storage.hostname = prefs['hostname'] as String;
-    }
+    _storage.uri = Uri(
+      scheme: prefs['scheme'] as String?,
+      host: prefs['host'] as String?,
+      userInfo: prefs['userInfo'] as String?,
+    );
     try {
       importFromMap(await _storage.read());
     } catch (e) {

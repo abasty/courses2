@@ -12,12 +12,27 @@ class ConnectDialog extends StatefulWidget {
 }
 
 class _ConnectDialogState extends State<ConnectDialog> {
-  // TODO: Get values from modele / prefs
-  bool _isNgrok = false;
-  String _subDomain = '';
-  String _user = '';
-  String _password = '';
-  String _ip = '127.0.0.1:8067';
+  bool _is_ngrok = false;
+  String _userInfo = '';
+  String _host = '';
+
+  _ConnectDialogState() {
+    _is_ngrok = modele.uri?.scheme == 'https';
+    _userInfo = modele.uri?.userInfo ?? '';
+    _host = modele.uri?.host ?? '';
+  }
+
+  Uri _computeUri() {
+    if (_is_ngrok) {
+      return Uri(
+        scheme: 'https',
+        host: '$_host',
+        userInfo: _userInfo == '' ? null : '$_userInfo',
+      );
+    } else {
+      return Uri(scheme: 'http', host: _host);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,40 +44,50 @@ class _ConnectDialogState extends State<ConnectDialog> {
         SwitchListTile(
           title: Text('Connexion Sécurisée'),
           subtitle: Text('HTTP/LAN ou HTTPS/ngrok'),
-          value: _isNgrok,
-          onChanged: (v) => setState(() => _isNgrok = v),
+          value: _is_ngrok,
+          onChanged: (v) => setState(() => _is_ngrok = v),
         ),
         IndexedStack(
-          index: _isNgrok ? 0 : 1,
+          index: _is_ngrok ? 0 : 1,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(hintText: 'Utilisateur'),
-                    initialValue: _user,
-                    onChanged: (name) => setState(() => _user = name),
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(hintText: 'Mot de passe'),
-                    initialValue: _password,
-                    onChanged: (name) => setState(() => _password = name),
-                  ),
-                  TextFormField(
                     decoration: InputDecoration(hintText: 'Sous-domaine ngrok'),
-                    initialValue: _subDomain,
-                    onChanged: (name) => setState(() => _subDomain = name),
+                    initialValue: _host,
+                    onChanged: (data) => setState(() => _host = data),
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'login:pass'),
+                    initialValue: _userInfo,
+                    onChanged: (data) => setState(() => _userInfo = data),
                   ),
                 ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextFormField(
-                decoration: InputDecoration(hintText: 'HTTP ip:port'),
-                initialValue: _ip,
-                onChanged: (name) => setState(() => _ip = name),
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'HTTP ip:port'),
+                    initialValue: _host,
+                    onChanged: (data) => setState(() => _host = data),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _host = 'localhost:8067';
+                        });
+                      },
+                      child: const Text('localhost:8067'),
+                    ),
+                  )
+                ],
               ),
             ),
           ],
@@ -76,8 +101,8 @@ class _ConnectDialogState extends State<ConnectDialog> {
           color: Colors.green,
           text: 'Synchroniser les produits',
           onPressed: () {
-            // TODO: Set values into modele / prefs
             Navigator.pop(context);
+            modele.ctrlUri(_computeUri());
             modele.ctrlSync('export');
           },
         ),
@@ -86,8 +111,8 @@ class _ConnectDialogState extends State<ConnectDialog> {
           color: Colors.blue,
           text: 'Télécharger les produits',
           onPressed: () {
-            // TODO: Set values into modele / prefs
             Navigator.pop(context);
+            modele.ctrlUri(_computeUri());
             modele.ctrlSync('import');
           },
         ),
@@ -97,8 +122,8 @@ class _ConnectDialogState extends State<ConnectDialog> {
           color: Colors.red,
           text: 'Rester déconnecté',
           onPressed: () {
-            // TODO: Set values into modele / prefs
             Navigator.pop(context);
+            modele.ctrlUri(_computeUri());
           },
         ),
       ],
