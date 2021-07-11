@@ -34,6 +34,8 @@ class BackendStrategy implements StorageStrategy {
   @override
   Future<void> advertise(String path, Map<String, dynamic> map) async {
     if (_sse_client == null) return;
+    // var uri = Uri(
+    //    scheme: 'https', userInfo: 'root:toor', host: '', path: 'courses/all');
     try {
       var response = await http.post(
         Uri.https(hostname, path, {'sseClientId': _sse_client!.clientId}),

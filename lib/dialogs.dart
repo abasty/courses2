@@ -2,10 +2,22 @@ import 'package:flutter/material.dart';
 
 import 'modele.dart';
 
-class ConnectDialog extends StatelessWidget {
+class ConnectDialog extends StatefulWidget {
   const ConnectDialog({
     Key? key,
   }) : super(key: key);
+
+  @override
+  _ConnectDialogState createState() => _ConnectDialogState();
+}
+
+class _ConnectDialogState extends State<ConnectDialog> {
+  // TODO: Get values from modele / prefs
+  bool _isNgrok = false;
+  String _subDomain = '';
+  String _user = '';
+  String _password = '';
+  String _ip = '127.0.0.1:8067';
 
   @override
   Widget build(BuildContext context) {
@@ -14,21 +26,57 @@ class ConnectDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       children: [
+        SwitchListTile(
+          title: Text('Connexion Sécurisée'),
+          subtitle: Text('HTTP/LAN ou HTTPS/ngrok'),
+          value: _isNgrok,
+          onChanged: (v) => setState(() => _isNgrok = v),
+        ),
+        IndexedStack(
+          index: _isNgrok ? 0 : 1,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'Utilisateur'),
+                    initialValue: _user,
+                    onChanged: (name) => setState(() => _user = name),
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'Mot de passe'),
+                    initialValue: _password,
+                    onChanged: (name) => setState(() => _password = name),
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(hintText: 'Sous-domaine ngrok'),
+                    initialValue: _subDomain,
+                    onChanged: (name) => setState(() => _subDomain = name),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: TextFormField(
+                decoration: InputDecoration(hintText: 'HTTP ip:port'),
+                initialValue: _ip,
+                onChanged: (name) => setState(() => _ip = name),
+              ),
+            ),
+          ],
+        ),
         Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TextFormField(
-            onChanged: (name) => modele.ctrlHostname('$name.eu.ngrok.io'),
-            decoration: InputDecoration(hintText: 'URL'),
-            initialValue: modele.hostname.contains('.eu.ngrok.io')
-                ? modele.hostname.substring(0, modele.hostname.indexOf('.'))
-                : modele.hostname,
-          ),
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Divider(),
         ),
         SimpleDialogItem(
           icon: Icons.cloud_done,
           color: Colors.green,
           text: 'Synchroniser les produits',
           onPressed: () {
+            // TODO: Set values into modele / prefs
             Navigator.pop(context);
             modele.ctrlSync('export');
           },
@@ -38,6 +86,7 @@ class ConnectDialog extends StatelessWidget {
           color: Colors.blue,
           text: 'Télécharger les produits',
           onPressed: () {
+            // TODO: Set values into modele / prefs
             Navigator.pop(context);
             modele.ctrlSync('import');
           },
@@ -48,6 +97,7 @@ class ConnectDialog extends StatelessWidget {
           color: Colors.red,
           text: 'Rester déconnecté',
           onPressed: () {
+            // TODO: Set values into modele / prefs
             Navigator.pop(context);
           },
         ),
