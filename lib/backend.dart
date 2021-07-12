@@ -54,6 +54,7 @@ class BackendStrategy implements StorageStrategy {
         scheme: uri?.scheme,
         host: uri?.host,
         port: uri?.port,
+        path: path,
         userInfo: uri?.userInfo,
       ));
       if (response.statusCode == 200) {
@@ -77,7 +78,8 @@ class BackendStrategy implements StorageStrategy {
   @override
   Future connect() async {
     if (isConnected || uri == null) return;
-    _sse_client = SseClient.fromUrl('https://${uri!.host}/sync');
+    String? url = uri.toString();
+    _sse_client = SseClient.fromUrl('$url/sync');
     try {
       await _sse_client!.onConnected;
       isConnected = true;
