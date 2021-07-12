@@ -115,6 +115,7 @@ class VueModele extends ChangeNotifier {
     _storage.uri = uri;
     _prefs.write({
       'host': uri.host,
+      'port': uri.hasPort ? uri.port.toString() : '',
       'scheme': uri.scheme,
       'userInfo': uri.userInfo,
     });
@@ -216,13 +217,15 @@ class VueModele extends ChangeNotifier {
 
   /// Charge dans le modèle toutes les données du stockage.
   Future<void> loadAll() async {
-    var prefs = await _prefs.read();
-    _storage.uri = Uri(
-      scheme: prefs['scheme'] as String?,
-      host: prefs['host'] as String?,
-      userInfo: prefs['userInfo'] as String?,
-    );
     try {
+      var prefs = await _prefs.read();
+      _storage.uri = Uri(
+        scheme: prefs['scheme'] as String?,
+        host: prefs['host'] as String?,
+        port:
+            prefs['port'] != '' ? int.tryParse(prefs['port'] as String) : null,
+        userInfo: prefs['userInfo'] as String?,
+      );
       importFromMap(await _storage.read());
     } catch (e) {
       debugPrint('Erreur de lecture. Fallback sur les données intégrées.');

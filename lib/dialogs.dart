@@ -15,22 +15,42 @@ class _ConnectDialogState extends State<ConnectDialog> {
   bool _is_ngrok = false;
   String _userInfo = '';
   String _host = '';
+  final _hostCtrl = TextEditingController();
 
   _ConnectDialogState() {
     _is_ngrok = modele.uri?.scheme == 'https';
     _userInfo = modele.uri?.userInfo ?? '';
     _host = modele.uri?.host ?? '';
+    if (modele.uri?.hasPort == true) {
+      var port = modele.uri?.port;
+      _host = _host + ':' + port.toString();
+    }
+    _hostCtrl.text = _host;
   }
 
   Uri _computeUri() {
+    String? host;
+    int? port;
+    var sep = _host.indexOf(':');
+    if (sep != -1) {
+      host = _host.substring(0, sep);
+      port = int.tryParse(_host.substring(sep + 1));
+    } else {
+      host = _host;
+    }
     if (_is_ngrok) {
       return Uri(
         scheme: 'https',
-        host: '$_host',
+        host: host,
+        port: port,
         userInfo: _userInfo == '' ? null : '$_userInfo',
       );
     } else {
-      return Uri(scheme: 'http', host: _host);
+      return Uri(
+        scheme: 'http',
+        host: host,
+        port: port,
+      );
     }
   }
 
@@ -55,8 +75,8 @@ class _ConnectDialogState extends State<ConnectDialog> {
               child: Column(
                 children: [
                   TextFormField(
+                    controller: _hostCtrl,
                     decoration: InputDecoration(hintText: 'Sous-domaine ngrok'),
-                    initialValue: _host,
                     onChanged: (data) => setState(() => _host = data),
                   ),
                   TextFormField(
@@ -72,9 +92,11 @@ class _ConnectDialogState extends State<ConnectDialog> {
               child: Column(
                 children: [
                   TextFormField(
+                    controller: _hostCtrl,
                     decoration: InputDecoration(hintText: 'HTTP ip:port'),
-                    initialValue: _host,
-                    onChanged: (data) => setState(() => _host = data),
+                    onChanged: (data) => setState(() {
+                      _host = data;
+                    }),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -82,6 +104,7 @@ class _ConnectDialogState extends State<ConnectDialog> {
                       onPressed: () {
                         setState(() {
                           _host = 'localhost:8067';
+                          _hostCtrl.text = _host;
                         });
                       },
                       child: const Text('localhost:8067'),
