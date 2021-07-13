@@ -46,11 +46,9 @@ packages:
   courses_sse_client:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "669a0b2f4ffdb5395220ea1de483756646ce94e9"
-      url: "https://github.com/abasty/courses_sse_client.git"
-    source: git
+      path: "../courses_sse_client"
+      relative: true
+    source: path
     version: "1.4.3"
   fake_async:
     dependency: transitive

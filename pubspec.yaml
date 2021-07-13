@@ -16,7 +16,8 @@ dependencies:
   logging:
   http: ^0.13.1
   courses_sse_client:
-    git: https://github.com/abasty/courses_sse_client.git
+    path: ../courses_sse_client/
+    # git: https://github.com/abasty/courses_sse_client.git
 
 dev_dependencies:
   flutter_test:

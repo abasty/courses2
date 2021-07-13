@@ -29,8 +29,6 @@ class BackendStrategy implements StorageStrategy {
   @override
   Future<void> advertise(String path, Map<String, dynamic> map) async {
     if (_sse_client == null) return;
-    // var uri = Uri(
-    //    scheme: 'https', userInfo: 'root:toor', host: '', path: 'courses/all');
     try {
       var response = await http.post(
         Uri(
@@ -50,13 +48,15 @@ class BackendStrategy implements StorageStrategy {
 
   Future<Object?> fetchData(String path) async {
     try {
-      var response = await http.get(Uri(
-        scheme: uri?.scheme,
-        host: uri?.host,
-        port: uri?.port,
-        path: path,
-        userInfo: uri?.userInfo,
-      ));
+      var response = await http.get(
+        Uri(
+          scheme: uri?.scheme,
+          host: uri?.host,
+          port: uri?.port,
+          path: path,
+          userInfo: uri?.userInfo,
+        ),
+      );
       if (response.statusCode == 200) {
         await connect();
         return json.decode(response.body) as Object;
@@ -78,8 +78,7 @@ class BackendStrategy implements StorageStrategy {
   @override
   Future connect() async {
     if (isConnected || uri == null) return;
-    String? url = uri.toString();
-    _sse_client = SseClient.fromUrl('$url/sync');
+    _sse_client = SseClient.fromUriAndPath(uri!, '/sync');
     try {
       await _sse_client!.onConnected;
       isConnected = true;
