@@ -21,6 +21,10 @@ class _ConnectDialogState extends State<ConnectDialog> {
     _is_ngrok = modele.uri?.scheme == 'https';
     _userInfo = modele.uri?.userInfo ?? '';
     _host = modele.uri?.host ?? '';
+    if (_is_ngrok) {
+      var sep = _host.indexOf('.');
+      if (sep > 0) _host = _host.substring(0, sep);
+    }
     if (modele.uri?.hasPort == true) {
       var port = modele.uri?.port;
       _host = _host + ':' + port.toString();
@@ -41,8 +45,7 @@ class _ConnectDialogState extends State<ConnectDialog> {
     if (_is_ngrok) {
       return Uri(
         scheme: 'https',
-        host: host,
-        port: port,
+        host: host + '.eu.ngrok.io',
         userInfo: _userInfo == '' ? null : '$_userInfo',
       );
     } else {
@@ -93,7 +96,7 @@ class _ConnectDialogState extends State<ConnectDialog> {
                 children: [
                   TextFormField(
                     controller: _hostCtrl,
-                    decoration: InputDecoration(hintText: 'HTTP ip:port'),
+                    decoration: InputDecoration(hintText: 'ip:port'),
                     onChanged: (data) => setState(() {
                       _host = data;
                     }),

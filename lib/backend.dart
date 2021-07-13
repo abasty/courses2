@@ -36,6 +36,7 @@ class BackendStrategy implements StorageStrategy {
           host: uri?.host,
           port: uri?.port,
           userInfo: uri?.userInfo,
+          path: '/courses/produit',
           queryParameters: {'sseClientId': _sse_client!.clientId},
         ),
         body: json.encode(map),
