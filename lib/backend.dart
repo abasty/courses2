@@ -96,7 +96,9 @@ class BackendStrategy implements StorageStrategy {
       () {
         _sse_client!.stream.listen(
           (str) {
+            debugPrint(DateTime.now().toString() + ': $str');
             if (str.isEmpty) return;
+            if (str == 'ping') return;
             var map;
             try {
               map = json.decode(str) as Map<String, dynamic>;
