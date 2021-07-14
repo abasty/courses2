@@ -90,6 +90,8 @@ class BackendStrategy implements StorageStrategy {
       disconnect();
     }
 
+    if (!isConnected) return;
+
     runZonedGuarded(
       () {
         _sse_client!.stream.listen(
