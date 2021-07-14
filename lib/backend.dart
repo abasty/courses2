@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:courses_sse_client/courses_sse_client.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'storage.dart';
@@ -42,6 +44,7 @@ class BackendStrategy implements StorageStrategy {
         body: json.encode(map),
       );
       isConnected = response.statusCode == 200;
+      debugPrint(DateTime.now().toString());
     } catch (e) {
       disconnect();
     }
@@ -79,33 +82,41 @@ class BackendStrategy implements StorageStrategy {
   @override
   Future connect() async {
     if (isConnected || uri == null) return;
-    _sse_client = SseClient.fromUriAndPath(uri!, '/sync');
     try {
+      _sse_client = SseClient.fromUriAndPath(uri!, '/sync');
       await _sse_client!.onConnected;
       isConnected = true;
-      _sse_client!.stream.listen(
-        (str) {
-          if (str.isEmpty) return;
-          var map;
-          try {
-            map = json.decode(str) as Map<String, dynamic>;
-          } catch (e) {
-            map = {};
-          }
-          if (pushEvent != null) pushEvent!(map);
-        },
-        onDone: () {
-          if (pushEvent != null) pushEvent!(<String, dynamic>{});
-          disconnect();
-        },
-        onError: (e) {
-          print('error closed');
-        },
-        cancelOnError: true,
-      );
     } catch (e) {
       disconnect();
     }
+
+    runZonedGuarded(
+      () {
+        _sse_client!.stream.listen(
+          (str) {
+            if (str.isEmpty) return;
+            var map;
+            try {
+              map = json.decode(str) as Map<String, dynamic>;
+            } catch (e) {
+              map = {};
+            }
+            // pushEvent?.call(map);
+            if (pushEvent != null) pushEvent!(map);
+          },
+          onDone: () {
+            if (pushEvent != null) pushEvent!(<String, dynamic>{});
+            disconnect();
+          },
+          cancelOnError: true,
+        );
+      },
+      (e, s) {
+        debugPrint(DateTime.now().toString());
+        debugPrint('ZoneGuarded: "$e" (${e.runtimeType})');
+        disconnect();
+      },
+    );
   }
 
   @override
