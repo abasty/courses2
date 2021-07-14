@@ -103,11 +103,10 @@ class BackendStrategy implements StorageStrategy {
             } catch (e) {
               map = {};
             }
-            // pushEvent?.call(map);
-            if (pushEvent != null) pushEvent!(map);
+            pushEvent?.call(map);
           },
           onDone: () {
-            if (pushEvent != null) pushEvent!(<String, dynamic>{});
+            pushEvent?.call(<String, dynamic>{});
             disconnect();
           },
           cancelOnError: true,
