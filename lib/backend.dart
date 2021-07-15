@@ -54,15 +54,15 @@ class BackendStrategy implements StorageStrategy {
 
   Future<Object?> fetchData(String path) async {
     try {
-      var response = await http.get(
-        Uri(
-          scheme: uri?.scheme,
-          host: uri?.host,
-          port: uri?.port,
-          path: path,
-          userInfo: uri?.userInfo,
-        ),
-      );
+      var response = await http
+          .get(Uri(
+              scheme: uri?.scheme,
+              host: uri?.host,
+              port: uri?.port,
+              path: path,
+              userInfo: uri?.userInfo))
+          .timeout(Duration(seconds: 5),
+              onTimeout: () => http.Response('Timeout', 504));
       if (response.statusCode == 200) {
         await connect();
         return json.decode(response.body) as Object;
@@ -77,11 +77,16 @@ class BackendStrategy implements StorageStrategy {
 
   @override
   void disconnect([bool unsolicited = false]) {
+    if (!isConnected) return;
     debugPrint('disconnect(${unsolicited ? "network" : "user"})');
-    _sse_client?.close();
     isConnected = false;
-    if (!unsolicited) _reconnect_attemps = 0;
-    if (_reconnect_attemps-- > 0) connect();
+    if (unsolicited) {
+      _reconnect_attemps--;
+      if (_reconnect_attemps >= 0) connect();
+    } else {
+      _reconnect_attemps = 0;
+      _sse_client?.close();
+    }
   }
 
   @override
@@ -116,12 +121,14 @@ class BackendStrategy implements StorageStrategy {
           },
           onDone: () {
             pushEvent?.call(<String, dynamic>{});
+            debugPrint('onDone');
             disconnect(true);
           },
           cancelOnError: true,
         );
       },
       (e, s) {
+        debugPrint('runZonedGuarded: ' + e.runtimeType.toString());
         disconnect(true);
       },
     );
