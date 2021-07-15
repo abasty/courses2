@@ -8,9 +8,11 @@ import 'package:http/http.dart' as http;
 import 'storage.dart';
 
 class BackendStrategy implements StorageStrategy {
+  static const int _reconnect_attemps_max = 1;
   final _storage = LocalStorageStrategy('courses3.json');
   SseClient? _sse_client;
   Function? pushEvent;
+  int _reconnect_attemps = 0;
 
   @override
   bool isConnected = false;
@@ -44,7 +46,7 @@ class BackendStrategy implements StorageStrategy {
         body: json.encode(map),
       );
       isConnected = response.statusCode == 200;
-      debugPrint(DateTime.now().toString());
+      debugPrint('sent: ${response.statusCode}');
     } catch (e) {
       disconnect();
     }
@@ -74,31 +76,36 @@ class BackendStrategy implements StorageStrategy {
   }
 
   @override
-  void disconnect() {
+  void disconnect([bool unsolicited = false]) {
+    debugPrint('disconnect(${unsolicited ? "network" : "user"})');
     _sse_client?.close();
     isConnected = false;
+    if (!unsolicited) _reconnect_attemps = 0;
+    if (_reconnect_attemps-- > 0) connect();
   }
 
   @override
   Future connect() async {
     if (isConnected || uri == null) return;
+
     try {
+      debugPrint('connect(${uri!.host})');
       _sse_client = SseClient.fromUriAndPath(uri!, '/sync');
       await _sse_client!.onConnected;
       isConnected = true;
+      _reconnect_attemps = _reconnect_attemps_max;
+      pushEvent?.call(<String, dynamic>{});
     } catch (e) {
       disconnect();
     }
-
     if (!isConnected) return;
 
     runZonedGuarded(
       () {
         _sse_client!.stream.listen(
           (str) {
-            debugPrint(DateTime.now().toString() + ': $str');
-            if (str.isEmpty) return;
-            if (str == 'ping') return;
+            debugPrint('read: $str');
+            if (str.isEmpty || str == 'ping') return;
             var map;
             try {
               map = json.decode(str) as Map<String, dynamic>;
@@ -109,15 +116,13 @@ class BackendStrategy implements StorageStrategy {
           },
           onDone: () {
             pushEvent?.call(<String, dynamic>{});
-            disconnect();
+            disconnect(true);
           },
           cancelOnError: true,
         );
       },
       (e, s) {
-        debugPrint(DateTime.now().toString());
-        debugPrint('ZoneGuarded: "$e" (${e.runtimeType})');
-        disconnect();
+        disconnect(true);
       },
     );
   }
